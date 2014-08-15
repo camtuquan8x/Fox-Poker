@@ -33,7 +33,6 @@ public class Loom : MonoBehaviour
 	{
 		if (!initialized)
 		{
-		
 			if(!Application.isPlaying)
 				return;
 			initialized = true;
@@ -108,7 +107,7 @@ public class Loom : MonoBehaviour
 	{
 		if (_current == this)
 		{
-			
+            initialized = false;
 			_current = null;
 		}
 	}

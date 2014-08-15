@@ -9,6 +9,10 @@ namespace Esimo
     public class DataModel : IDataModel, ISerializable
     {
         public const string objectTypeFieldName = "o_type";
+
+        public DataModel()
+        {
+        }
 		
         public DataModel(SerializationInfo info, StreamingContext ctxt)
     	{				
