@@ -4,7 +4,7 @@ namespace Esimo
 {
     public class BaseSingleton<T> where T : class, new()
     {
-        BaseSingleton() { }
+        public BaseSingleton() { }
 
         class SingletonCreator
         {
