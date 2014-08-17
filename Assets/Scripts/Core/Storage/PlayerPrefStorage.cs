@@ -5,7 +5,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Esimo.Core.Storage
 {
-    public sealed class PlayerPrefStorage : BaseSingleton<PlayerPrefStorage>, IStorage
+    public class PlayerPrefStorage : BaseSingleton<PlayerPrefStorage>, IStorage
     {
         public void SetInt(string key, int value)
         {

@@ -23,8 +23,8 @@ namespace Esimo.Core.Storage
 
     interface IStorageFile
     {
-        public void SaveFile(Action<bool> callback);
-        public void LoadFile(Action<bool> callback);
-        public void DeleteFile(Action<bool> callback);
+         void SaveFile(Action<bool> callback);
+         void LoadFile(Action<bool> callback);
+         void DeleteFile(Action<bool> callback);
     }
 }
