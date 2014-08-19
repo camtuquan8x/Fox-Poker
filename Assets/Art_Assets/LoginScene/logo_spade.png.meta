@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: aeda37640f632475c87ab955f810d6a1
+guid: a354757dee4544e91beaa761826fc5fb
 TextureImporter:
   fileIDToRecycleName:
     21300000: logo_spade
@@ -18,7 +18,7 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: .25
     normalMapFilter: 0
-  isReadable: 1
+  isReadable: 0
   grayScaleToAlpha: 0
   generateCubemap: 0
   seamlessCubemap: 0
@@ -39,7 +39,7 @@ TextureImporter:
   spritePivot: {x: .5, y: .5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
-  alphaIsTransparency: 0
+  alphaIsTransparency: 1
   textureType: 8
   buildTargetSettings: []
   spriteSheet:
