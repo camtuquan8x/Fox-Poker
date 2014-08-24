@@ -1,15 +1,11 @@
 fileFormatVersion: 2
-guid: 3ef822d370625473686c0f16ab91890a
+guid: 05cf9b49bc30b4053bca88ed29b50b52
 TextureImporter:
   fileIDToRecycleName: {}
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
-<<<<<<< Updated upstream
     enableMipMap: 1
-=======
-    enableMipMap: 0
->>>>>>> Stashed changes
     linearTexture: 0
     correctGamma: 0
     fadeOut: 0
@@ -21,33 +17,18 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: .25
     normalMapFilter: 0
-<<<<<<< Updated upstream
-  isReadable: 0
-  grayScaleToAlpha: 0
-  generateCubemap: 0
-  seamlessCubemap: 0
-  textureFormat: 5
-  maxTextureSize: 4096
-  textureSettings:
-    filterMode: 2
-    aniso: 4
-    mipBias: -1
-    wrapMode: 1
-  nPOTScale: 1
-=======
   isReadable: 1
   grayScaleToAlpha: 0
   generateCubemap: 0
   seamlessCubemap: 0
-  textureFormat: 4
-  maxTextureSize: 2048
+  textureFormat: 5
+  maxTextureSize: 1024
   textureSettings:
-    filterMode: 0
-    aniso: 1
+    filterMode: -1
+    aniso: -1
     mipBias: -1
-    wrapMode: 1
+    wrapMode: -1
   nPOTScale: 0
->>>>>>> Stashed changes
   lightmap: 0
   compressionQuality: 50
   spriteMode: 0
@@ -58,11 +39,7 @@ TextureImporter:
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
   alphaIsTransparency: 0
-<<<<<<< Updated upstream
   textureType: -1
-=======
-  textureType: 5
->>>>>>> Stashed changes
   buildTargetSettings: []
   spriteSheet:
     sprites: []
