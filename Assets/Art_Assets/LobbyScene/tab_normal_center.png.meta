@@ -21,11 +21,7 @@ TextureImporter:
   grayScaleToAlpha: 0
   generateCubemap: 0
   seamlessCubemap: 0
-<<<<<<< Updated upstream
   textureFormat: 5
-=======
-  textureFormat: 4
->>>>>>> Stashed changes
   maxTextureSize: 1024
   textureSettings:
     filterMode: -1
