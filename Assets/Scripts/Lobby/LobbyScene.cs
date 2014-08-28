@@ -4,7 +4,7 @@ using System.Collections;
 public class LobbyScene : MonoBehaviour {
 
 	public UITable tableType1;
-	public UIGrid gridType2;
+	public UITable tableType2;
 	public static Vector3 centerObject = Vector3.one;
 	void Start () {
 		tableType1.GetComponent<UICenterOnChild> ().onFinished = OnDragFinishGift;
@@ -16,5 +16,8 @@ public class LobbyScene : MonoBehaviour {
 	void OnDragFinishGift ()
 	{
 		centerObject = tableType1.GetComponent<UICenterOnChild> ().centeredObject.transform.position;
+	}
+	public void ButtonChangeTypeClick(){
+
 	}
 }
