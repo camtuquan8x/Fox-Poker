@@ -3,14 +3,31 @@ using System.Collections;
 
 public class LobbyRowType1 : MonoBehaviour
 {
-
+#region Unity Editor
 	public GameObject[] slots;
+#endregion
+    public static LobbyRowType1 Create(UITable parent)
+    {
+        GameObject go = GameObject.Instantiate(Resources.Load("/Prefabs/Lobby/LobbyRowType1")) as GameObject;
+        go.transform.parent = parent.transform;
+        go.transform.localPosition = Vector3.zero;
+        go.transform.localScale = Vector3.one;
+        go.GetComponent<UIDragScrollView>().scrollView = parent.GetComponentInParent<UIScrollView>();
+        return go.GetComponent<LobbyRowType1>();
+    }
 	void Start ()
 	{
-
-//		NGUITools.FindInParents<CUICenterOnChild> (gameObject).onCenter = onCenterObject;
+        gameObject.GetComponent<UIEventListener>().onClick += onTableClick;   
 	}
-	
+    void OnDestroy()
+    {
+        gameObject.GetComponent<UIEventListener>().onClick -= onTableClick;   
+    }
+    private void onTableClick(GameObject go)
+    {
+        Application.LoadLevel(Scene.GameplayScene.ToString());
+    }
+	 
 
 
 	
