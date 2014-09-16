@@ -2,8 +2,7 @@ fileFormatVersion: 2
 guid: 2e220638f83c6416997aa563cdec8e7b
 TextureImporter:
   fileIDToRecycleName:
-    21300000: noices
-    21300002: bkg_pattern_3
+    21300000: bkg_pattern_3
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0

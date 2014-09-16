@@ -2,8 +2,7 @@ fileFormatVersion: 2
 guid: ba3ff2d597d49463eacbe321beda9df6
 TextureImporter:
   fileIDToRecycleName:
-    21300000: spotlight
-    21300002: bkg_spot_light
+    21300000: bkg_spot_light
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0

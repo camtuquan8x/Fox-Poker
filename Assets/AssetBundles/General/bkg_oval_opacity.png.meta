@@ -2,8 +2,7 @@ fileFormatVersion: 2
 guid: 28481389c4da8488f9f32ce0cb7a01ae
 TextureImporter:
   fileIDToRecycleName:
-    21300000: oval
-    21300002: bkg_oval_opacity
+    21300000: bkg_oval_opacity
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
