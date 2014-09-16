@@ -2,19 +2,21 @@
 using System.Collections;
 
 public class LoginScene : MonoBehaviour {
-	public UIButton btnLogin,btnForgot,btnFacebook,btnGuest;
+	public UIEventListener btnLogin,btnForgot,btnFacebook,btnGuest;
 	public UIInput txtUsername,txtPassword;
+
+
 	void Start () {
-		EventDelegate.Add (btnLogin.onClick, this.onBtnLoginClick);
-		EventDelegate.Add (btnForgot.onClick, this.onBtnForgotClick);
-		EventDelegate.Add (btnFacebook.onClick, this.onBtnFacebookClick);
-		EventDelegate.Add (btnGuest.onClick, this.onBtnGuestClick);
+		btnLogin.onClick += this.onBtnLoginClick;
+		btnForgot.onClick += this.onBtnForgotClick;
+		btnFacebook.onClick += this.onBtnFacebookClick;
+		btnGuest.onClick += this.onBtnGuestClick;
 	}
 	void OnDestroy(){
-		EventDelegate.Remove(btnLogin.onClick, this.onBtnLoginClick);
-		EventDelegate.Remove (btnForgot.onClick, this.onBtnForgotClick);
-		EventDelegate.Remove (btnFacebook.onClick, this.onBtnFacebookClick);
-		EventDelegate.Remove (btnGuest.onClick, this.onBtnGuestClick);
+		btnLogin.onClick -= this.onBtnLoginClick;
+		btnForgot.onClick -= this.onBtnForgotClick;
+		btnFacebook.onClick -= this.onBtnFacebookClick;
+		btnGuest.onClick -= this.onBtnGuestClick;
 	}
 	
 	// Update is called once per frame
@@ -22,24 +24,23 @@ public class LoginScene : MonoBehaviour {
 
 	}
 
-	void onBtnLoginClick ()
+	void onBtnLoginClick (GameObject gobj)
 	{
 		string userName = txtUsername.value;
 		string password = txtPassword.value;
 		if(!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(password)){
-			Debug.Log("========> " + Scene.PokerHallScene.ToString());
 			Application.LoadLevel(Scene.PokerHallScene.ToString());
 		}
 	}
-	void onBtnForgotClick ()
+	void onBtnForgotClick (GameObject gobj)
 	{
-		Debug.Log ("=========> " + btnForgot);
+
 	}
-	void onBtnFacebookClick ()
+	void onBtnFacebookClick (GameObject gobj)
 	{
 		Debug.Log ("=========> " + btnFacebook);
 	}
-	void onBtnGuestClick ()
+	void onBtnGuestClick (GameObject gobj)
 	{
 		Debug.Log ("=========> " + btnGuest);
 	}
