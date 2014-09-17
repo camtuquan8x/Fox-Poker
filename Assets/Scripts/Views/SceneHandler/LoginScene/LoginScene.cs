@@ -34,6 +34,10 @@ public class LoginScene : MonoBehaviour {
 	{
 		string userName = txtUsername.value;
 		string password = txtPassword.value;
+        if (userName == "")
+            userName = "dungnv";
+        if (password == "")
+            password = "puppet#89";
 		if(!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(password))
         {
             Puppet.API.Client.APILogin.GetAccessToken(userName, password, GetAccessTokenResponse);
@@ -52,6 +56,9 @@ public class LoginScene : MonoBehaviour {
     {
         if (status == false)
             Logger.Log(message);
+        else { 
+            Logger.Log("==========> " + message);
+        }
     }
 
 
@@ -61,10 +68,9 @@ public class LoginScene : MonoBehaviour {
 	}
 	void onBtnFacebookClick (GameObject gobj)
 	{
-		Debug.Log ("=========> " + btnFacebook);
 	}
 	void onBtnGuestClick (GameObject gobj)
 	{
-		Debug.Log ("=========> " + btnGuest);
+
 	}
 }

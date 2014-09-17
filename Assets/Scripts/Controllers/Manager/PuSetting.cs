@@ -19,9 +19,9 @@ public class PuSetting
         if(toScene == EScene.LoginScreen)
             Application.LoadLevel(Scene.LoginScene.ToString());
         else if (toScene == EScene.World_Game)
-            Application.LoadLevel(Scene.ChoiceGameScene.ToString());
+            Application.LoadLevel(Scene.WorldGame.ToString());
         else if (toScene == EScene.Pocker_Plaza)
-            Application.LoadLevel(Scene.PokerHallScene.ToString());
+            Application.LoadLevel(Scene.Pocker_Plaza.ToString());
         else if (toScene == EScene.Pocker_Lobby)
             Application.LoadLevel(Scene.LobbyScene.ToString());
         else if (toScene == EScene.Pocker_Gameplay)
@@ -60,7 +60,7 @@ public class PuSetting
         {
             this.domain = domain;
         }
-
+        
         public string GetBaseUrl() { return string.Format("http://{0}:{1}", Domain, Port); }
 
         public int Port { get { return 1990; } }
