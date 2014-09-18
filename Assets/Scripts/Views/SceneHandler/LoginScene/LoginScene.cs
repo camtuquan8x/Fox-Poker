@@ -3,46 +3,50 @@ using System.Collections;
 using Puppet.Core.Network.Http;
 using Puppet;
 
-public class LoginScene : MonoBehaviour {
-	public UIEventListener btnLogin,btnForgot,btnFacebook,btnGuest;
-	public UIInput txtUsername,txtPassword;
+public class LoginScene : MonoBehaviour
+{
+    public UIEventListener btnLogin, btnForgot, btnFacebook, btnGuest;
+    public UIInput txtUsername, txtPassword;
 
     void Awake()
     {
         PuApp.Instance.StartApplication();
     }
 
-	void Start () {
-		btnLogin.onClick += this.onBtnLoginClick;
-		btnForgot.onClick += this.onBtnForgotClick;
-		btnFacebook.onClick += this.onBtnFacebookClick;
-		btnGuest.onClick += this.onBtnGuestClick;
-	}
-	void OnDestroy(){
-		btnLogin.onClick -= this.onBtnLoginClick;
-		btnForgot.onClick -= this.onBtnForgotClick;
-		btnFacebook.onClick -= this.onBtnFacebookClick;
-		btnGuest.onClick -= this.onBtnGuestClick;
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    void Start()
+    {
+        btnLogin.onClick += this.onBtnLoginClick;
+        btnForgot.onClick += this.onBtnForgotClick;
+        btnFacebook.onClick += this.onBtnFacebookClick;
+        btnGuest.onClick += this.onBtnGuestClick;
+    }
+    void OnDestroy()
+    {
+        btnLogin.onClick -= this.onBtnLoginClick;
+        btnForgot.onClick -= this.onBtnForgotClick;
+        btnFacebook.onClick -= this.onBtnFacebookClick;
+        btnGuest.onClick -= this.onBtnGuestClick;
+    }
 
-	}
+    // Update is called once per frame
+    void Update()
+    {
 
-	void onBtnLoginClick (GameObject gobj)
-	{
-		string userName = txtUsername.value;
-		string password = txtPassword.value;
+    }
+
+    void onBtnLoginClick(GameObject gobj)
+    {
+        string userName = txtUsername.value;
+        string password = txtPassword.value;
         if (userName == "")
             userName = "dungnv";
         if (password == "")
             password = "puppet#89";
-		if(!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(password))
+        if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(password))
         {
             Puppet.API.Client.APILogin.GetAccessToken(userName, password, GetAccessTokenResponse);
-		}
-	}
+        }
+    }
 
     void GetAccessTokenResponse(bool status, string message, IHttpResponse response)
     {
@@ -56,21 +60,18 @@ public class LoginScene : MonoBehaviour {
     {
         if (status == false)
             Logger.Log(message);
-        else { 
-            Logger.Log("==========> " + message);
-        }
     }
 
 
-	void onBtnForgotClick (GameObject gobj)
-	{
+    void onBtnForgotClick(GameObject gobj)
+    {
 
-	}
-	void onBtnFacebookClick (GameObject gobj)
-	{
-	}
-	void onBtnGuestClick (GameObject gobj)
-	{
+    }
+    void onBtnFacebookClick(GameObject gobj)
+    {
+    }
+    void onBtnGuestClick(GameObject gobj)
+    {
 
-	}
+    }
 }
