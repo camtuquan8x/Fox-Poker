@@ -38,9 +38,9 @@ public class LoginScene : MonoBehaviour
     {
         string userName = txtUsername.value;
         string password = txtPassword.value;
-        if (userName == "")
+        if (string.IsNullOrEmpty(userName))
             userName = "dungnv";
-        if (password == "")
+        if (string.IsNullOrEmpty(password))
             password = "puppet#89";
         if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(password))
         {

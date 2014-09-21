@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Puppet.Core.Model;
 
 public class LobbyScene : MonoBehaviour {
 	public UIEventListener tabBeginner,tabAmature,tabProfessional,tabMaster;
@@ -7,27 +8,54 @@ public class LobbyScene : MonoBehaviour {
 	public UILabel txtUsername, txtChip;
 	public UITable tableType1;
 	public UITable tableType2;
-	public static Vector3 centerObject = Vector3.one;
 	bool isShowType1 = true;
 	void Start () {
-		tableType1.GetComponent<UICenterOnChild> ().onFinished = OnDragFinishGift;
-		tableType1.GetComponent<UICenterOnChild> ().CenterOn (tableType1.transform.GetChild (0));
+        Puppet.API.Client.APILobby.GetAllLobby(onGetAllLobby);
 		tabBeginner.onHover += onTabHover;
 		tabMaster.onHover += onTabHover;
 		tabProfessional.onHover += onTabHover;
 		tabAmature.onHover += onTabHover;
 		btnType.onClick += btnTypeLobbyClick;
 	}
+
+    private void onGetAllLobby(bool status, string message, System.Collections.Generic.List<Puppet.Core.Model.DataLobby> data)
+    {
+        this.lobbies = data;
+        initShowRowType1();
+    }
+    private void initShowRowType1()
+    {
+        for (int i = 0; i < tableType2.transform.childCount; i++)
+        {
+            Destroy(tableType2.transform.GetChild(i));
+        }
+        foreach (DataLobby item in lobbies)
+        {
+            LobbyRowType1.Create(item, tableType1);
+        }
+        tableType1.repositionNow = true;
+        tableType1.GetComponent<UICenterOnChild>().CenterOn(tableType1.transform.GetChild(0));
+    }
+    private void initShowRowType2()
+    {
+        for (int i = 0; i < tableType1.transform.childCount; i++)
+        {
+            Destroy(tableType1.transform.GetChild(i));
+        }
+        foreach (DataLobby item in lobbies)
+        {
+            LobbyRowType1.Create(item, tableType1);
+        }
+        
+        tableType2.repositionNow = true;
+    }
+
 	void OnDestroy(){
 		tabBeginner.onHover -= onTabHover;
 		tabMaster.onHover -= onTabHover;
 		tabProfessional.onHover -= onTabHover;
 		tabAmature.onHover -= onTabHover;
 		btnType.onClick -= btnTypeLobbyClick;
-	}
-	void OnDragFinishGift ()
-	{
-		centerObject = tableType1.GetComponent<UICenterOnChild> ().centeredObject.transform.position;
 	}
 
 	void btnTypeLobbyClick (GameObject go)
@@ -68,4 +96,6 @@ public class LobbyScene : MonoBehaviour {
 	}
 
 
+
+    public System.Collections.Generic.List<Puppet.Core.Model.DataLobby> lobbies { get; set; }
 }
