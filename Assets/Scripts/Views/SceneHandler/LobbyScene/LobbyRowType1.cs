@@ -29,40 +29,31 @@ public class LobbyRowType1 : MonoBehaviour
     void Start()
     {
         gameObject.GetComponent<UIEventListener>().onClick += onTableClick;
-        NGUITools.FindInParents<UICenterOnChild>(gameObject).onCenter += onParentSetCenterToChild;
     }
 
-    
+
     void OnDestroy()
     {
         gameObject.GetComponent<UIEventListener>().onClick -= onTableClick;
-        NGUITools.FindInParents<UICenterOnChild>(gameObject).onCenter -= onParentSetCenterToChild;
     }
     private void onTableClick(GameObject go)
     {
 
     }
 
-    private void onParentSetCenterToChild(GameObject centeredObject)
+    void Update()
     {
-        float value = Mathf.Lerp(0.731f, 1.0f, 0.2f / Vector3.SqrMagnitude(gameObject.transform.position - centeredObject.transform.position));
+        float value = Mathf.Lerp(0.731f, 1.0f, 0.2f / Vector3.SqrMagnitude(gameObject.transform.position - gameObject.transform.parent.GetComponent<UICenterOnChild>().centeredObject.transform.position));
         gameObject.transform.localScale = new Vector3(value, value, 1f);
-        try
+        if (!gameObject.transform.name.Equals(gameObject.transform.parent.GetComponent<UICenterOnChild>().centeredObject.transform.name))
         {
-            if (!gameObject.transform.name.Equals(centeredObject.transform.name))
-            {
-                gameObject.GetComponent<UISprite>().color = new Color(69f / 255f, 69f / 255f, 69f / 255f);
-            }
-            else
-            {
-                gameObject.GetComponent<UISprite>().color = new Color(1f, 1f, 1f);
-            }
+            gameObject.GetComponent<UISprite>().color = new Color(69f / 255f, 69f / 255f, 69f / 255f);
         }
-        catch (System.Exception)
+        else
         {
+            gameObject.GetComponent<UISprite>().color = new Color(1f, 1f, 1f);
+        }
 
-            throw;
-        }
     }
     public DataLobby lobby { get; set; }
 }
