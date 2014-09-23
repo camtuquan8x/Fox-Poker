@@ -23,4 +23,12 @@ public class PuApp : Singleton<PuApp>
         if (setting != null)
             setting.Update();
     }
+
+    public void BackScene()
+    {
+        Puppet.API.Client.APIGeneric.BackScene((bool status, string message) => {
+            if (!status)
+                Logger.Log(message);
+        });
+    }
 }

@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Puppet.Core.Model;
-using Puppet;
 using System.Collections.Generic;
+using Puppet;
+using Puppet.Core.Model;
+using Puppet.API.Client;
 
 public class LobbyScene : MonoBehaviour
 {
@@ -14,23 +15,51 @@ public class LobbyScene : MonoBehaviour
     bool isShowType1 = true;
     List<LobbyRowType1> types1;
     List<LobbyRowType2> types2;
+
+    List<DataChannel> dataChannel;
+    DataChannel selectedChannel;
+    List<DataLobby> lobbies;
+
     void Start()
     {
-        Puppet.API.Client.APILobby.GetAllLobby(onGetAllLobby);
-        tabBeginner.onHover += onTabHover;
-        tabMaster.onHover += onTabHover;
-        tabProfessional.onHover += onTabHover;
-        tabAmature.onHover += onTabHover;
-        btnType.onClick += btnTypeLobbyClick;
         types1 = new List<LobbyRowType1>();
         types2 = new List<LobbyRowType2>();
+
+        APILobby.GetGroupsLobby(OnGetGroupLobbyCallback);
     }
 
-    private void onGetAllLobby(bool status, string message, System.Collections.Generic.List<Puppet.Core.Model.DataLobby> data)
+    void OnEnable()
     {
-        this.lobbies = data;
-        initShowRowType1();
+        tabBeginner.onHover += OnTabHover;
+        tabMaster.onHover += OnTabHover;
+        tabProfessional.onHover += OnTabHover;
+        tabAmature.onHover += OnTabHover;
+
+        tabBeginner.onClick += OnClickChangeTab;
+        tabAmature.onClick += OnClickChangeTab;
+        tabProfessional.onClick += OnClickChangeTab;
+        tabMaster.onClick += OnClickChangeTab;
+
+        btnType.onClick += btnTypeLobbyClick;
+        btnBack.onClick += OnClickBack;
     }
+
+    void OnDisable()
+    {
+        tabBeginner.onHover -= OnTabHover;
+        tabMaster.onHover -= OnTabHover;
+        tabProfessional.onHover -= OnTabHover;
+        tabAmature.onHover -= OnTabHover;
+
+        tabBeginner.onClick -= OnClickChangeTab;
+        tabAmature.onClick -= OnClickChangeTab;
+        tabProfessional.onClick -= OnClickChangeTab;
+        tabMaster.onClick -= OnClickChangeTab;
+
+        btnType.onClick -= btnTypeLobbyClick;
+        btnBack.onClick -= OnClickBack;
+    }
+
     private void initShowRowType1()
     {
         while (types2.Count > 0)
@@ -61,15 +90,6 @@ public class LobbyScene : MonoBehaviour
         tableType2.repositionNow = true;
     }
 
-    void OnDestroy()
-    {
-        tabBeginner.onHover -= onTabHover;
-        tabMaster.onHover -= onTabHover;
-        tabProfessional.onHover -= onTabHover;
-        tabAmature.onHover -= onTabHover;
-        btnType.onClick -= btnTypeLobbyClick;
-    }
-
     void btnTypeLobbyClick(GameObject go)
     {
         if (isShowType1)
@@ -89,37 +109,64 @@ public class LobbyScene : MonoBehaviour
             initShowRowType1();
         }
     }
-    void onTabHover(GameObject go, bool state)
+    void OnTabHover(GameObject go, bool state)
     {
         if (state)
         {
-            if (go.name.Contains("1"))
-            {
-                go.GetComponent<UISprite>().spriteName = "tab_select_first";
-            }
-            else
-            {
-                go.GetComponent<UISprite>().spriteName = "tab_select_center";
-            }
+            go.GetComponent<UISprite>().spriteName = go.name.Contains("1") ? "tab_select_first" : "tab_select_center";
             go.GetComponent<UISprite>().MakePixelPerfect();
             go.transform.localPosition = new Vector3(go.transform.localPosition.x, -38, go.transform.localPosition.z);
         }
         else
         {
-            if (go.name.Contains("1"))
-            {
-                go.GetComponent<UISprite>().spriteName = "tab_normal_first";
-            }
-            else
-            {
-                go.GetComponent<UISprite>().spriteName = "tab_normal_center";
-            }
+            go.GetComponent<UISprite>().spriteName = go.name.Contains("1") ? "tab_normal_first" : "tab_normal_center";
             go.GetComponent<UISprite>().MakePixelPerfect();
             go.transform.localPosition = new Vector3(go.transform.localPosition.x, -36, go.transform.localPosition.z);
         }
     }
 
+    void OnClickBack(GameObject obj)
+    {
+        PuApp.Instance.BackScene();
+    }
 
+    void OnClickChangeTab(GameObject obj)
+    {
+        if (dataChannel.Count > 0)
+        {
+            if (obj == tabBeginner.gameObject)
+                selectedChannel = dataChannel[0];
+            else if (obj == tabAmature.gameObject)
+                selectedChannel = dataChannel[1];
+            else if (obj == tabProfessional.gameObject)
+                selectedChannel = dataChannel[2];
+            else if (obj == tabMaster.gameObject)
+                selectedChannel = dataChannel[3];
 
-    public System.Collections.Generic.List<Puppet.Core.Model.DataLobby> lobbies { get; set; }
+            APILobby.SetSelectChannel(selectedChannel, OnGetAllLobbyInChannel);
+        }
+    }
+
+    void OnGetGroupLobbyCallback(bool status, string message, List<DataChannel> data)
+    {
+        if (status)
+        {
+            dataChannel = data;
+            OnClickChangeTab(tabBeginner.gameObject);
+        }
+        else
+            Logger.LogError(message);
+    }
+
+    void OnGetAllLobbyInChannel(bool status, string message, List<DataLobby> data)
+    {
+        if (status)
+        {
+            this.lobbies = data;
+            initShowRowType1();
+        }
+        else
+            Logger.LogError(message);
+    }
+
 }
