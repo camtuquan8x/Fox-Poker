@@ -43,17 +43,16 @@ public class LobbyRowType1 : MonoBehaviour
 
     void Update()
     {
-        float value = Mathf.Lerp(0.731f, 1.0f, 0.2f / Vector3.SqrMagnitude(gameObject.transform.position - gameObject.transform.parent.GetComponent<UICenterOnChild>().centeredObject.transform.position));
-        gameObject.transform.localScale = new Vector3(value, value, 1f);
-        if (!gameObject.transform.name.Equals(gameObject.transform.parent.GetComponent<UICenterOnChild>().centeredObject.transform.name))
-        {
-            gameObject.GetComponent<UISprite>().color = new Color(69f / 255f, 69f / 255f, 69f / 255f);
-        }
-        else
-        {
-            gameObject.GetComponent<UISprite>().color = new Color(1f, 1f, 1f);
-        }
-
+		if (gameObject.transform.parent.GetComponent<UICenterOnChild> ().centeredObject == null) {
+			gameObject.transform.parent.GetComponent<UICenterOnChild> ().CenterOn(gameObject.transform.parent.GetChild(0));
+		}
+			float value = Mathf.Lerp (0.731f, 1.0f, 0.2f / Vector3.SqrMagnitude (gameObject.transform.position - gameObject.transform.parent.GetComponent<UICenterOnChild> ().centeredObject.transform.position));
+			gameObject.transform.localScale = new Vector3 (value, value, 1f);
+			if (!gameObject.transform.name.Equals (gameObject.transform.parent.GetComponent<UICenterOnChild> ().centeredObject.transform.name)) {
+					gameObject.GetComponent<UISprite> ().color = new Color (69f / 255f, 69f / 255f, 69f / 255f);
+			} else {
+					gameObject.GetComponent<UISprite> ().color = new Color (1f, 1f, 1f);
+			}
     }
     public DataLobby lobby { get; set; }
 }

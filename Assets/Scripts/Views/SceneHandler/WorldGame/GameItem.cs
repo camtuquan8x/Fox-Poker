@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Puppet.Core.Model;
+using Puppet.Core.Network.Http;
+using Puppet;
 
 public class GameItem : MonoBehaviour
 {
     #region Unity Editor
-    public UITexture icon, logo;
+    public UITexture icon;
     #endregion
     void Start() {
         UIEventListener.Get(gameObject).onClick += onClickByMe;
@@ -33,7 +35,27 @@ public class GameItem : MonoBehaviour
     public void setData(DataGame data)
     {
         this.data = data;
+		Logger.Log("=====> " + data.icon);
+		LoadImage ();
     }
 
     public DataGame data { get; set; }
+	void LoadImage(){
+		WWWRequest request = new WWWRequest(data.icon, 30f, 0);
+		request.onResponse += (IHttpRequest currentRequest, IHttpResponse currentResponse) =>
+		{
+			WWWResponse response = (WWWResponse)currentResponse;
+			if(response.State == System.Net.HttpStatusCode.OK){
+
+				UnityEngine.Texture2D texture = response.www.texture;
+				texture.filterMode = FilterMode.Point;
+				texture.anisoLevel = 0;
+				texture.wrapMode = TextureWrapMode.Clamp;
+				icon.mainTexture = texture;
+				icon.MakePixelPerfect();
+				NGUITools.AddWidgetCollider(gameObject);
+			}
+		};
+		PuMain.WWWHandler.Request(request);
+	}
 }
