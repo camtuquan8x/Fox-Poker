@@ -1,36 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
+using Puppet;
 
-public delegate void ConfirmClick();
-public delegate void CancelClick();
-public class DialogConfirm : MonoBehaviour
+[PrefabAttribute(Name = "Prefabs/Dialog/DialogConfirm", Depth = 10, IsAttachedToCamera = true, IsUIPanel = true)]
+public class DialogConfirm : SingletonPrefab<DialogConfirm>
 {
-
     #region UnityEditor
     public UILabel title, message;
     public GameObject btnConfirm, btnCancel, btnClose;
     #endregion
-    private event ConfirmClick OnClickConfirmListener;
-    private event CancelClick OnClickCancelListener;
 
-    public void SetOnClickConfirmListener(ConfirmClick OnClickConfirmListener)
-    {
-        this.OnClickConfirmListener = OnClickConfirmListener;
-    }
-    public void SetOnClickCancelListener(CancelClick OnClickCancelListener)
-    {
-        this.OnClickCancelListener = OnClickCancelListener;
-    }
-	void Start () {
-	}
-    
-    void onEnable() {
+    Action<bool?> onClickButton;
+
+    void OnEnable() {
         UIEventListener.Get(btnConfirm).onClick += onConfirmClickHandler;
         UIEventListener.Get(btnCancel).onClick += onCancelClickHandler;
         UIEventListener.Get(btnClose).onClick += onCloseClickHandler;
     }
-
-
 
     void OnDisable() {
         UIEventListener.Get(btnConfirm).onClick -= onConfirmClickHandler;
@@ -38,25 +25,33 @@ public class DialogConfirm : MonoBehaviour
         UIEventListener.Get(btnClose).onClick -= onCloseClickHandler;
     }
 
-
     private void onConfirmClickHandler(GameObject go)
     {
-        if (OnClickConfirmListener != null)
-            OnClickConfirmListener();
+        if (onClickButton != null)
+            onClickButton(true);
+
+        GameObject.Destroy(gameObject);
     }
     private void onCancelClickHandler(GameObject go)
     {
-        if (OnClickCancelListener != null)
-            OnClickCancelListener();
+        if (onClickButton != null)
+            onClickButton(false);
+
+        GameObject.Destroy(gameObject);
     }
 
     private void onCloseClickHandler(GameObject go)
     {
+        if (onClickButton != null)
+            onClickButton(null);
+
         GameObject.Destroy(gameObject);
     }
 
-	// Update is called once per frame
-	void Update () {
-	
-	}
+	public void ShowConfirm(string title, string content, Action<bool?> onClickButton)
+    {
+        this.title.text = title;
+        this.message.text = content;
+        this.onClickButton = onClickButton;
+    }
 }

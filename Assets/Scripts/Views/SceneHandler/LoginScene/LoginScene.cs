@@ -9,13 +9,10 @@ public class LoginScene : MonoBehaviour
     public UIEventListener btnLogin, btnForgot, btnFacebook, btnGuest;
     public UIInput txtUsername, txtPassword;
 
-    void Awake()
-    {
-        PuApp.Instance.StartApplication();
-    }
-
     void Start()
     {
+        PuApp.Instance.StartApplication();
+
         btnLogin.onClick += this.onBtnLoginClick;
         btnForgot.onClick += this.onBtnForgotClick;
         btnFacebook.onClick += this.onBtnFacebookClick;
