@@ -7,9 +7,8 @@ public class PuSetting
 {
     public PuSetting(string domain)
     {
-        PuMain.Setting.ServerModeBundle = new WebServerMode(domain);
-        PuMain.Setting.ServerModeHttp = new WebServerMode(domain);
-        PuMain.Setting.ServerModeSocket = new ServerMode(domain);
+        DefaultSetting.domain = "puppet.esimo.vn";
+
         PuMain.Instance.Load();
         PuMain.Instance.Dispatcher.onChangeScene += ChangeScene;
     }
@@ -35,39 +34,4 @@ public class PuSetting
         if (PuMain.Setting.ActionUpdate != null)
             PuMain.Setting.ActionUpdate();
     }
-
-    class ServerMode : IServerMode
-    {
-        string domain;
-        public ServerMode(string domain)
-        {
-            this.domain = domain;
-        }
-
-        public string GetBaseUrl() { return string.Format("https://{0}:{1}", Domain, Port); }
-
-        public int Port { get { return 9933; } }
-
-        public string Domain { get { return domain; } }
-
-        public string GetPath(string path) { return string.Format("{0}/{1}", GetBaseUrl(), path); }
-    }
-
-    class WebServerMode : IServerMode
-    {
-        string domain;
-        public WebServerMode(string domain)
-        {
-            this.domain = domain;
-        }
-        
-        public string GetBaseUrl() { return string.Format("http://{0}:{1}", Domain, Port); }
-
-        public int Port { get { return 1990; } }
-
-        public string Domain { get { return domain; } }
-
-        public string GetPath(string path) { return string.Format("{0}/puppet/{1}", GetBaseUrl(), path); }
-    }
-
 }

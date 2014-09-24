@@ -10,7 +10,6 @@ public class PuApp : Singleton<PuApp>
     protected override void Init()
     {
         setting = new PuSetting("test.esimo.vn");
-        PuMain.Instance.Load();
     }
 
     public void StartApplication()

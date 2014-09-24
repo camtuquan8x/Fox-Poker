@@ -35,22 +35,23 @@ public class GameItem : MonoBehaviour
     public void setData(DataGame data)
     {
         this.data = data;
-		Logger.Log("=====> " + data.icon);
 		LoadImage ();
     }
 
     public DataGame data { get; set; }
 	void LoadImage(){
-		WWWRequest request = new WWWRequest(data.icon, 30f, 0);
+		WWWRequest request = new WWWRequest(this, data.icon, 30f, 0);
+        request.isFullUrl = true;
 		request.onResponse += (IHttpRequest currentRequest, IHttpResponse currentResponse) =>
 		{
 			WWWResponse response = (WWWResponse)currentResponse;
-			if(response.State == System.Net.HttpStatusCode.OK){
-
+			if(response.State == System.Net.HttpStatusCode.OK)
+            {
 				UnityEngine.Texture2D texture = response.www.texture;
 				texture.filterMode = FilterMode.Point;
 				texture.anisoLevel = 0;
 				texture.wrapMode = TextureWrapMode.Clamp;
+
 				icon.mainTexture = texture;
 				icon.MakePixelPerfect();
 				NGUITools.AddWidgetCollider(gameObject);
