@@ -22,6 +22,6 @@ public class WorldGameScene : MonoBehaviour
         {
             GameItem.Create(item, tableGame.transform);
         }
-        tableGame.repositionNow = true;
+        //tableGame.Reposition();
     }
 }

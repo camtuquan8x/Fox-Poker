@@ -2,6 +2,7 @@
 using System.Collections;
 using Puppet.Core.Network.Http;
 using Puppet;
+using Puppet.API.Client;
 
 public class LoginScene : MonoBehaviour
 {
@@ -28,7 +29,6 @@ public class LoginScene : MonoBehaviour
         btnGuest.onClick -= this.onBtnGuestClick;
     }
 
-    // Update is called once per frame
     void Update()
     {
 
@@ -44,7 +44,7 @@ public class LoginScene : MonoBehaviour
             password = "puppet#89";
         if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(password))
         {
-            Puppet.API.Client.APILogin.GetAccessToken(userName, password, GetAccessTokenResponse);
+            APILogin.GetAccessToken(userName, password, GetAccessTokenResponse);
         }
     }
 
@@ -53,7 +53,7 @@ public class LoginScene : MonoBehaviour
         if (status == false)
             Logger.Log(message);
         else
-            Puppet.API.Client.APILogin.Login(message, LoginResponse);
+            APILogin.Login(message, LoginResponse);
     }
 
     void LoginResponse(bool status, string message)
@@ -65,7 +65,7 @@ public class LoginScene : MonoBehaviour
 
     void onBtnForgotClick(GameObject gobj)
     {
-
+        string uuid = SystemInfo.deviceUniqueIdentifier;
     }
     void onBtnFacebookClick(GameObject gobj)
     {

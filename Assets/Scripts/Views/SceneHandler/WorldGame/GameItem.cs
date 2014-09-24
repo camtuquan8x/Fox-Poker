@@ -9,7 +9,8 @@ public class GameItem : MonoBehaviour
     #region Unity Editor
     public UITexture icon;
     #endregion
-    void Start() {
+    void Start()
+    {
         UIEventListener.Get(gameObject).onClick += onClickByMe;
     }
 
@@ -20,11 +21,12 @@ public class GameItem : MonoBehaviour
 
     private void onJoinRoomCallBack(bool status, string message)
     {
-        
+
     }
-    public static GameItem Create(DataGame data,Transform parent) {
+    public static GameItem Create(DataGame data, Transform parent)
+    {
         GameObject obj = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/WorldGame/GameItem"));
-        obj.name="00" + data.roomId + " - "+ data.roomName;
+        obj.name = "00" + data.roomId + " - " + data.roomName;
         obj.transform.parent = parent;
         obj.transform.localPosition = Vector3.zero;
         obj.transform.localScale = Vector3.one;
@@ -35,28 +37,29 @@ public class GameItem : MonoBehaviour
     public void setData(DataGame data)
     {
         this.data = data;
-		LoadImage ();
+        LoadImage();
     }
 
     public DataGame data { get; set; }
-	void LoadImage(){
-		WWWRequest request = new WWWRequest(this, data.icon, 30f, 0);
+    void LoadImage()
+    {
+        WWWRequest request = new WWWRequest(this, data.icon, 30f, 0);
         request.isFullUrl = true;
-		request.onResponse += (IHttpRequest currentRequest, IHttpResponse currentResponse) =>
-		{
-			WWWResponse response = (WWWResponse)currentResponse;
-			if(response.State == System.Net.HttpStatusCode.OK)
+        request.onResponse += (IHttpRequest currentRequest, IHttpResponse currentResponse) =>
+        {
+            WWWResponse response = (WWWResponse)currentResponse;
+            if (response.State == System.Net.HttpStatusCode.OK)
             {
-				UnityEngine.Texture2D texture = response.www.texture;
-				texture.filterMode = FilterMode.Point;
-				texture.anisoLevel = 0;
-				texture.wrapMode = TextureWrapMode.Clamp;
-
-				icon.mainTexture = texture;
-				icon.MakePixelPerfect();
-				NGUITools.AddWidgetCollider(gameObject);
-			}
-		};
-		PuMain.WWWHandler.Request(request);
-	}
+                UnityEngine.Texture2D texture = response.www.texture;
+                texture.filterMode = FilterMode.Point;
+                texture.anisoLevel = 0;
+                texture.wrapMode = TextureWrapMode.Clamp;
+                icon.mainTexture = texture;
+                icon.MakePixelPerfect(); 
+                NGUITools.AddWidgetCollider(gameObject);
+                gameObject.transform.parent.GetComponent<UITable>().Reposition();
+            }
+        };
+        PuMain.WWWHandler.Request(request);
+    }
 }

@@ -7,13 +7,12 @@ using Puppet.API.Client;
 
 public class LobbyScene : MonoBehaviour
 {
-    public UIEventListener btnType, btnSearch, btnBack;
+    public GameObject btnType, btnSearch, btnBack, btnCreateGame;
     public UILabel txtUsername, txtChip;
 	public UITable tableType1,tableType2,tableTab;
     bool isShowType1 = true;
     List<LobbyRowType1> types1;
     List<LobbyRowType2> types2;
-
     List<DataChannel> dataChannel;
     DataChannel selectedChannel;
     List<DataLobby> lobbies;
@@ -24,17 +23,43 @@ public class LobbyScene : MonoBehaviour
         types2 = new List<LobbyRowType2>();
         APILobby.GetGroupsLobby(OnGetGroupLobbyCallback);
     }
-
+    void FixedUpdate() {
+        if (tableType1.GetComponent<UICenterOnChild>().centeredObject != null) {
+            btnCreateGame.SetActive(tableType1.GetComponent<UICenterOnChild>().centeredObject.GetComponent<LobbyRowType1>().lobby.roomId == types1[0].lobby.roomId);
+        }
+    }
     void OnEnable()
     {
-        btnType.onClick += btnTypeLobbyClick;
-        btnBack.onClick += OnClickBack;
+        UIEventListener.Get(btnType).onClick += btnTypeLobbyClick;
+        UIEventListener.Get(btnBack).onClick += OnClickBack;
+        UIEventListener.Get(btnCreateGame).onClick += OnClickCreateGame;
+        
     }
+
+    private void OnClickCreateGame(GameObject go)
+    {
+        APILobby.CreateLobby(OnCreateLobbyHandler);
+    }
+
+    private void OnCreateLobbyHandler(bool status, string message)
+    {
+        if (!status)
+            Logger.LogError(message);
+    }
+
 
     void OnDisable()
     {
-        btnType.onClick -= btnTypeLobbyClick;
-        btnBack.onClick -= OnClickBack;
+        UIEventListener.Get(btnType).onClick -= btnTypeLobbyClick;
+        UIEventListener.Get(btnBack).onClick -= OnClickBack;
+        UIEventListener.Get(btnCreateGame).onClick += OnClickCreateGame;
+        //tableType1.GetComponent<UICenterOnChild>().onFinished -= onGotoCenterType1;
+    }
+    private void onGotoCenterType1()
+    {
+        if (tableType1.GetComponent<UICenterOnChild>().centeredObject != null)
+            tableType1.GetComponent<UICenterOnChild>().CenterOn(tableType1.GetComponent<UICenterOnChild>().centeredObject.transform);
+        tableType1.GetComponent<UICenterOnChild>().onFinished -= onGotoCenterType1;
     }
 	private void ClearAllRow(){
 		while (types1.Count > 0)
@@ -48,19 +73,22 @@ public class LobbyScene : MonoBehaviour
 			types2.RemoveAt(0);
 		}
 	}
-    private void initShowRowType1()
+    IEnumerator initShowRowType1()
     {
 		ClearAllRow ();
+        yield return new WaitForEndOfFrame();
         foreach (DataLobby item in lobbies)
         {
             types1.Add(LobbyRowType1.Create(item, tableType1));
         }
         tableType1.repositionNow = true;
-        tableType1.GetComponent<UICenterOnChild>().CenterOn(tableType1.transform.GetChild(0));
+        tableType1.GetComponent<UICenterOnChild>().onFinished += onGotoCenterType1;
+        //tableType1.GetComponent<UICenterOnChild>().CenterOn(tableType1.transform.GetChild(0));
     }
-    private void initShowRowType2()
+    IEnumerator  initShowRowType2()
     {
 		ClearAllRow ();
+        yield return new WaitForEndOfFrame();
         foreach (DataLobby item in lobbies)
         {
             types2.Add(LobbyRowType2.Create(item, tableType2));
@@ -77,7 +105,7 @@ public class LobbyScene : MonoBehaviour
             go.transform.GetChild(0).GetComponent<UISprite>().spriteName = "icon_menu_type_2";
             tableType1.transform.parent.parent.gameObject.SetActive(false);
             tableType2.transform.parent.parent.gameObject.SetActive(true);
-            initShowRowType2();
+            StartCoroutine( initShowRowType2());
         }
         else
         {
@@ -85,8 +113,9 @@ public class LobbyScene : MonoBehaviour
             go.transform.GetChild(0).GetComponent<UISprite>().spriteName = "icon_menu";
             tableType1.transform.parent.parent.gameObject.SetActive(true);
             tableType2.transform.parent.parent.gameObject.SetActive(false);
-            initShowRowType1();
+            StartCoroutine(initShowRowType1());
         }
+       
     }
 
     void OnClickBack(GameObject obj)
@@ -108,6 +137,7 @@ public class LobbyScene : MonoBehaviour
 			tableTab.Reposition();
 			Vector3 currentPosition = tableTab.transform.localPosition;
 			tableTab.transform.localPosition = new Vector3(currentPosition.x,currentPosition.y-2,currentPosition.z);
+            APILobby.SetSelectChannel(dataChannel[0], OnGetAllLobbyInChannel);
 
         }
         else
@@ -119,7 +149,7 @@ public class LobbyScene : MonoBehaviour
         if (status)
         {
             this.lobbies = data;
-            initShowRowType1();
+            StartCoroutine(initShowRowType1());
         }
         else
             Logger.LogError(message);
