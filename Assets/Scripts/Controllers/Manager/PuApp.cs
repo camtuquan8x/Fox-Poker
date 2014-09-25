@@ -23,7 +23,7 @@ public class PuApp : Singleton<PuApp>
         });
     }
 
-    void Dispatcher_onWarningUpgrade(string message, string market)
+    void Dispatcher_onWarningUpgrade(EUpgrade type, string message, string market)
     {
         PuMain.Setting.Threading.QueueOnMainThread(() =>
         {
