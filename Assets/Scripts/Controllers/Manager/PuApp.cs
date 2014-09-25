@@ -28,7 +28,8 @@ public class PuApp : Singleton<PuApp>
     {
         PuMain.Setting.Threading.QueueOnMainThread(() =>
         {
-            DialogConfirm.Instance.ShowConfirm("Kiểm tra phiên bản", message, null);
+            DialogConfirmModel model = new DialogConfirmModel("Kiểm tra phiên bản", message, null);
+            DialogFactory.QueueOrShowDialog(model);
         });
     }
 

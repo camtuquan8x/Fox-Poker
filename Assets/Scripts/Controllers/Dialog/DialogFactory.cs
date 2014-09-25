@@ -13,7 +13,6 @@ public class DialogFactory
     public static void QueueOrShowDialog(IDialog dialogModel)
     {
         if (isShowedDialog){
-            Logger.Log("=====> DialogFactory === Chay vao day khong"  );
             dialogs.Add(dialogModel);
         }
         else

@@ -1,49 +1,54 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System;
 using Puppet;
+using System;
 
-[PrefabAttribute(Name = "Prefabs/Dialog/DialogConfirm", Depth = 10, IsAttachedToCamera = true, IsUIPanel = true)]
-public class DialogConfirm : SingletonPrefab<DialogConfirm>
+[PrefabAttribute(Name = "Prefabs/Dialog/DialogInput", Depth = 10, IsAttachedToCamera = true, IsUIPanel = true)]
+public class DialogInput : SingletonPrefab<DialogInput>
 {
-    #region UnityEditor
+
+    #region Unity Editor
     public UILabel title, message;
+    public UIInput input;
     public UISprite backgroundTransparent;
     public GameObject btnConfirm, btnCancel, btnClose;
     #endregion
-
-    Action<bool?> onClickButton;
-    Action onDestroyDialog;
-    void Start() {
+    Action<bool?,string> onClickButton;
+	void Start () {
         UIPanel root = NGUITools.GetRoot(gameObject).GetComponent<UIPanel>();
         backgroundTransparent.SetAnchor(root.gameObject, 0, 0, 0, 0);
-    }
-    void OnEnable() {
+	}
+    void OnEnable()
+    {
         UIEventListener.Get(btnConfirm).onClick += onConfirmClickHandler;
         UIEventListener.Get(btnCancel).onClick += onCancelClickHandler;
         UIEventListener.Get(btnClose).onClick += onCloseClickHandler;
     }
 
-    void OnDisable() {
+    void OnDisable()
+    {
         UIEventListener.Get(btnConfirm).onClick -= onConfirmClickHandler;
         UIEventListener.Get(btnCancel).onClick -= onCancelClickHandler;
         UIEventListener.Get(btnClose).onClick -= onCloseClickHandler;
     }
-    void OnDestroy() {
-        if (onDestroyDialog != null)
-            onDestroyDialog();
-    }
     private void onConfirmClickHandler(GameObject go)
     {
-        if (onClickButton != null)
-            onClickButton(true);
+        if(string.IsNullOrEmpty( input.value)){
 
-        GameObject.Destroy(gameObject);
+        }
+        else
+        {
+            if (onClickButton != null)
+                onClickButton(true, input.value);
+
+            GameObject.Destroy(gameObject);
+        }
+        
     }
     private void onCancelClickHandler(GameObject go)
     {
         if (onClickButton != null)
-            onClickButton(false);
+            onClickButton(false,null);
 
         GameObject.Destroy(gameObject);
     }
@@ -51,18 +56,12 @@ public class DialogConfirm : SingletonPrefab<DialogConfirm>
     private void onCloseClickHandler(GameObject go)
     {
         if (onClickButton != null)
-            onClickButton(null);
+            onClickButton(null,null);
 
         GameObject.Destroy(gameObject);
     }
-
-    public void ShowConfirm(DialogConfirmModel model, Action onDestroyDialog)
-    {
-        this.title.text = model.Title;
-        this.message.text = model.Content;
-        this.onClickButton = model.OnButtonClick;
-        this.onDestroyDialog = onDestroyDialog;
-    }
-
-    
+	// Update is called once per frame
+	void Update () {
+	
+	}
 }

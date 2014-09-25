@@ -51,9 +51,10 @@ public class LoginScene : MonoBehaviour
     {
         if (status == false)
         {
-            DialogConfirmModel model = new DialogConfirmModel("Lỗi",message,null);
+          
             PuMain.Setting.Threading.QueueOnMainThread(() =>
             {
+                DialogConfirmModel model = new DialogConfirmModel("Lỗi", message, null);
                 DialogFactory.QueueOrShowDialog(model);
             });
             
