@@ -51,13 +51,10 @@ public class LoginScene : MonoBehaviour
     {
         if (status == false)
         {
-          
             PuMain.Setting.Threading.QueueOnMainThread(() =>
             {
-                DialogConfirmModel model = new DialogConfirmModel("Lỗi", message, null);
-                DialogFactory.QueueOrShowDialog(model);
+                DialogService.Instance.ShowDialog(new DataDataDialogMessage("Error", message, null));
             });
-            
         }
         else
             APILogin.Login(message, LoginResponse);
@@ -74,14 +71,8 @@ public class LoginScene : MonoBehaviour
     {
         for (int i = 0; i < 5; i++)
         {
-            Logger.Log("========> LoginScene = " + i);
-            DialogConfirmModel model = new DialogConfirmModel("5 cái dialog", "Dialog thứ " + i, null);
-            PuMain.Setting.Threading.QueueOnMainThread(() =>
-            {
-                DialogFactory.QueueOrShowDialog(model);
-            });    
+            DialogService.Instance.ShowDialog(new DataDataDialogMessage("Error", "dialog" + i, null));
         }
-        
     }
     void onBtnFacebookClick(GameObject gobj)
     {

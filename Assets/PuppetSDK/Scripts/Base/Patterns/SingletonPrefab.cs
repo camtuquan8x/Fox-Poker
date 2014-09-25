@@ -25,7 +25,6 @@ namespace Puppet
     {
         private static T _instance = null;
         private static object _lock = new object();
-        private static bool applicationIsQuitting = false;
         public static bool IsAwake
         {
             get
@@ -46,14 +45,6 @@ namespace Puppet
         {
             get
             {
-                if (applicationIsQuitting)
-                {
-                    Debug.LogWarning("[Singleton] Instance '" + typeof(T) +
-                    "' already destroyed on application quit." +
-                    " Won't create again - returning null.");
-                    return null;
-                }
-
                 lock (_lock)
                 {
                     if (_instance == null)
@@ -72,15 +63,10 @@ namespace Puppet
                                 try
                                 {
                                     if (prefabName != "")
-                                    {
                                         singletonObj = (GameObject)Instantiate(Resources.Load(prefabName, typeof(GameObject)));
-                                    }
                                     else
-                                    {
                                         singletonObj = (GameObject)Instantiate(Resources.Load(singletonObjName, typeof(GameObject)));
-                                    }
 
-                                    Logger.Log(attr.IsAttachedToCamera.ToString());
                                     if(attr.IsAttachedToCamera)
                                     {
                                         UICamera camera = UICamera.current;
@@ -89,7 +75,6 @@ namespace Puppet
                                         singletonObj.transform.localPosition = Vector3.zero;
                                         singletonObj.transform.localScale = Vector3.one;
                                     }
-                                    Logger.Log(attr.IsUIPanel.ToString());
                                     if (attr.IsUIPanel)
                                         singletonObj.GetComponent<UIPanel>().depth = attr.Depth;
 
@@ -123,20 +108,6 @@ namespace Puppet
 
         // in your child class you can implement Awake()
         // and add any initialization code you want.
-
-
-        /// <summary>
-        /// When Unity quits, it destroys objects in a random order.
-        /// In principle, a Singleton is only destroyed when application quits.
-        /// If any script calls Instance after it have been destroyed, 
-        /// it will create a buggy ghost object that will stay on the Editor scene
-        /// even after stopping playing the Application. Really bad!
-        /// So, this was made to be sure we're not creating that buggy ghost object.
-        /// </summary>
-        public void OnDestroy()
-        {
-            applicationIsQuitting = true;
-        }
 
         // Helper function to initialize the Singleton object.
         public void Load(GameObject parentObj = null)
