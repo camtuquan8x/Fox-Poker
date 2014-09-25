@@ -20,25 +20,22 @@ public class PuApp : Singleton<PuApp>
     {
         PuMain.Setting.Threading.QueueOnMainThread(() =>
         {
-        PuMain.Instance.Dispatcher.onNoticeMessage += Dispatcher_onNoticeMessage;
+            PuMain.Instance.Dispatcher.onWarningUpgrade += Dispatcher_onWarningUpgrade;
         });
     }
 
-    void Dispatcher_onNoticeMessage(EMessage type, string message)
+    void Dispatcher_onWarningUpgrade(EUpgrade type, string message, string market)
     {
-        listMessage.Add(new KeyValuePair<EMessage, string>(type, message));
+        PuMain.Setting.Threading.QueueOnMainThread(() =>
+        {
+            DialogConfirm.Instance.ShowConfirm("Kiểm tra phiên bản", message, null);
+        });
     }
 
     void FixedUpdate()
     {
         if (setting != null)
             setting.Update();
-
-        if (listMessage.Count > 0)
-        {
-            //DialogConfirm.Instance.ShowConfirm("Kiểm tra phiên bản", "content: " + listMessage[0].Value , null);
-            listMessage.Clear();
-        }
     }
 
     public void BackScene()
