@@ -8,9 +8,9 @@ using System.Collections.Generic;
 
 public class LoginScene : MonoBehaviour
 {
-    public UIEventListener btnLogin, btnForgot, btnFacebook, btnGuest;
-    public UIInput txtUsername, txtPassword;
+    public UIEventListener btnLogin, btnForgot, btnFacebook, btnGuest,btnRegister;
 
+    public UIInput txtUsername, txtPassword;
     void Start()
     {
         PuApp.Instance.StartApplication();
@@ -19,13 +19,17 @@ public class LoginScene : MonoBehaviour
         btnForgot.onClick += this.onBtnForgotClick;
         btnFacebook.onClick += this.onBtnFacebookClick;
         btnGuest.onClick += this.onBtnGuestClick;
+        btnRegister.onClick += this.onBtnRegisterClick;
     }
+
+
     void OnDestroy()
     {
         btnLogin.onClick -= this.onBtnLoginClick;
         btnForgot.onClick -= this.onBtnForgotClick;
         btnFacebook.onClick -= this.onBtnFacebookClick;
         btnGuest.onClick -= this.onBtnGuestClick;
+        btnRegister.onClick -= this.onBtnRegisterClick;
     }
 
     void Update()
@@ -72,16 +76,23 @@ public class LoginScene : MonoBehaviour
 
     void onBtnForgotClick(GameObject gobj)
     {
-        for (int i = 0; i < 5; i++)
-        {
-            Logger.Log("========> LoginScene = " + i);
-            DialogConfirmModel model = new DialogConfirmModel("5 cái dialog", "Dialog thứ " + i, null);
-            PuMain.Setting.Threading.QueueOnMainThread(() =>
-            {
-                DialogFactory.QueueOrShowDialog(model);
-            });    
-        }
+        //for (int i = 0; i < 5; i++)
+        //{
+        //    Logger.Log("========> LoginScene = " + i);
+        //    DialogConfirmModel model = new DialogConfirmModel("5 cái dialog", "Dialog thứ " + i, null);
+        //    PuMain.Setting.Threading.QueueOnMainThread(() =>
+        //    {
+        //        DialogFactory.QueueOrShowDialog(model);
+        //    });    
+        //}
         
+    }
+    private void onBtnRegisterClick(GameObject go)
+    {
+        DialogRegister.Instance.ShowDialog(delegate(bool? status,string userName,string password){
+            if (status == true)
+                APILogin.GetAccessToken(userName, password, GetAccessTokenResponse);
+        });
     }
     void onBtnFacebookClick(GameObject gobj)
     {
