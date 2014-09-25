@@ -12,7 +12,7 @@ public class DialogConfirm : SingletonPrefab<DialogConfirm>
     #endregion
 
     Action<bool?> onClickButton;
-
+    Action onDestroyDialog;
     void OnEnable() {
         UIEventListener.Get(btnConfirm).onClick += onConfirmClickHandler;
         UIEventListener.Get(btnCancel).onClick += onCancelClickHandler;
@@ -24,7 +24,10 @@ public class DialogConfirm : SingletonPrefab<DialogConfirm>
         UIEventListener.Get(btnCancel).onClick -= onCancelClickHandler;
         UIEventListener.Get(btnClose).onClick -= onCloseClickHandler;
     }
-
+    void OnDestroy() {
+        if (onDestroyDialog != null)
+            onDestroyDialog();
+    }
     private void onConfirmClickHandler(GameObject go)
     {
         if (onClickButton != null)
@@ -48,10 +51,14 @@ public class DialogConfirm : SingletonPrefab<DialogConfirm>
         GameObject.Destroy(gameObject);
     }
 
-	public void ShowConfirm(string title, string content, Action<bool?> onClickButton)
+    public void ShowConfirm(DialogConfirmModel model, Action onDestroyDialog)
     {
-        this.title.text = title;
-        this.message.text = content;
-        this.onClickButton = onClickButton;
+        Logger.Log("chay vao show confirm không em ơi");
+        this.title.text = model.Title;
+        this.message.text = model.Content;
+        this.onClickButton = model.OnButtonClick;
+        this.onDestroyDialog = onDestroyDialog;
     }
+
+    
 }

@@ -3,6 +3,8 @@ using System.Collections;
 using Puppet.Core.Network.Http;
 using Puppet;
 using Puppet.API.Client;
+using Puppet.Utils;
+using System.Collections.Generic;
 
 public class LoginScene : MonoBehaviour
 {
@@ -48,7 +50,14 @@ public class LoginScene : MonoBehaviour
     void GetAccessTokenResponse(bool status, string message, IHttpResponse response)
     {
         if (status == false)
-            Logger.Log(message);
+        {
+            DialogConfirmModel model = new DialogConfirmModel("Lỗi",message,null);
+            PuMain.Setting.Threading.QueueOnMainThread(() =>
+            {
+                DialogFactory.QueueOrShowDialog(model);
+            });
+            
+        }
         else
             APILogin.Login(message, LoginResponse);
     }
@@ -62,13 +71,23 @@ public class LoginScene : MonoBehaviour
 
     void onBtnForgotClick(GameObject gobj)
     {
-        string uuid = SystemInfo.deviceUniqueIdentifier;
+        for (int i = 0; i < 5; i++)
+        {
+            Logger.Log("========> LoginScene = " + i);
+            DialogConfirmModel model = new DialogConfirmModel("5 cái dialog", "Dialog thứ " + i, null);
+            PuMain.Setting.Threading.QueueOnMainThread(() =>
+            {
+                DialogFactory.QueueOrShowDialog(model);
+            });    
+        }
+        
     }
     void onBtnFacebookClick(GameObject gobj)
     {
+
     }
     void onBtnGuestClick(GameObject gobj)
     {
-
+        string uuid = SystemInfo.deviceUniqueIdentifier;
     }
 }
