@@ -90,5 +90,13 @@ public class PuSetting
         {
             get { return Path.Combine(Application.persistentDataPath, "Caching.save"); }
         }
+
+        public override string UniqueDeviceIdentification
+        {
+            get
+            {
+                return SystemInfo.deviceUniqueIdentifier;
+            }
+        }
     }
 }

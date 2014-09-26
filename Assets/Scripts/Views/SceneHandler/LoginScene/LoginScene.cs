@@ -88,6 +88,10 @@ public class LoginScene : MonoBehaviour
     }
     void onBtnGuestClick(GameObject gobj)
     {
-        string uuid = SystemInfo.deviceUniqueIdentifier;
+        APILogin.LoginTrial((bool status, string message) =>
+        {
+            if(status == false)
+                DialogService.Instance.ShowDialog(new DataDataDialogMessage("Lỗi", message, null));
+        });
     }
 }
