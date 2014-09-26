@@ -25,11 +25,11 @@ namespace Puppet.Service
         protected virtual string GetButtonName(bool? button)
         {
             if (button == null)
-                return "Close";
+                return "TẮT";
             else if (button == true)
-                return "Yes";
+                return "ĐỒNG Ý";
             else
-                return "No";
+                return "KHÔNG ĐỒNG Ý";
         }
 
         public AbstractDialogData()
@@ -70,5 +70,12 @@ public class DataDataDialogMessage : AbstractDialogData
     public override void ShowDialog()
     {
         DialogMessage.Instance.ShowDialog(this);
+    }
+}
+public class DataDialogInput : AbstractDialogData
+{
+    public override void ShowDialog()
+    {
+
     }
 }

@@ -73,15 +73,6 @@ public class LoginScene : MonoBehaviour
 
     void onBtnForgotClick(GameObject gobj)
     {
-        //for (int i = 0; i < 5; i++)
-        //{
-        //    Logger.Log("========> LoginScene = " + i);
-        //    DialogConfirmModel model = new DialogConfirmModel("5 cái dialog", "Dialog thứ " + i, null);
-        //    PuMain.Setting.Threading.QueueOnMainThread(() =>
-        //    {
-        //        DialogFactory.QueueOrShowDialog(model);
-        //    });    
-        //}
         
     }
     private void onBtnRegisterClick(GameObject go)

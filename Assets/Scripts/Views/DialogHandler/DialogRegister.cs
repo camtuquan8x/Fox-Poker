@@ -45,12 +45,22 @@ public class DialogRegister : SingletonPrefab<DialogRegister>
 
     private void QuickRegisterCallBack(bool status, string message)
     {
-        Logger.Log("==========> " + status);
-        if (OnRegisterComplete != null)
-            OnRegisterComplete(status, userName.value, password.value);
-
-        GameObject.Destroy(gameObject);
-
+        if (status)
+        {
+            PuMain.Setting.Threading.QueueOnMainThread(() =>
+            {
+                if (OnRegisterComplete != null)
+                    OnRegisterComplete(status, userName.value, password.value);
+                GameObject.Destroy(gameObject);
+            });
+        }
+        else
+        {
+            PuMain.Setting.Threading.QueueOnMainThread(() =>
+            {
+                DialogService.Instance.ShowDialog(new DataDataDialogMessage("Lỗi", message, null));
+            });
+        }
     }
     public void ShowDialog( Action<bool?, string, string> OnRegisterComplete) {
         this.OnRegisterComplete = OnRegisterComplete;
