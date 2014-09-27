@@ -16,6 +16,8 @@ public interface ILoginPresenter
 	void LoginWithAccessToken(string accessToken);
 	void LoginFacebook();
 	void GetAccessTokenWithSocial(string accessToken);
+	void LoginTrail();
+	void ShowRegister();
 	void ViewEnd();
 }
 

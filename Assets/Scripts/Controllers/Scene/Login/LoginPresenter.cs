@@ -15,7 +15,6 @@ using Puppet.Service;
 
 public class LoginPresenter : ILoginPresenter
 {
-
 	ILoginView view;
 	public LoginPresenter(ILoginView view){
 		PuApp.Instance.StartApplication();
@@ -23,13 +22,25 @@ public class LoginPresenter : ILoginPresenter
 		this.view = view;
 
 	}
-	
+
+	public void ShowRegister(){
+
+	}
 	public void ViewEnd(){
 		SocialService.Instance.onLoginComplete += onLoginComplete;
 	}
 
 	#region ILoginPresenter implementation
 
+	
+	public void LoginTrail ()
+	{
+		APILogin.LoginTrial((bool status, string message) =>
+		                    {
+			if(status == false)
+				view.ShowLoginError(message);
+		});
+	}
 
 	public void LoginFacebook ()
 	{
@@ -56,6 +67,9 @@ public class LoginPresenter : ILoginPresenter
 
 	void OnGetAccessTokenWithFacebookCallBack (bool status, string message, System.Collections.Generic.Dictionary<string, object> data)
 	{
+		foreach (string key in data.Keys) {
+			Logger.Log ("=======> " + key + " - " + data[key].ToString());	
+		}
 
 	}
 
