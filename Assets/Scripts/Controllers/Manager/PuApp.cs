@@ -5,6 +5,7 @@ using Puppet;
 using Puppet.Core;
 using Puppet.Utils;
 using Puppet.Utils.Threading;
+using Puppet.Service;
 
 public class PuApp : Singleton<PuApp>
 {
@@ -28,7 +29,7 @@ public class PuApp : Singleton<PuApp>
     {
         PuMain.Setting.Threading.QueueOnMainThread(() =>
         {
-            DialogService.Instance.ShowDialog(new DataDataDialogMessage("Kiểm tra phiên bản", message, null));
+            DialogService.Instance.ShowDialog(new DialogMessage("Kiểm tra phiên bản", message, null));
         });
     }
 

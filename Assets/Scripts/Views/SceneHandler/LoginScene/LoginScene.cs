@@ -5,6 +5,7 @@ using Puppet;
 using Puppet.API.Client;
 using Puppet.Utils;
 using System.Collections.Generic;
+using Puppet.Service;
 
 public class LoginScene : MonoBehaviour
 {
@@ -57,7 +58,7 @@ public class LoginScene : MonoBehaviour
         {
             PuMain.Setting.Threading.QueueOnMainThread(() =>
             {
-                DialogService.Instance.ShowDialog(new DataDataDialogMessage("Error", message, null));
+                DialogService.Instance.ShowDialog(new DialogMessage("Error", message, null));
             });
         }
         else
@@ -91,7 +92,7 @@ public class LoginScene : MonoBehaviour
         APILogin.LoginTrial((bool status, string message) =>
         {
             if(status == false)
-                DialogService.Instance.ShowDialog(new DataDataDialogMessage("Lỗi", message, null));
+                DialogService.Instance.ShowDialog(new DialogMessage("Lỗi", message, null));
         });
     }
 }

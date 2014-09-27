@@ -3,6 +3,7 @@ using System.Collections;
 using Puppet.API.Client;
 using Puppet;
 using System;
+using Puppet.Service;
 [PrefabAttribute(Name = "Prefabs/Dialog/DialogRegister", Depth = 9, IsAttachedToCamera = true, IsUIPanel = true)]
 public class DialogRegister : SingletonPrefab<DialogRegister>
 {
@@ -58,7 +59,7 @@ public class DialogRegister : SingletonPrefab<DialogRegister>
         {
             PuMain.Setting.Threading.QueueOnMainThread(() =>
             {
-                DialogService.Instance.ShowDialog(new DataDataDialogMessage("Lỗi", message, null));
+                DialogService.Instance.ShowDialog(new DialogMessage("Lỗi", message, null));
             });
         }
     }
