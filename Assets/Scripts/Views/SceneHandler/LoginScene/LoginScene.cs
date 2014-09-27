@@ -6,6 +6,7 @@ using Puppet.API.Client;
 using Puppet.Utils;
 using System.Collections.Generic;
 using Puppet.Service;
+using System;
 
 public class LoginScene : MonoBehaviour,ILoginView
 {
@@ -18,7 +19,7 @@ public class LoginScene : MonoBehaviour,ILoginView
     void Start()
     {   
 		presenter = new LoginPresenter (this);
-
+        presenter.ViewStart();
         btnLogin.onClick += this.onBtnLoginClick;
         btnForgot.onClick += this.onBtnForgotClick;
         btnFacebook.onClick += this.onBtnFacebookClick;
@@ -50,36 +51,13 @@ public class LoginScene : MonoBehaviour,ILoginView
 		presenter.LoginWithUserName (userName, password);
     }
 
-    void GetAccessTokenResponse(bool status, string message, IHttpResponse response)
-    {
-        if (status == false)
-        {
-            PuMain.Setting.Threading.QueueOnMainThread(() =>
-            {
-                DialogService.Instance.ShowDialog(new DialogMessage("Error", message, null));
-            });
-        }
-        else
-            APILogin.Login(message, LoginResponse);
-    }
-
-    void LoginResponse(bool status, string message)
-    {
-        if (status == false)
-            Logger.Log(message);
-    }
-
-
     void onBtnForgotClick(GameObject gobj)
     {
         
     }
     private void onBtnRegisterClick(GameObject go)
     {
-//        DialogRegister.Instance.ShowDialog(delegate(bool? status,string userName,string password){
-//            if (status == true)
-//                APILogin.GetAccessToken(userName, password, GetAccessTokenResponse);
-//        });
+        presenter.ShowRegister();
     }
     void onBtnFacebookClick(GameObject gobj)
     {
@@ -90,17 +68,23 @@ public class LoginScene : MonoBehaviour,ILoginView
 		presenter.LoginTrail ();
     }
 
+
 	#region ILoginView implementation
 
-	public void ShowLoginError (string message)
+	public void ShowError (string message)
 	{
 		DialogService.Instance.ShowDialog(new DialogMessage("Lỗi", message, null));
 	}
 
-	public void ShowRegister ()
+	public void ShowRegister (Action<bool?, string, string> OnRegisterComplete)
 	{
-
+        DialogRegister.Instance.ShowDialog(OnRegisterComplete);
 	}
-
 	#endregion
+
+
+    public void ShowConfirm(string message, Action<bool?> action)
+    {
+        throw new NotImplementedException();
+    }
 }
