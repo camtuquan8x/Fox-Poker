@@ -5,6 +5,7 @@ using Puppet;
 using Puppet.Core;
 using Puppet.Utils;
 using Puppet.Utils.Threading;
+using Puppet.Services;
 
 public class PuApp : Singleton<PuApp>
 {
@@ -22,6 +23,7 @@ public class PuApp : Singleton<PuApp>
         {
             PuMain.Instance.Dispatcher.onWarningUpgrade += Dispatcher_onWarningUpgrade;
         });
+		SocialService.SocialStart ();
     }
 
     void Dispatcher_onWarningUpgrade(EUpgrade type, string message, string market)

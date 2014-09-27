@@ -1,15 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Puppet.Core.Model;
+using Puppet.API.Client;
 
 public class WorldGameScene : MonoBehaviour
 {
 
     #region Unity Editor
     public UITable tableGame;
+	public UILabel lbUserName,lbMoney,lbLevel;
+	public UISlider expSlider;
     #endregion
     void Start () {
-        Puppet.API.Client.APIWorldGame.GetListGame(onGetListGame);
+        APIWorldGame.GetListGame(onGetListGame);
+		UserInfo user = APIUser.GetUserInformation ();
+		lbUserName.text = user.info.userName;
+		lbMoney.text = user.assets.content [0].value.ToString();
 	}
 
 	// Update is called once per frame

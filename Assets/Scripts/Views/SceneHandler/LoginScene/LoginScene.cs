@@ -5,21 +5,23 @@ using Puppet;
 using Puppet.API.Client;
 using Puppet.Utils;
 using System.Collections.Generic;
+using Puppet.Services;
 
-public class LoginScene : MonoBehaviour
+public class LoginScene : MonoBehaviour,ILoginView
 {
     public UIEventListener btnLogin, btnForgot, btnFacebook, btnGuest,btnRegister;
 
     public UIInput txtUsername, txtPassword;
     void Start()
-    {
-        PuApp.Instance.StartApplication();
+    {   
+		LoginPresenter presenter = new LoginPresenter (this);
 
         btnLogin.onClick += this.onBtnLoginClick;
         btnForgot.onClick += this.onBtnForgotClick;
         btnFacebook.onClick += this.onBtnFacebookClick;
         btnGuest.onClick += this.onBtnGuestClick;
         btnRegister.onClick += this.onBtnRegisterClick;
+
     }
 
 
@@ -30,6 +32,7 @@ public class LoginScene : MonoBehaviour
         btnFacebook.onClick -= this.onBtnFacebookClick;
         btnGuest.onClick -= this.onBtnGuestClick;
         btnRegister.onClick -= this.onBtnRegisterClick;
+		SocialService.Instance.onLoginComplete -= onLoginComplete;
     }
 
     void Update()
@@ -84,7 +87,7 @@ public class LoginScene : MonoBehaviour
     }
     void onBtnFacebookClick(GameObject gobj)
     {
-
+		SocialService.SocialLogin (SocialType.Facebook);
     }
     void onBtnGuestClick(GameObject gobj)
     {
@@ -94,4 +97,37 @@ public class LoginScene : MonoBehaviour
                 DialogService.Instance.ShowDialog(new DataDataDialogMessage("Lỗi", message, null));
         });
     }
+
+	void onLoginComplete (SocialType arg1, bool arg2)
+	{
+		switch (arg1) 
+		{
+			case SocialType.Facebook:
+				if(arg2)
+					APILogin.GetAccessTokenFacebook(SocialService.GetSocialNetwork(arg1).AccessToken, onReceiveredAccessToken);
+				break;
+		}
+	}
+
+	void onReceiveredAccessToken (bool status, string message, Dictionary<string, object> data)
+	{
+		foreach (string key in data.Keys) {
+			Logger.Log ("=======> " + key + " - " + data[key].ToString());	
+		}
+
+	}
+
+	#region ILoginView implementation
+
+	public void ShowLoginError (string message)
+	{
+
+	}
+
+	public void ShowRegister ()
+	{
+		throw new System.NotImplementedException ();
+	}
+
+	#endregion
 }

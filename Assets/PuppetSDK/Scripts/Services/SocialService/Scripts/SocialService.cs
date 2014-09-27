@@ -11,6 +11,10 @@ namespace Puppet.Services
 
 	public class SocialService : Singleton<SocialService>
 	{
+		protected override void Init ()
+		{
+
+		}
 	    ISocialNetwork facebook, google;
 
 	    #region SOCIAL EVENT
@@ -51,7 +55,6 @@ namespace Puppet.Services
 	    void Awake()
 	    {
 	        facebook = new FacebookHandler();
-	        google = new GooglePlusHandler();
 	    }
 
 	    public static ISocialNetwork GetSocialNetwork(SocialType type)
@@ -65,7 +68,6 @@ namespace Puppet.Services
 	    public static void SocialStart()
 	    {
 	        Instance.facebook.SocialInit();
-	        Instance.google.SocialInit();
 	    }
 
 	    public static void SocialLogout()
