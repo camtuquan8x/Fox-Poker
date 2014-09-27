@@ -12,9 +12,12 @@ public class LoginScene : MonoBehaviour,ILoginView
     public UIEventListener btnLogin, btnForgot, btnFacebook, btnGuest,btnRegister;
 
     public UIInput txtUsername, txtPassword;
+
+	LoginPresenter presenter;
+
     void Start()
     {   
-		LoginPresenter presenter = new LoginPresenter (this);
+		presenter = new LoginPresenter (this);
 
         btnLogin.onClick += this.onBtnLoginClick;
         btnForgot.onClick += this.onBtnForgotClick;
@@ -27,18 +30,14 @@ public class LoginScene : MonoBehaviour,ILoginView
 
     void OnDestroy()
     {
+		presenter.ViewEnd ();
         btnLogin.onClick -= this.onBtnLoginClick;
         btnForgot.onClick -= this.onBtnForgotClick;
         btnFacebook.onClick -= this.onBtnFacebookClick;
         btnGuest.onClick -= this.onBtnGuestClick;
         btnRegister.onClick -= this.onBtnRegisterClick;
-		SocialService.Instance.onLoginComplete -= onLoginComplete;
     }
 
-    void Update()
-    {
-
-    }
 
     void onBtnLoginClick(GameObject gobj)
     {
@@ -48,10 +47,7 @@ public class LoginScene : MonoBehaviour,ILoginView
             userName = "dungnv";
         if (string.IsNullOrEmpty(password))
             password = "puppet#89";
-        if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(password))
-        {
-            APILogin.GetAccessToken(userName, password, GetAccessTokenResponse);
-        }
+		presenter.LoginWithUserName (userName, password);
     }
 
     void GetAccessTokenResponse(bool status, string message, IHttpResponse response)
@@ -80,53 +76,30 @@ public class LoginScene : MonoBehaviour,ILoginView
     }
     private void onBtnRegisterClick(GameObject go)
     {
-        DialogRegister.Instance.ShowDialog(delegate(bool? status,string userName,string password){
-            if (status == true)
-                APILogin.GetAccessToken(userName, password, GetAccessTokenResponse);
-        });
+//        DialogRegister.Instance.ShowDialog(delegate(bool? status,string userName,string password){
+//            if (status == true)
+//                APILogin.GetAccessToken(userName, password, GetAccessTokenResponse);
+//        });
     }
     void onBtnFacebookClick(GameObject gobj)
     {
-		SocialService.SocialLogin (SocialType.Facebook);
+		presenter.LoginFacebook ();
     }
     void onBtnGuestClick(GameObject gobj)
     {
-        APILogin.LoginTrial((bool status, string message) =>
-        {
-            if(status == false)
-                DialogService.Instance.ShowDialog(new DialogMessage("Lỗi", message, null));
-        });
+		presenter.LoginTrail ();
     }
-
-	void onLoginComplete (SocialType arg1, bool arg2)
-	{
-		switch (arg1) 
-		{
-			case SocialType.Facebook:
-				if(arg2)
-					APILogin.GetAccessTokenFacebook(SocialService.GetSocialNetwork(arg1).AccessToken, onReceiveredAccessToken);
-				break;
-		}
-	}
-
-	void onReceiveredAccessToken (bool status, string message, Dictionary<string, object> data)
-	{
-		foreach (string key in data.Keys) {
-			Logger.Log ("=======> " + key + " - " + data[key].ToString());	
-		}
-
-	}
 
 	#region ILoginView implementation
 
 	public void ShowLoginError (string message)
 	{
-
+		DialogService.Instance.ShowDialog(new DialogMessage("Lỗi", message, null));
 	}
 
 	public void ShowRegister ()
 	{
-		throw new System.NotImplementedException ();
+
 	}
 
 	#endregion
