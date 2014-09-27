@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Puppet.Utils;
 
-namespace Puppet.Services
+namespace Puppet.Service
 {
 	public sealed class FacebookHandler : SocialNetwork, ISocialNetwork
 	{

@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 
-namespace Puppet.Services
+namespace Puppet.Service
 {
 	public enum SocialType
 	{

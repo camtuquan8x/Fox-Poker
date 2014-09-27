@@ -1,6 +1,6 @@
 using System;
 
-namespace Puppet.Services
+namespace Puppet.Service
 {
 	public abstract class SocialNetwork : ISocialNetwork
 	{

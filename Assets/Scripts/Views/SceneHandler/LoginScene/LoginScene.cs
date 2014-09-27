@@ -5,7 +5,7 @@ using Puppet;
 using Puppet.API.Client;
 using Puppet.Utils;
 using System.Collections.Generic;
-using Puppet.Services;
+using Puppet.Service;
 
 public class LoginScene : MonoBehaviour,ILoginView
 {

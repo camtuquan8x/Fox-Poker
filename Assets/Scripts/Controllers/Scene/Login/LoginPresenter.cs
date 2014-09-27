@@ -11,7 +11,7 @@ using System;
 using Puppet;
 using Puppet.API.Client;
 using Puppet.Core.Network.Http;
-using Puppet.Services;
+using Puppet.Service;
 
 public class LoginPresenter : ILoginPresenter
 {

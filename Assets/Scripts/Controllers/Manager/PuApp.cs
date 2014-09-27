@@ -5,7 +5,7 @@ using Puppet;
 using Puppet.Core;
 using Puppet.Utils;
 using Puppet.Utils.Threading;
-using Puppet.Services;
+using Puppet.Service;
 
 public class PuApp : Singleton<PuApp>
 {
