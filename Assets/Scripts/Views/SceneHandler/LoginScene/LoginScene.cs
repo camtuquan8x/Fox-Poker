@@ -60,7 +60,7 @@ public class LoginScene : MonoBehaviour,ILoginView
         {
             PuMain.Setting.Threading.QueueOnMainThread(() =>
             {
-                DialogService.Instance.ShowDialog(new DataDataDialogMessage("Error", message, null));
+                DialogService.Instance.ShowDialog(new DialogMessage("Error", message, null));
             });
         }
         else
@@ -94,7 +94,7 @@ public class LoginScene : MonoBehaviour,ILoginView
         APILogin.LoginTrial((bool status, string message) =>
         {
             if(status == false)
-                DialogService.Instance.ShowDialog(new DataDataDialogMessage("Lỗi", message, null));
+                DialogService.Instance.ShowDialog(new DialogMessage("Lỗi", message, null));
         });
     }
 

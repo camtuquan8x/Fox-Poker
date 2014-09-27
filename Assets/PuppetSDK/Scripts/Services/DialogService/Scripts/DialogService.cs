@@ -5,32 +5,35 @@ using System.Text;
 using Puppet;
 using Puppet.Service;
 
-public class DialogService : Singleton<DialogService>
+namespace Puppet.Service
 {
-    List<IDialogData> listDialog = new List<IDialogData>();
-    IDialogData currentDialog;
-
-    protected override void Init() {}
-
-    public void ShowDialog(IDialogData dialog)
+    public class DialogService : Singleton<DialogService>
     {
-        listDialog.Add(dialog);
-        CheckAndShow();
-    }
+        List<IDialogData> listDialog = new List<IDialogData>();
+        IDialogData currentDialog;
 
-    void CheckAndShow()
-    {
-        if(currentDialog == null && listDialog.Count > 0)
+        protected override void Init() { }
+
+        public void ShowDialog(IDialogData dialog)
         {
-            currentDialog = listDialog[0];
-            currentDialog.ShowDialog();
-            currentDialog.onDestroy = () =>
+            listDialog.Add(dialog);
+            CheckAndShow();
+        }
+
+        void CheckAndShow()
+        {
+            if (currentDialog == null && listDialog.Count > 0)
             {
-                listDialog.RemoveAt(0);
-                currentDialog = null;
-                //Show Hide Animation
-                Invoke("CheckAndShow", 0.3f);
-            };
+                currentDialog = listDialog[0];
+                currentDialog.ShowDialog();
+                currentDialog.onDestroy = () =>
+                {
+                    listDialog.RemoveAt(0);
+                    currentDialog = null;
+                    //Show Hide Animation
+                    Invoke("CheckAndShow", 0.3f);
+                };
+            }
         }
     }
 }

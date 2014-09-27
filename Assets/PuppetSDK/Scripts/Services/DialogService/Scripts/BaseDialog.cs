@@ -12,7 +12,7 @@ namespace Puppet.Service
         public GameObject buttonTrue, buttonFalse, buttonNull;
         T data;
 
-        public void ShowDialog(T data)
+        public virtual void ShowDialog(T data)
         {
             this.data = data;
 
@@ -49,17 +49,20 @@ namespace Puppet.Service
                 UIEventListener.Get(buttonNull).onClick -= OnClickButton;
         }
 
+        protected virtual void OnPressButton(bool? pressValue, T data) { }
+
         void OnClickButton(GameObject obj)
         {
+            bool? pressValue = null;
+            if (obj == buttonTrue)
+                pressValue = true;
+            else if (obj == buttonFalse)
+                pressValue = false;
+
+            OnPressButton(pressValue, data);
+
             if (data.ButtonCallback != null)
-            {
-                if (obj == buttonTrue)
-                    data.ButtonCallback(true);
-                else if (obj == buttonFalse)
-                    data.ButtonCallback(false);
-                else
-                    data.ButtonCallback(null);
-            }
+                data.ButtonCallback(pressValue);
 
             if(data.onDestroy != null)
                 data.onDestroy();

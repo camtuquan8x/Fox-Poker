@@ -30,7 +30,7 @@ public class PuApp : Singleton<PuApp>
     {
         PuMain.Setting.Threading.QueueOnMainThread(() =>
         {
-            DialogService.Instance.ShowDialog(new DataDataDialogMessage("Kiểm tra phiên bản", message, null));
+            DialogService.Instance.ShowDialog(new DialogMessage("Kiểm tra phiên bản", message, null));
         });
     }
 

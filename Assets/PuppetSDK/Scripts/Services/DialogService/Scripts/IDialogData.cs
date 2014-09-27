@@ -25,7 +25,7 @@ namespace Puppet.Service
         protected virtual string GetButtonName(bool? button)
         {
             if (button == null)
-                return "TẮT";
+                return "ĐÓNG";
             else if (button == true)
                 return "ĐỒNG Ý";
             else
@@ -39,43 +39,46 @@ namespace Puppet.Service
 
         public abstract void ShowDialog();
     }
-}
 
-public class DataDialogConfirm : AbstractDialogData
-{
-    public DataDialogConfirm(string title, string content, Action<bool?> callback)
-        : base()
+    public class DialogConfirm : AbstractDialogData
     {
-        this.Title = title;
-        this.Content = content;
-        this.ButtonCallback = callback;
+        public DialogConfirm(string title, string content, Action<bool?> callback)
+            : base()
+        {
+            this.Title = title;
+            this.Content = content;
+            this.ButtonCallback = callback;
+        }
+
+        public override void ShowDialog()
+        {
+            DialogConfirmView.Instance.ShowDialog(this);
+        }
     }
 
-    public override void ShowDialog()
+    public class DialogMessage : AbstractDialogData
     {
-        DialogConfirm.Instance.ShowDialog(this);
-    }
-}
+        public DialogMessage(string title, string content, Action<bool?> callback)
+            : base()
+        {
+            this.Title = title;
+            this.Content = content;
+            this.ButtonCallback = callback;
+        }
 
-public class DataDataDialogMessage : AbstractDialogData
-{
-    public DataDataDialogMessage(string title, string content, Action<bool?> callback)
-        : base()
-    {
-        this.Title = title;
-        this.Content = content;
-        this.ButtonCallback = callback;
+        public override void ShowDialog()
+        {
+            DialogMessageView.Instance.ShowDialog(this);
+        }
     }
-
-    public override void ShowDialog()
+    public class DialogInput : AbstractDialogData
     {
-        DialogMessage.Instance.ShowDialog(this);
-    }
-}
-public class DataDialogInput : AbstractDialogData
-{
-    public override void ShowDialog()
-    {
+        public string startValue;
+        public Action<bool?, string> onDoneInput;
 
+        public override void ShowDialog()
+        {
+            DialogInputView.Instance.ShowDialog(this);
+        }
     }
 }

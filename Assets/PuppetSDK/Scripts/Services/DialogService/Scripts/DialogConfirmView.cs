@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Puppet.Service
 {
     [PrefabAttribute(Name = "Prefabs/Dialog/DialogConfirm", Depth = 10, IsAttachedToCamera = true, IsUIPanel = true)]
-    public class DialogConfirm : BaseDialog<DataDialogConfirm, DialogConfirm>
+    public class DialogConfirmView : BaseDialog<DialogConfirm, DialogConfirmView>
     {
     }
 }
