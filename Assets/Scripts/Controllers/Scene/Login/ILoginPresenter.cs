@@ -10,15 +10,14 @@
 using System;
 using Puppet;
 
-public interface ILoginPresenter
+public interface ILoginPresenter : IPresenter
 {
 	void LoginWithUserName(string username,string password);
 	void LoginWithAccessToken(string accessToken);
 	void LoginFacebook();
 	void GetAccessTokenWithSocial(string accessToken);
 	void LoginTrail();
-	void ShowRegister();
-	void ViewEnd();
+    void ShowRegister();
 }
 
 
