@@ -10,7 +10,7 @@
 using System;
 using Puppet;
 
-public interface ILoginPresenter : IPresenter
+public interface ILoginPresenter : IScenePresenter
 {
 	void LoginWithUserName(string username,string password);
 	void LoginWithAccessToken(string accessToken);

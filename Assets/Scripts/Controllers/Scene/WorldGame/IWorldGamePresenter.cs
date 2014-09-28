@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 
 
-public interface IWorldGamePresenter : IPresenter
+public interface IWorldGamePresenter : IScenePresenter
 {
      void GetGameItem();
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 
-public interface IPlazaPresenter : IPresenter
+public interface IPlazaPresenter : IScenePresenter
 {
     void GetEvent();
     void JoinLobby();

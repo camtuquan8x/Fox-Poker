@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 
 
-public interface ILobbyPresenter : IPresenter
+public interface ILobbyPresenter : IScenePresenter
 {
     void LoadChannels();
     void LoadAllLobbies();

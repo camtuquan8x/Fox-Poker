@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 
 
-public interface IPresenter
-{
-    void ViewStart();
-    void ViewEnd();
-    void BackScene();
-}
+    public interface IPresenter
+    {
+        void ViewStart();
+        void ViewEnd();
+    }
 

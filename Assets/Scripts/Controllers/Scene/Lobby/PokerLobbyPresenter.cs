@@ -91,6 +91,7 @@ public class PokerLobbyPresenter : ILobbyPresenter
 
     public void ViewEnd()
     {
+
     }
 
     public void BackScene()
