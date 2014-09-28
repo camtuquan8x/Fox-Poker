@@ -6,9 +6,8 @@ using System.Text;
 using UnityEngine;
 
 
-public interface IGameItemView
+public interface IGameItemView : IView
 {
     void ShowImage(Texture2D texutre);
-    void OnJoinRoom(DataGame data);
 }
 

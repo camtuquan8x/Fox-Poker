@@ -8,6 +8,5 @@ using System.Text;
 public interface IWorldGamePresenter : IPresenter
 {
      void GetGameItem();
-     void OnJoinGame(DataGame data);
 }
 

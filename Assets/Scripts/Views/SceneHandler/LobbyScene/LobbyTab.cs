@@ -22,7 +22,7 @@ public class LobbyTab : MonoBehaviour {
 		else {
 			gobj = GameObject.Instantiate (Resources.Load ("Prefabs/Lobby/LobbyTabLeft")) as GameObject;
 		}
-		gobj.name = data.roomId + "-" +data.name;
+        gobj.name = data.zoneId + "-" + data.name;
 		gobj.transform.parent = parent.transform;
 		gobj.transform.localPosition = Vector3.zero;
 		gobj.transform.localScale = Vector3.one;

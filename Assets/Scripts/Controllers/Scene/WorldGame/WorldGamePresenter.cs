@@ -24,10 +24,6 @@ public class WorldGamePresenter : IWorldGamePresenter
             view.OnLoadGame(data);
         }
     }
-    public void OnJoinGame(DataGame data)
-    {
-        APIWorldGame.JoinRoom(data, OnJoinRoomCallBack);
-    }
 
     public void ViewStart()
     {
@@ -42,15 +38,9 @@ public class WorldGamePresenter : IWorldGamePresenter
     }
     public IWorldGameView view { get; set; }
 
-    private void OnJoinRoomCallBack(bool status, string message)
+    public void BackScene()
     {
-        if (!status)
-        {
-            PuMain.Setting.Threading.QueueOnMainThread(() =>
-            {
-                view.ShowError(message);
-            });
-        }
+        PuApp.Instance.BackScene();
     }
 }
 

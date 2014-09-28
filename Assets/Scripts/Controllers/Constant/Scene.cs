@@ -6,8 +6,8 @@ public enum Scene
     SplashScene = 0,
     LoginScene = 1,
     WorldGame = 2,
-    PokerHallScene = 3,
+    Poker_Plaza = 3,
     LobbyScene = 4,
     GameplayScene = 5,
-    Pocker_Plaza
+
 }

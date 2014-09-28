@@ -8,5 +8,6 @@ public interface IPresenter
 {
     void ViewStart();
     void ViewEnd();
+    void BackScene();
 }
 

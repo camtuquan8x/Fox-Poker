@@ -18,14 +18,20 @@ public class PuSetting
 
     void ChangeScene(EScene fromScene, EScene toScene)
     {
-        if(toScene == EScene.LoginScreen)
+        if (toScene == EScene.LoginScreen)
             Application.LoadLevel(Scene.LoginScene.ToString());
         else if (toScene == EScene.World_Game)
             Application.LoadLevel(Scene.WorldGame.ToString());
         else if (toScene == EScene.Pocker_Plaza)
-            Application.LoadLevel(Scene.Pocker_Plaza.ToString());
+            Application.LoadLevel(Scene.Poker_Plaza.ToString());
         else if (toScene == EScene.Pocker_Lobby)
-            Application.LoadLevel(Scene.LobbyScene.ToString());
+        {
+            if (fromScene == EScene.World_Game)
+            {
+                Application.LoadLevel(Scene.Poker_Plaza.ToString());
+            }
+            else { Application.LoadLevel(Scene.LobbyScene.ToString()); }
+        }
         else if (toScene == EScene.Pocker_Gameplay)
             Application.LoadLevel(Scene.GameplayScene.ToString());
         else if (toScene == EScene.SplashScreen)
@@ -59,7 +65,7 @@ public class PuSetting
         {
             if (!IsDebug) return;
 
-            switch(type)
+            switch (type)
             {
                 case ELogType.Info:
                     UnityEngine.Debug.Log(message);

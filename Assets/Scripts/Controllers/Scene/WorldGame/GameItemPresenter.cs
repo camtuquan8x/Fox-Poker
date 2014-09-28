@@ -1,4 +1,5 @@
 ﻿using Puppet;
+using Puppet.API.Client;
 using Puppet.Core.Model;
 using Puppet.Core.Network.Http;
 using System;
@@ -10,20 +11,40 @@ using UnityEngine;
 
 public class GameItemPresenter : IGameItemPresenter
 {
-    public GameItemPresenter(IGameItemView view,IWorldGamePresenter presenter)
+    private DataGame data;
+    public DataGame Data {
+        get {
+            return data;
+        }
+        set {
+            this.data = value;
+            LoadImage();
+        }
+    }
+    public GameItemPresenter(IGameItemView view)
     {
         this.view = view;
-        this.worldgamepre = presenter;
     }
 
-    public void JoinLobby(DataGame data)
+    public void JoinToGame()
     {
-        worldgamepre.OnJoinGame(data);   
+        APIWorldGame.JoinRoom(data, OnJoinRoomCallBack);
     }
 
-    public void LoadImage(string url)
+    private void OnJoinRoomCallBack(bool status, string message)
     {
-        WWWRequest request = new WWWRequest((GameItem)view, url, 30f, 0);
+        if (!status)
+        {
+            PuMain.Setting.Threading.QueueOnMainThread(() =>
+            {
+                view.ShowError(message);
+            });
+        }
+    }
+
+    public void LoadImage()
+    {
+        WWWRequest request = new WWWRequest((GameItem)view, data.icon, 30f, 0);
         request.isFullUrl = true;
         request.onResponse += (IHttpRequest currentRequest, IHttpResponse currentResponse) =>
         {
@@ -43,6 +64,5 @@ public class GameItemPresenter : IGameItemPresenter
 
     private IGameItemView view { get; set; }
 
-    private IWorldGamePresenter worldgamepre { get; set; }
 }
 

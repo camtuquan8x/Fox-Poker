@@ -29,6 +29,7 @@ public class WorldGameScene : MonoBehaviour,IWorldGameView
         {
             GameItem.Create(item, tableGame.transform);
         }
+        tableGame.Reposition();
     }
 
     public void ShowUserName(string userName)
