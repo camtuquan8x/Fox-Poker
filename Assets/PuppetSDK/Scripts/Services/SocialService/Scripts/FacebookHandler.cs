@@ -42,7 +42,7 @@ namespace Puppet.Service
 	    {
 	        if (UserId != null)
 	        {
-	            Debug.Log("Social id " + UserId);
+	            Logger.Log("Social id " + UserId);
 	            FB.API(UserId + "/permissions", Facebook.HttpMethod.GET, getPermissionFacebookCallback);
 	            this.callbackGetPermission = onGetFinishPermission;
 	        }
@@ -66,7 +66,7 @@ namespace Puppet.Service
 	            }
 	        }
 	        else
-	            Debug.Log("Fb response is null");
+	            Logger.Log("Fb response is null");
 
 	        if (callbackGetPermission != null)
 	            callbackGetPermission(hasPermission);
@@ -82,7 +82,7 @@ namespace Puppet.Service
 
 	    private void OnInit()
 	    {
-	        Debug.Log("FB Init completed");
+	        Logger.Log("FB Init completed");
 	        SocialService.Instance.DispathInitComplete(type);
 	        if (!string.IsNullOrEmpty(AccessToken))
 	        {
@@ -92,14 +92,11 @@ namespace Puppet.Service
 
 	    void OnLoginCompleted(bool isSuccess)
 	    {
-	        Debug.Log("FB Login: " + isSuccess);
+            Logger.Log("FB Login: " + isSuccess);
 	        if (isSuccess)
 	        {
 	            if (!string.IsNullOrEmpty(AccessToken))
-	            {
 	                getCurrentUser();
-					getFBFriends();
-	            }
 	            else
 	                SocialService.Instance.DispathAccessTokenNotFound(type);
 	        }
@@ -120,28 +117,5 @@ namespace Puppet.Service
 	            SocialService.Instance.SetOnLoginComplete(type, true);
 	        });
 	    }
-	       
-		public void getFBFriends()
-		{
-			FB.API("me/friends", Facebook.HttpMethod.GET, (FBResult response) =>
-			{
-				if (response != null && !string.IsNullOrEmpty(response.Text))
-				{
-					Debug.Log ("#### FRIENDS " + response.Text);
-					friendsDictionary = (Dictionary<string, object>)JsonUtil.Deserialize(response.Text);
-				}
-
-			});
-		}
-
-		public Dictionary<string, object> GetFriendById(string id)
-		{
-			if (friendsDictionary != null && friendsDictionary.ContainsKey(id))
-			{
-				return (Dictionary<string, object>)friendsDictionary[id];
-			}
-
-			return null;
-		}
 	}
 }
