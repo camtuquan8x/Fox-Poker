@@ -21,7 +21,7 @@ public class PuApp : Singleton<PuApp>
     {
         PuMain.Setting.Threading.QueueOnMainThread(() =>
         {
-            PuMain.Instance.Dispatcher.onWarningUpgrade += Dispatcher_onWarningUpgrade;
+            PuMain.Dispatcher.onWarningUpgrade += Dispatcher_onWarningUpgrade;
         });
 		SocialService.SocialStart ();
     }

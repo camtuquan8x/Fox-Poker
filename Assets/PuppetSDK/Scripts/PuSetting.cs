@@ -13,7 +13,7 @@ public class PuSetting
         PuMain.Setting = new CurrentSetting("puppet.esimo.vn");
         PuMain.Setting.Init();
         PuMain.Instance.Load();
-        PuMain.Instance.Dispatcher.onChangeScene += ChangeScene;
+        PuMain.Dispatcher.onChangeScene += ChangeScene;
     }
 
     void ChangeScene(EScene fromScene, EScene toScene)
