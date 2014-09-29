@@ -35,7 +35,6 @@ public class WorldGameScene : MonoBehaviour,IWorldGameView
     public void ShowUserName(string userName)
     {
         lbUserName.text = userName;
-       
     }
     public void ShowChip(string chip)
     {
