@@ -27,10 +27,9 @@ public class PuSetting
         else if (toScene == EScene.Pocker_Lobby)
         {
             if (fromScene == EScene.World_Game)
-            {
                 Application.LoadLevel(Scene.Poker_Plaza.ToString());
-            }
-            else { Application.LoadLevel(Scene.LobbyScene.ToString()); }
+            else 
+                Application.LoadLevel(Scene.LobbyScene.ToString());
         }
         else if (toScene == EScene.Pocker_Gameplay)
             Application.LoadLevel(Scene.GameplayScene.ToString());

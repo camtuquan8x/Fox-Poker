@@ -7,6 +7,7 @@ public class LobbyRowType2 : MonoBehaviour
     #region Unity Editor
     public UILabel lbRoomNumber, lbMoneyStep, lbMoneyMinMax, lbPeopleNumber;
     #endregion
+    public DataLobby data;
     public static LobbyRowType2 Create(DataLobby data, UITable parent)
     {
         GameObject go = GameObject.Instantiate(Resources.Load("Prefabs/Lobby/LobbyRowType2")) as GameObject;
@@ -29,10 +30,9 @@ public class LobbyRowType2 : MonoBehaviour
         this.data = data;
         lbRoomNumber.text = data.roomId.ToString();
     }
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
-    public DataLobby data { get; set; }
+    void OnClick()
+    {
+        GameObject.FindObjectOfType<LobbyScene>().JoinGame(this.data);
+    }
 }

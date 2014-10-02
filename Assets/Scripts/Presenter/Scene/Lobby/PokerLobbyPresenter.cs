@@ -54,6 +54,7 @@ public class PokerLobbyPresenter : ILobbyPresenter
         yield return new WaitForEndOfFrame();
         LoadLobbiesByChannel(data[0]);
     }
+
     public void LoadAllLobbies()
     {
         APILobby.GetAllLobby(OnGetAllLobbyInChannel);
@@ -78,7 +79,11 @@ public class PokerLobbyPresenter : ILobbyPresenter
 
     public void JoinToGame(Puppet.Core.Model.DataLobby lobby)
     {
-        throw new NotImplementedException();
+        APILobby.JoinLobby(lobby, (bool status, string message) =>
+        {
+            if (!status)
+                view.ShowError(message);
+        });
     }
 
     public void ViewStart()

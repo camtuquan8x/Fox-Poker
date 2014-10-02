@@ -9,6 +9,8 @@ public class LobbyRowType1 : MonoBehaviour
     public GameObject[] slots;
     public UILabel title;
     #endregion
+    public DataLobby data;
+
     public static LobbyRowType1 Create(DataLobby data, UITable parent)
     {
         GameObject go = GameObject.Instantiate(Resources.Load("Prefabs/Lobby/LobbyRowType1")) as GameObject;
@@ -23,7 +25,7 @@ public class LobbyRowType1 : MonoBehaviour
     }
     public void setData(DataLobby lobby)
     {
-        this.lobby = lobby;
+        this.data = lobby;
         title.text = lobby.displayName;
     }
     void Start()
@@ -54,6 +56,10 @@ public class LobbyRowType1 : MonoBehaviour
 					gameObject.GetComponent<UISprite> ().color = new Color (1f, 1f, 1f);
 			}
     }
-    public DataLobby lobby { get; set; }
+
+    void OnClick()
+    {
+        GameObject.FindObjectOfType<LobbyScene>().JoinGame(this.data);
+    }
 }
 

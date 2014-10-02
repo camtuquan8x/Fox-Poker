@@ -30,7 +30,7 @@ public class LobbyScene : MonoBehaviour,ILobbyView
             return;
         }
         if (tableType1.GetComponent<UICenterOnChild>().centeredObject != null) {
-            btnCreateGame.SetActive(tableType1.GetComponent<UICenterOnChild>().centeredObject.GetComponent<LobbyRowType1>().lobby.roomId == types1[0].lobby.roomId);
+            btnCreateGame.SetActive(tableType1.GetComponent<UICenterOnChild>().centeredObject.GetComponent<LobbyRowType1>().data.roomId == types1[0].data.roomId);
         }
     }
     void OnEnable()
@@ -190,5 +190,10 @@ public class LobbyScene : MonoBehaviour,ILobbyView
     public void ShowMoney(string money)
     {
         txtChip.text = money;
+    }
+
+    public void JoinGame(DataLobby lobby)
+    {
+        presenter.JoinToGame(lobby);
     }
 }
