@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Puppet.Poker.Datagram;
+using Puppet.Poker.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,41 +9,74 @@ using UnityEngine;
 public class PokerGameplayView : MonoBehaviour
 {
     #region UnityEditor
+    public GameObject btnQuit;
     public GameObject btnView, btnLeaveTurn, btnAddBet, btnFollowBet, btnConvertMoney, btnGameMini, btnRule, btnSendMessage;
     public GameObject headerMenuBtnBack, headerMenuBtnUp, headerMenuBtnRecharge, headerMenuBtnSettings;
     public UIInput txtMessage;
+    public PokerGameplayPlaymat playmat;
     #endregion
+    PokerGameplayPresenter presenter;
+
+    void Awake()
+    {
+        presenter = new PokerGameplayPresenter();
+    }
+
+    void Start()
+    {
+        presenter.dataUpdateGameChange += presenter_dataUpdateGameChange;
+        presenter.StartGame();
+    }
+
+    void presenter_dataUpdateGameChange(ResponseUpdateGame data)
+    {
+        foreach(PokerPlayerController player in data.players)
+        {
+            playmat.SetPositionAvatarPlayer(player);
+        }
+    }
 
     void OnEnable() {
-        UIEventListener.Get(btnView).onClick += OnButtonViewClickCallBack;
-        UIEventListener.Get(btnLeaveTurn).onClick += OnButtonLeaveTurnClickCallBack;
-        UIEventListener.Get(btnAddBet).onClick += OnButtonAddBetClickCallBack;
-        UIEventListener.Get(btnFollowBet).onClick += OnButtonFollowBetClickCallBack;
-        UIEventListener.Get(btnConvertMoney).onClick += OnButtonConvertMoneyClickCallBack;
-        UIEventListener.Get(btnGameMini).onClick += OnButtonGameMiniClickCallBack;
-        UIEventListener.Get(btnRule).onClick += OnButtonRuleClickCallBack;
-        UIEventListener.Get(btnSendMessage).onClick += OnButtonSendMessageClickCallBack;
-        UIEventListener.Get(headerMenuBtnBack).onClick += OnButtonHeaderBackClickCallBack;
-        UIEventListener.Get(headerMenuBtnUp).onClick += OnButtonHeaderUpClickCallBack;
-        UIEventListener.Get(headerMenuBtnRecharge).onClick += OnButtonHeaderRechargeClickCallBack;
-        UIEventListener.Get(headerMenuBtnSettings).onClick += OnButtonHeaderSettingClickCallBack;
+
+        if(btnQuit != null)
+            UIEventListener.Get(btnQuit).onClick += OnButtonQuitClick;
+
+        //UIEventListener.Get(btnView).onClick += OnButtonViewClickCallBack;
+        //UIEventListener.Get(btnLeaveTurn).onClick += OnButtonLeaveTurnClickCallBack;
+        //UIEventListener.Get(btnAddBet).onClick += OnButtonAddBetClickCallBack;
+        //UIEventListener.Get(btnFollowBet).onClick += OnButtonFollowBetClickCallBack;
+        //UIEventListener.Get(btnConvertMoney).onClick += OnButtonConvertMoneyClickCallBack;
+        //UIEventListener.Get(btnGameMini).onClick += OnButtonGameMiniClickCallBack;
+        //UIEventListener.Get(btnRule).onClick += OnButtonRuleClickCallBack;
+        //UIEventListener.Get(btnSendMessage).onClick += OnButtonSendMessageClickCallBack;
+        //UIEventListener.Get(headerMenuBtnBack).onClick += OnButtonHeaderBackClickCallBack;
+        //UIEventListener.Get(headerMenuBtnUp).onClick += OnButtonHeaderUpClickCallBack;
+        //UIEventListener.Get(headerMenuBtnRecharge).onClick += OnButtonHeaderRechargeClickCallBack;
+        //UIEventListener.Get(headerMenuBtnSettings).onClick += OnButtonHeaderSettingClickCallBack;
 
     }
     void OnDisable()
     {
-        UIEventListener.Get(btnView).onClick -= OnButtonViewClickCallBack;
-        UIEventListener.Get(btnLeaveTurn).onClick -= OnButtonLeaveTurnClickCallBack;
-        UIEventListener.Get(btnAddBet).onClick -= OnButtonAddBetClickCallBack;
-        UIEventListener.Get(btnFollowBet).onClick -= OnButtonFollowBetClickCallBack;
-        UIEventListener.Get(btnConvertMoney).onClick -= OnButtonConvertMoneyClickCallBack;
-        UIEventListener.Get(btnGameMini).onClick -= OnButtonGameMiniClickCallBack;
-        UIEventListener.Get(btnRule).onClick -= OnButtonRuleClickCallBack;
-        UIEventListener.Get(btnSendMessage).onClick -= OnButtonSendMessageClickCallBack;
-        UIEventListener.Get(headerMenuBtnBack).onClick -= OnButtonHeaderBackClickCallBack;
-        UIEventListener.Get(headerMenuBtnUp).onClick -= OnButtonHeaderUpClickCallBack;
-        UIEventListener.Get(headerMenuBtnRecharge).onClick -= OnButtonHeaderRechargeClickCallBack;
-        UIEventListener.Get(headerMenuBtnSettings).onClick -= OnButtonHeaderSettingClickCallBack;
+        UIEventListener.Get(btnQuit).onClick -= OnButtonQuitClick;
+        //UIEventListener.Get(btnView).onClick -= OnButtonViewClickCallBack;
+        //UIEventListener.Get(btnLeaveTurn).onClick -= OnButtonLeaveTurnClickCallBack;
+        //UIEventListener.Get(btnAddBet).onClick -= OnButtonAddBetClickCallBack;
+        //UIEventListener.Get(btnFollowBet).onClick -= OnButtonFollowBetClickCallBack;
+        //UIEventListener.Get(btnConvertMoney).onClick -= OnButtonConvertMoneyClickCallBack;
+        //UIEventListener.Get(btnGameMini).onClick -= OnButtonGameMiniClickCallBack;
+        //UIEventListener.Get(btnRule).onClick -= OnButtonRuleClickCallBack;
+        //UIEventListener.Get(btnSendMessage).onClick -= OnButtonSendMessageClickCallBack;
+        //UIEventListener.Get(headerMenuBtnBack).onClick -= OnButtonHeaderBackClickCallBack;
+        //UIEventListener.Get(headerMenuBtnUp).onClick -= OnButtonHeaderUpClickCallBack;
+        //UIEventListener.Get(headerMenuBtnRecharge).onClick -= OnButtonHeaderRechargeClickCallBack;
+        //UIEventListener.Get(headerMenuBtnSettings).onClick -= OnButtonHeaderSettingClickCallBack;
     }
+
+    void OnButtonQuitClick(GameObject go)
+    {
+        presenter.QuitGame();
+    }
+
     private void OnButtonHeaderSettingClickCallBack(GameObject go)
     {
         throw new NotImplementedException();
