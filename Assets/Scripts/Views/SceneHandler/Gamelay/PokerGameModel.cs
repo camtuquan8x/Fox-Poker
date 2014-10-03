@@ -3,11 +3,23 @@ using System.Collections;
 using Puppet.Poker;
 using Puppet.Poker.Datagram;
 using System;
+using Puppet.API.Client;
+using Puppet;
 
-public class PokerGameplayPresenter 
+public class PokerGameModel
 {
-    PokerGameplay pokerGame;
     public event Action<ResponseUpdateGame> dataUpdateGameChange;
+    PokerGameplay pokerGame;
+
+    static PokerGameModel _instance;
+    public static void NewInstance()
+    {
+        _instance = new PokerGameModel();
+    }
+    public static PokerGameModel Instance
+    {
+        get { return _instance; }
+    }
 
     public void StartGame()
     {
@@ -25,6 +37,11 @@ public class PokerGameplayPresenter
 
     public void QuitGame()
     {
-        Puppet.API.Client.APIGeneric.BackScene(null);
+        APIGeneric.BackScene(null);
+    }
+
+    public void SitDown(PokerSide side)
+    {
+        APIPokerGame.SitDown(side);
     }
 }

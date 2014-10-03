@@ -15,17 +15,17 @@ public class PokerGameplayView : MonoBehaviour
     public UIInput txtMessage;
     public PokerGameplayPlaymat playmat;
     #endregion
-    PokerGameplayPresenter presenter;
+    
 
     void Awake()
     {
-        presenter = new PokerGameplayPresenter();
+        PokerGameModel.NewInstance();
     }
 
     void Start()
     {
-        presenter.dataUpdateGameChange += presenter_dataUpdateGameChange;
-        presenter.StartGame();
+        PokerGameModel.Instance.dataUpdateGameChange += presenter_dataUpdateGameChange;
+        PokerGameModel.Instance.StartGame();
     }
 
     void presenter_dataUpdateGameChange(ResponseUpdateGame data)
@@ -74,7 +74,7 @@ public class PokerGameplayView : MonoBehaviour
 
     void OnButtonQuitClick(GameObject go)
     {
-        presenter.QuitGame();
+        PokerGameModel.Instance.QuitGame();
     }
 
     private void OnButtonHeaderSettingClickCallBack(GameObject go)
