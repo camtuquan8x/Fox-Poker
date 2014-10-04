@@ -14,7 +14,7 @@ public class PuApp : Singleton<PuApp>
     List<KeyValuePair<EMessage, string>> listMessage = new List<KeyValuePair<EMessage, string>>();
     protected override void Init()
     {
-        setting = new PuSetting("test.esimo.vn");
+		setting = new PuSetting("puppet.esimo.vn", "puppet.esimo.vn");
     }
 
     public void StartApplication()
@@ -50,4 +50,9 @@ public class PuApp : Singleton<PuApp>
                 Logger.Log(message);
         });
     }
+
+	public void OnApplicationQuit()
+	{
+		PuMain.Socket.Disconnect();
+	}
 }

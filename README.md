@@ -1,6 +1,6 @@
 #Author: Nguyen Viet Dung
 
-Fox Pocker
+Fox Poker
 ==========
 
 The first prototype of Fox Pocker project

@@ -16,6 +16,11 @@ public class LoginScene : MonoBehaviour,ILoginView
 
 	LoginPresenter presenter;
 
+	void Awake()
+	{
+		PuSetting.UniqueDeviceId = SystemInfo.deviceUniqueIdentifier;
+	}
+
     void Start()
     {   
 		presenter = new LoginPresenter (this);
@@ -28,6 +33,10 @@ public class LoginScene : MonoBehaviour,ILoginView
 
     }
 
+	void OnGUI()
+	{
+		PuSetting.UniqueDeviceId = GUI.TextField(new Rect(0, 0, Screen.width / 4, Screen.height/15), PuSetting.UniqueDeviceId);
+	}
 
     void OnDestroy()
     {

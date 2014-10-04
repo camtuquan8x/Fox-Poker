@@ -8,10 +8,12 @@ using UnityEngine;
 
 public class PuSetting
 {
-    public PuSetting(string domain)
+	public static string UniqueDeviceId;
+
+    public PuSetting(string domain, string socketServer)
     {
-        PuMain.Setting = new CurrentSetting("puppet.esimo.vn");
-        PuMain.Setting.Init();
+		PuMain.Setting = new CurrentSetting(domain, socketServer);
+		PuMain.Setting.Init();
         PuMain.Instance.Load();
         PuMain.Dispatcher.onChangeScene += ChangeScene;
     }
@@ -50,9 +52,10 @@ public class PuSetting
             get { return true; }
         }
 
-        public CurrentSetting(string domain)
+        public CurrentSetting(string domain, string socketServer)
         {
             DefaultSetting.domain = domain;
+			DefaultSetting.soketServer = socketServer;
         }
 
         protected override void AfterInit()
@@ -100,7 +103,7 @@ public class PuSetting
         {
             get
             {
-                return SystemInfo.deviceUniqueIdentifier;
+				return UniqueDeviceId ?? SystemInfo.deviceUniqueIdentifier;
             }
         }
     }
