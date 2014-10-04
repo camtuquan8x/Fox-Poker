@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using Puppet.Core.Model;
 using Puppet;
+using System;
 
 public class LobbyRowType1 : MonoBehaviour
 {
@@ -11,7 +12,9 @@ public class LobbyRowType1 : MonoBehaviour
     #endregion
     public DataLobby data;
 
-    public static LobbyRowType1 Create(DataLobby data, UITable parent)
+	private Action action ;
+
+    public static LobbyRowType1 Create(DataLobby data, UITable parent,Action callBack)
     {
         GameObject go = GameObject.Instantiate(Resources.Load("Prefabs/Lobby/LobbyRowType1")) as GameObject;
         go.transform.parent = parent.transform;
@@ -21,6 +24,7 @@ public class LobbyRowType1 : MonoBehaviour
         go.name = data.displayName;
         LobbyRowType1 item = go.GetComponent<LobbyRowType1>();
         item.setData(data);
+		item.action = callBack;
         return item;
     }
     public void setData(DataLobby lobby)
@@ -40,26 +44,25 @@ public class LobbyRowType1 : MonoBehaviour
     }
     private void onTableClick(GameObject go)
     {
-
+		if (action != null)
+			action ();
     }
 
     void Update()
     {
+
 		if (gameObject.transform.parent.GetComponent<UICenterOnChild> ().centeredObject == null) {
-			gameObject.transform.parent.GetComponent<UICenterOnChild> ().CenterOn(gameObject.transform.parent.GetChild(0));
+			return;
 		}
-			float value = Mathf.Lerp (0.731f, 1.0f, 0.2f / Vector3.SqrMagnitude (gameObject.transform.position - gameObject.transform.parent.GetComponent<UICenterOnChild> ().centeredObject.transform.position));
+			float value = Mathf.Lerp (0.731f, 1.1f, 0.2f / Vector3.SqrMagnitude (gameObject.transform.position - LobbyScene.VectorItemCenter));
 			gameObject.transform.localScale = new Vector3 (value, value, 1f);
-			if (!gameObject.transform.name.Equals (gameObject.transform.parent.GetComponent<UICenterOnChild> ().centeredObject.transform.name)) {
-					gameObject.GetComponent<UISprite> ().color = new Color (69f / 255f, 69f / 255f, 69f / 255f);
+			if (value > 0.9f) {
+				gameObject.GetComponent<UISprite> ().color = new Color (1f, 1f, 1f);
 			} else {
-					gameObject.GetComponent<UISprite> ().color = new Color (1f, 1f, 1f);
+				gameObject.GetComponent<UISprite> ().color = new Color (69f / 255f, 69f / 255f, 69f / 255f);
 			}
     }
 
-    void OnClick()
-    {
-        GameObject.FindObjectOfType<LobbyScene>().JoinGame(this.data);
-    }
+
 }
 

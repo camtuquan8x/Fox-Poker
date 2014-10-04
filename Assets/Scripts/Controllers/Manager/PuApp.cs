@@ -28,12 +28,15 @@ public class PuApp : Singleton<PuApp>
 
     void Dispatcher_onWarningUpgrade(EUpgrade type, string message, string market)
     {
-        PuMain.Setting.Threading.QueueOnMainThread(() =>
-        {
-            DialogService.Instance.ShowDialog(new DialogMessage("Kiểm tra phiên bản", message, null));
-        });
+        PuMain.Setting.Threading.QueueOnMainThread (() =>
+		{
+				DialogService.Instance.ShowDialog (new DialogConfirm ("Kiểm tra phiên bản", message, delegate(bool? obj) {
+	
+			
+				}));
+		});
     }
-
+	
     void FixedUpdate()
     {
         if (setting != null)

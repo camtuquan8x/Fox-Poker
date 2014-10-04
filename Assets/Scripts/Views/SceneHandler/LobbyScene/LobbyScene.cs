@@ -29,9 +29,8 @@ public class LobbyScene : MonoBehaviour,ILobbyView
             btnCreateGame.SetActive(true);
             return;
         }
-        if (tableType1.GetComponent<UICenterOnChild>().centeredObject != null) {
-            btnCreateGame.SetActive(tableType1.GetComponent<UICenterOnChild>().centeredObject.GetComponent<LobbyRowType1>().data.roomId == types1[0].data.roomId);
-        }
+		btnCreateGame.SetActive ((tableType1.GetComponent<UICenterOnChild> ().centeredObject != null && tableType1.GetComponent<UICenterOnChild> ().centeredObject.name.Equals (types1 [0].name)));
+        
     }
     void OnEnable()
     {
@@ -58,12 +57,7 @@ public class LobbyScene : MonoBehaviour,ILobbyView
         UIEventListener.Get(btnBack).onClick -= OnClickBack;
         UIEventListener.Get(btnCreateGame).onClick += OnClickCreateGame;
     }
-    private void onGotoCenterType1()
-    {
-        if (tableType1.GetComponent<UICenterOnChild>().centeredObject != null)
-            tableType1.GetComponent<UICenterOnChild>().CenterOn(tableType1.GetComponent<UICenterOnChild>().centeredObject.transform);
-        tableType1.GetComponent<UICenterOnChild>().onFinished -= onGotoCenterType1;
-    }
+  
 	private void ClearAllRow(){
 		while (types1.Count > 0)
 		{
@@ -76,16 +70,32 @@ public class LobbyScene : MonoBehaviour,ILobbyView
 			types2.RemoveAt(0);
 		}
 	}
+	public static Vector3 VectorItemCenter = Vector3.one;
+
+	private void OnDragFinishGift()
+	{
+		VectorItemCenter = tableType1.GetComponent<UICenterOnChild>().centeredObject.transform.position;
+		//Logger.o
+//		if (tableType1.GetComponent<UICenterOnChild>().centeredObject != null)
+//			tableType1.GetComponent<UICenterOnChild>().CenterOn(tableType1.GetComponent<UICenterOnChild>().centeredObject.transform);
+	}
     IEnumerator initShowRowType1(List<DataLobby> lobbies)
     {
 		ClearAllRow ();
         yield return new WaitForEndOfFrame();
         foreach (DataLobby item in lobbies)
         {
-            types1.Add(LobbyRowType1.Create(item, tableType1));
+			types1.Add(LobbyRowType1.Create(item, tableType1,delegate(){
+				JoinGame(item);
+			}));
         }
         tableType1.repositionNow = true;
-        tableType1.GetComponent<UICenterOnChild>().onFinished += onGotoCenterType1;
+		yield return new WaitForSeconds (0.05f);
+		tableType1.GetComponent<UICenterOnChild>().Recenter();
+		yield return new WaitForSeconds (0.1f);
+		tableType1.GetComponent<UICenterOnChild>().onFinished = OnDragFinishGift;
+		OnDragFinishGift();
+
     }
     IEnumerator initShowRowType2(List<DataLobby> lobbies)
     {

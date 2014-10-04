@@ -30,7 +30,8 @@ public class WorldGamePresenter : IWorldGamePresenter
         GetGameItem();
         UserInfo info = APIUser.GetUserInformation();
         view.ShowUserName(info.info.userName);
-        view.ShowChip(info.assets.content[0].value.ToString());
+		if(info.assets !=null && info.assets.content.Length > 0)
+        	view.ShowChip(info.assets.content[0].value.ToString());
     }
     public void ViewEnd()
     {

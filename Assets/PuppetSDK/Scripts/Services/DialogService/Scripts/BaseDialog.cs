@@ -10,6 +10,8 @@ namespace Puppet.Service
     {
         public UILabel labelTitle, labelContent;
         public GameObject buttonTrue, buttonFalse, buttonNull;
+		public UISprite bkgTransparent;
+
         T data;
 
         public virtual void ShowDialog(T data)
@@ -37,6 +39,13 @@ namespace Puppet.Service
                 UIEventListener.Get(buttonFalse).onClick += OnClickButton;
             if (buttonNull != null)
                 UIEventListener.Get(buttonNull).onClick += OnClickButton;
+			if (bkgTransparent != null) {
+				bkgTransparent.SetAnchor( NGUITools.GetRoot(gameObject).transform);
+				bkgTransparent.topAnchor.absolute = 0;
+				bkgTransparent.leftAnchor.absolute = 0;
+				bkgTransparent.rightAnchor.absolute = 0;
+				bkgTransparent.bottomAnchor.absolute = 0;
+			}
         }
 
         protected virtual void OnDisable()

@@ -45,9 +45,9 @@ public class LoginScene : MonoBehaviour,ILoginView
         string userName = txtUsername.value;
         string password = txtPassword.value;
         if (string.IsNullOrEmpty(userName))
-            userName = "dungnv";
+            userName = "cong91";
         if (string.IsNullOrEmpty(password))
-            password = "puppet#89";
+            password = "cong";
 		presenter.LoginWithUserName (userName, password);
     }
 

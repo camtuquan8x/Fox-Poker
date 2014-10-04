@@ -58,8 +58,7 @@ namespace Puppet.Service
 
     public class DialogMessage : AbstractDialogData
     {
-        public DialogMessage(string title, string content, Action<bool?> callback)
-            : base()
+        public DialogMessage(string title, string content, Action<bool?> callback) : base()
         {
             this.Title = title;
             this.Content = content;
@@ -81,4 +80,15 @@ namespace Puppet.Service
             DialogInputView.Instance.ShowDialog(this);
         }
     }
+	public class DialogPromotion : AbstractDialogData{
+		public List<string> promotions;
+		public DialogPromotion(List<string> list) : base()
+		{
+			this.promotions = list;
+		}
+		public override void ShowDialog ()
+		{
+
+		}
+	}
 }

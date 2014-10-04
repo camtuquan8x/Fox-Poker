@@ -47,7 +47,8 @@ public class PokerPlazaPresenter : IPlazaPresenter
     public void ShowMoney()
     {
         UserInfo info = APIUser.GetUserInformation();
-        view.ShowMoney(info.assets.content[0].value.ToString());
+		if(info.assets !=null && info.assets.content.Length > 0)
+        	view.ShowMoney(info.assets.content[0].value.ToString());
     }
 
 

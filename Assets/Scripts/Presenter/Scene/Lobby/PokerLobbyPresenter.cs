@@ -71,12 +71,18 @@ public class PokerLobbyPresenter : ILobbyPresenter
         if (status)
         {
             this.lobbies = data;
-            view.DrawLobbies(data);
+			view.DrawLobbies(data);
+			
+//			PuApp.Instance.StartCoroutine(DrawLobbies(this.lobbies));
+        
         }
         else
             view.ShowError(message);
     }
-
+	IEnumerator DrawLobbies(List<DataLobby> data){
+		yield return new WaitForSeconds (0.5f);
+		view.DrawLobbies(data);
+	}
     public void JoinToGame(Puppet.Core.Model.DataLobby lobby)
     {
         APILobby.JoinLobby(lobby, (bool status, string message) =>
@@ -91,7 +97,8 @@ public class PokerLobbyPresenter : ILobbyPresenter
         LoadChannels();
         UserInfo userInfo = APIUser.GetUserInformation();
         view.ShowUserName(userInfo.info.userName);
-        view.ShowMoney(userInfo.assets.content[0].value.ToString());
+		if(userInfo.assets !=null && userInfo.assets.content.Length > 0)
+        	view.ShowMoney(userInfo.assets.content[0].value.ToString());
     }
 
     public void ViewEnd()
