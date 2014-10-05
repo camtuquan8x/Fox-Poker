@@ -10,7 +10,7 @@ using System;
 
 public class LoginScene : MonoBehaviour,ILoginView
 {
-    public UIEventListener btnLogin, btnForgot, btnFacebook, btnGuest,btnRegister;
+    public GameObject btnLogin, btnForgot, btnFacebook, btnGuest,btnRegister;
 
     public UIInput txtUsername, txtPassword;
 
@@ -20,19 +20,24 @@ public class LoginScene : MonoBehaviour,ILoginView
 	{
 		PuSetting.UniqueDeviceId = SystemInfo.deviceUniqueIdentifier;
 	}
-
-    void Start()
-    {   
+	void Start(){
+		Logger.Log ("=========> Chay vao day khong" );
 		presenter = new LoginPresenter (this);
-        presenter.ViewStart();
-        btnLogin.onClick += this.onBtnLoginClick;
-        btnForgot.onClick += this.onBtnForgotClick;
-        btnFacebook.onClick += this.onBtnFacebookClick;
-        btnGuest.onClick += this.onBtnGuestClick;
-        btnRegister.onClick += this.onBtnRegisterClick;
+		presenter.ViewStart();
+	}
+    void OnEnable()
+    {   
+
+		UIEventListener.Get(btnLogin).onClick += this.onBtnLoginClick;
+		UIEventListener.Get(btnForgot).onClick += this.onBtnForgotClick;
+		UIEventListener.Get(btnFacebook).onClick += this.onBtnFacebookClick;
+		UIEventListener.Get(btnGuest).onClick += this.onBtnGuestClick;
+		UIEventListener.Get(btnRegister).onClick += this.onBtnRegisterClick;
 
     }
+	void OnDisable(){
 
+	}
 	void OnGUI()
 	{
 		PuSetting.UniqueDeviceId = GUI.TextField(new Rect(0, 0, Screen.width / 4, Screen.height/15), PuSetting.UniqueDeviceId);
@@ -41,11 +46,7 @@ public class LoginScene : MonoBehaviour,ILoginView
     void OnDestroy()
     {
 		presenter.ViewEnd ();
-        btnLogin.onClick -= this.onBtnLoginClick;
-        btnForgot.onClick -= this.onBtnForgotClick;
-        btnFacebook.onClick -= this.onBtnFacebookClick;
-        btnGuest.onClick -= this.onBtnGuestClick;
-        btnRegister.onClick -= this.onBtnRegisterClick;
+
     }
 
 

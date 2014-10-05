@@ -15,6 +15,7 @@ public class PuApp : Singleton<PuApp>
     protected override void Init()
     {
 		setting = new PuSetting("puppet.esimo.vn", "puppet.esimo.vn");
+		gameObject.AddComponent<LogViewer> ();
     }
 
     public void StartApplication()

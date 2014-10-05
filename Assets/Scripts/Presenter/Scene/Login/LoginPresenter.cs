@@ -17,7 +17,6 @@ public class LoginPresenter : ILoginPresenter
 {
 	ILoginView view;
 	public LoginPresenter(ILoginView view){
-
 		this.view = view;
 
 	}

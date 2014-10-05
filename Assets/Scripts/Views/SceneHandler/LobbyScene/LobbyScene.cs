@@ -74,7 +74,11 @@ public class LobbyScene : MonoBehaviour,ILobbyView
 
 	private void OnDragFinishGift()
 	{
-		VectorItemCenter = tableType1.GetComponent<UICenterOnChild>().centeredObject.transform.position;
+		if (tableType1.GetComponent<UICenterOnChild> ().centeredObject == null) {
+				tableType1.GetComponent<UICenterOnChild> ().Recenter ();
+		} else {
+			VectorItemCenter = tableType1.GetComponent<UICenterOnChild> ().centeredObject.transform.position;
+		}
 		//Logger.o
 //		if (tableType1.GetComponent<UICenterOnChild>().centeredObject != null)
 //			tableType1.GetComponent<UICenterOnChild>().CenterOn(tableType1.GetComponent<UICenterOnChild>().centeredObject.transform);
