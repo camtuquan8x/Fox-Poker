@@ -13,6 +13,11 @@ public class PokerGPSide : MonoBehaviour
 	public GameObject positionMoney;
 	public GameObject btnSit;
 
+    void Awake()
+    {
+        sendSitdown = false;
+    }
+
     void OnEnable()
     {
         onPlayerPickSide += PlayerPickSide;
