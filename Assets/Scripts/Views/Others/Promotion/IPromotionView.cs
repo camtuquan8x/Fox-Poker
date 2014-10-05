@@ -12,7 +12,9 @@ using System;
 public interface IPromotionView
 {
 	void ShowInfo(string day,string money,string shortcut);
-	void ShowBackground(string name);
+	void ShowBackground();
+	void ShowActive();
+	void ShowDeactive();
 	void ShowAnmation(bool enable);
 }
 

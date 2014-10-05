@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using System.Collections;
 
 public class PuSetting
 {
@@ -20,24 +21,38 @@ public class PuSetting
 
     void ChangeScene(EScene fromScene, EScene toScene)
     {
+		string sceneName = string.Empty;
         if (toScene == EScene.LoginScreen)
-            Application.LoadLevel(Scene.LoginScene.ToString());
+			sceneName = Scene.LoginScene.ToString ();
         else if (toScene == EScene.World_Game)
-            Application.LoadLevel(Scene.WorldGame.ToString());
+
+			sceneName = Scene.WorldGame.ToString();
         else if (toScene == EScene.Pocker_Plaza)
-            Application.LoadLevel(Scene.Poker_Plaza.ToString());
+			sceneName = Scene.Poker_Plaza.ToString();
         else if (toScene == EScene.Pocker_Lobby)
         {
             if (fromScene == EScene.World_Game)
-                Application.LoadLevel(Scene.Poker_Plaza.ToString());
+				sceneName = Scene.Poker_Plaza.ToString();
             else 
-                Application.LoadLevel(Scene.LobbyScene.ToString());
+				sceneName =  Scene.LobbyScene.ToString();
         }
         else if (toScene == EScene.Pocker_Gameplay)
-            Application.LoadLevel(Scene.GameplayScene.ToString());
+			sceneName = Scene.GameplayScene.ToString();
         else if (toScene == EScene.SplashScreen)
-            Application.LoadLevel(Scene.SplashScene.ToString());
+			sceneName =  Scene.SplashScene.ToString();
+
+		PuApp.Instance.StartCoroutine(_ChangeScene(sceneName));
     }
+
+
+	IEnumerator _ChangeScene(string sceneName)
+	{
+		PuApp.Instance.changingScene = true;
+		AsyncOperation asyncLoadlevel = Application.LoadLevelAsync (sceneName);
+		while(!asyncLoadlevel.isDone || asyncLoadlevel.progress < 1f)
+			yield return new WaitForFixedUpdate();
+		PuApp.Instance.changingScene = false;
+	}
 
     public void Update()
     {

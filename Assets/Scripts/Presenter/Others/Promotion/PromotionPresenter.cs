@@ -13,6 +13,9 @@ using UnityEngine;
 public class PromotionPresenter : IPromotionPresenter
 {
 	IPromotionView view;
+
+	public int index;
+
 	public IPromotionView View {
 		get {
 			return view;
@@ -21,16 +24,20 @@ public class PromotionPresenter : IPromotionPresenter
 			this.view = value;
 		}
 	}
+	Action action;
 	#region IPresenter implementation
 
-	public PromotionPresenter(string day,string money,string shortcut)
+	public PromotionPresenter(string day,string money,string shortcut,int index,Action action)
 	{
+		this.index = index;
 		PromotionView.newInstance (this);
 		view.ShowInfo (day, money, shortcut);
+		this.action = action;
 	}
 	public void GetPromotion ()
 	{
-
+		if (action != null)
+			action ();
 	}
 
 

@@ -1,6 +1,7 @@
 ﻿using Puppet.Service;
 using System;
 using System.Collections.Generic;
+using Puppet.Core.Model;
 
 namespace Puppet.Service
 {
@@ -81,14 +82,14 @@ namespace Puppet.Service
         }
     }
 	public class DialogPromotion : AbstractDialogData{
-		public List<string> promotions;
-		public DialogPromotion(List<string> list) : base()
+		public DataDailyGift gift;
+		public DialogPromotion(DataDailyGift gift) : base()
 		{
-			this.promotions = list;
+			this.gift = gift;
 		}
 		public override void ShowDialog ()
 		{
-
+			DialogPromotionView.Instance.ShowDialog (this);
 		}
 	}
 }

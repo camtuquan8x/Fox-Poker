@@ -6,10 +6,14 @@ using Puppet.Core;
 using Puppet.Utils;
 using Puppet.Utils.Threading;
 using Puppet.Service;
+using Puppet.Core.Model;
 
 public class PuApp : Singleton<PuApp>
 {
+	public bool changingScene;
     PuSetting setting;
+
+	bool showDialog;
 
     List<KeyValuePair<EMessage, string>> listMessage = new List<KeyValuePair<EMessage, string>>();
     protected override void Init()
@@ -23,10 +27,28 @@ public class PuApp : Singleton<PuApp>
         PuMain.Setting.Threading.QueueOnMainThread(() =>
         {
             PuMain.Dispatcher.onWarningUpgrade += Dispatcher_onWarningUpgrade;
+			PuMain.Dispatcher.onDailyGift +=Dispatcher_onDailyGift;
         });
+
 		SocialService.SocialStart ();
     }
+	void Dispatcher_onDailyGift(DataDailyGift obj)
+	{
+		StartCoroutine (ShowDialogPromotion (obj));
+	}
 
+	IEnumerator ShowDialogPromotion(DataDailyGift obj){
+
+		yield return new WaitForSeconds (0.5f);
+
+		while (changingScene) 
+			yield return new WaitForEndOfFrame ();
+
+		PuMain.Setting.Threading.QueueOnMainThread (() =>
+    	{
+			DialogService.Instance.ShowDialog (new DialogPromotion(obj));
+		});
+	}
     void Dispatcher_onWarningUpgrade(EUpgrade type, string message, string market)
     {
         PuMain.Setting.Threading.QueueOnMainThread (() =>

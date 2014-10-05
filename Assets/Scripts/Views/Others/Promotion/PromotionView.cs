@@ -1,10 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Puppet;
 
 public class PromotionView : MonoBehaviour,IPromotionView {
+	#region Unity Editor
+	public UILabel lbTitle,lbMoney,lbMoneyShortcut;
+	#endregion
 
 	#region IPromotionView implementation
-
+	private string[] name = {"icon_promotion_first","icon_promotion_center","icon_promotion_last"};
+	private string[] status = {"_active","_deactive"};
 	PromotionPresenter presenter;
 	public PromotionPresenter Presenter {
 		set{
@@ -16,21 +21,28 @@ public class PromotionView : MonoBehaviour,IPromotionView {
 	}
 	public static void newInstance (IPromotionPresenter pre)
 	{
-		GameObject gobj = GameObject.Instantiate(Resources.Load("/Prefabs/Others/PromotionItem")) as GameObject;
+		GameObject gobj = GameObject.Instantiate(Resources.Load("Prefabs/Others/PromotionItem")) as GameObject;
 		PromotionView view = gobj.GetComponent<PromotionView> ();
 		view.Presenter = pre as PromotionPresenter;
 		view.Presenter.View = view;
 
+
+	}
+	public void ShowActive ()
+	{
+		gameObject.GetComponent<UISprite> ().spriteName = name[presenter.index] + status[0];
+		gameObject.GetComponent<UISprite> ().MakePixelPerfect ();
 	}
 
+	
+	public void ShowDeactive ()
+	{
+		gameObject.GetComponent<UISprite> ().spriteName = name[presenter.index] + status[1];
+		gameObject.GetComponent<UISprite> ().MakePixelPerfect ();
+		gameObject.collider.enabled = false;
+	}
 	#endregion
-
-
-
-	#region Unity Editor
-	public UILabel lbTitle,lbMoney,lbMoneyShortcut;
-	#endregion
-
+	
 	void OnEnable(){
 		UIEventListener.Get (gameObject).onClick += OnClickGetPromotion;
 	}
@@ -45,20 +57,12 @@ public class PromotionView : MonoBehaviour,IPromotionView {
 		lbTitle.text = day;
 		lbMoney.text = money;
 		lbMoneyShortcut.text = shortcut;
+		gameObject.GetComponent<UISpriteAnimation> ().namePrefix = name[presenter.index];
 	}
 
-	public void ShowBackground (string name)
+	public void ShowBackground ()
 	{
-		gameObject.GetComponent<UISprite> ().spriteName = name;
-		gameObject.GetComponent<UISpriteAnimation> ().namePrefix = getNamePrefix(name);
-	}
-	string getNamePrefix(string name){
-		string[] names = name.Split('_');
-		string namePrefix = "";
-		for (int i = 0; i < names.Length-1; i++) {
-			namePrefix += name[i] + "_";
-		}
-		return namePrefix;
+		gameObject.GetComponent<UISpriteAnimation> ().namePrefix = name[presenter.index];
 	}
 
 	public void ShowAnmation (bool show)
