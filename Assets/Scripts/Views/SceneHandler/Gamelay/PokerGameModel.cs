@@ -27,7 +27,8 @@ public class PokerGameModel
     public void StartGame()
     {
         Puppet.Poker.EventDispatcher.onGameEvent += EventDispatcher_onGameEvent;
-        pokerGame = Puppet.API.Client.APIPokerGame.GetGameplay();
+        pokerGame = Puppet.API.Client.APIPokerGame.GetPokerGameplay();
+        Puppet.API.Client.APIPokerGame.StartListenerEvent();
     }
 
     void EventDispatcher_onGameEvent(string command, object data)
