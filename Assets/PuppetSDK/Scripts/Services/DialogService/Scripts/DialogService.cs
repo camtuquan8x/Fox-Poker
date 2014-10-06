@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Puppet;
 using Puppet.Service;
+using UnityEngine;
 
 namespace Puppet.Service
 {
@@ -17,6 +19,16 @@ namespace Puppet.Service
         public void ShowDialog(IDialogData dialog)
         {
             listDialog.Add(dialog);
+            StartCoroutine(_ShowDialog(dialog));
+        }
+
+        IEnumerator _ShowDialog(IDialogData dialog)
+        {
+            if (dialog is DialogPromotion)
+                yield return new WaitForSeconds(0.5f);
+
+            while (PuApp.Instance.changingScene) 
+                yield return new WaitForEndOfFrame();
             CheckAndShow();
         }
 

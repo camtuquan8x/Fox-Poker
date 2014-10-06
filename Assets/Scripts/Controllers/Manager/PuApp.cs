@@ -13,8 +13,6 @@ public class PuApp : Singleton<PuApp>
 	public bool changingScene;
     PuSetting setting;
 
-	bool showDialog;
-
     List<KeyValuePair<EMessage, string>> listMessage = new List<KeyValuePair<EMessage, string>>();
     protected override void Init()
     {
@@ -32,32 +30,28 @@ public class PuApp : Singleton<PuApp>
 
 		SocialService.SocialStart ();
     }
+
 	void Dispatcher_onDailyGift(DataDailyGift obj)
 	{
-		StartCoroutine (ShowDialogPromotion (obj));
+        PuMain.Setting.Threading.QueueOnMainThread(() =>
+        {
+            DialogService.Instance.ShowDialog(new DialogPromotion(obj));
+        });
 	}
 
-	IEnumerator ShowDialogPromotion(DataDailyGift obj){
-
-		yield return new WaitForSeconds (0.5f);
-
-		while (changingScene) 
-			yield return new WaitForEndOfFrame ();
-
-		PuMain.Setting.Threading.QueueOnMainThread (() =>
-    	{
-			DialogService.Instance.ShowDialog (new DialogPromotion(obj));
-		});
-	}
     void Dispatcher_onWarningUpgrade(EUpgrade type, string message, string market)
     {
-        PuMain.Setting.Threading.QueueOnMainThread (() =>
-		{
-				DialogService.Instance.ShowDialog (new DialogConfirm ("Kiểm tra phiên bản", message, delegate(bool? obj) {
-	
-			
-				}));
-		});
+        if (type == EUpgrade.ForceUpdate || type == EUpgrade.MaybeUpdate)
+        {
+            PuMain.Setting.Threading.QueueOnMainThread(() =>
+            {
+                DialogService.Instance.ShowDialog(new DialogConfirm("Kiểm tra phiên bản", message, delegate(bool? click)
+                {
+                    if (click == true || type == EUpgrade.ForceUpdate)
+                        Application.OpenURL(market);
+                }));
+            });
+        }
     }
 	
     void FixedUpdate()

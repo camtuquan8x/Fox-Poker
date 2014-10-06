@@ -7,6 +7,10 @@ using UnityEngine;
 public class PokerGPSide : MonoBehaviour
 {
     public PokerSide CurrentSide;
+    public PokerGPSide nextPosition;
+    public PokerGPSide prevPosition;
+    public int slotServer = -1;
+
 	public GameObject[] positionCardFaceCards;
 	public GameObject[] positionCardBackCards;
 	public GameObject[] positionCardGameEnd;
@@ -16,6 +20,7 @@ public class PokerGPSide : MonoBehaviour
     void Awake()
     {
         sendSitdown = false;
+        slotServer = (int)CurrentSide;
     }
 
     void OnEnable()
@@ -30,13 +35,13 @@ public class PokerGPSide : MonoBehaviour
         UIEventListener.Get(btnSit).onClick -= OnClickSit;
     }
 
-    static event Action<PokerSide> onPlayerPickSide;
+    static event Action<int> onPlayerPickSide;
     static bool sendSitdown = false;
-    void PlayerPickSide(PokerSide side)
+    void PlayerPickSide(int slot)
     {
         if (sendSitdown == false)
         {
-            PokerGameModel.Instance.SitDown(side);
+            PokerGameModel.Instance.SitDown(slot);
             sendSitdown = true;
         }
         NGUITools.SetActive(btnSit, false);
@@ -45,6 +50,6 @@ public class PokerGPSide : MonoBehaviour
     void OnClickSit(GameObject go)
     {
         if(onPlayerPickSide != null)
-            onPlayerPickSide(CurrentSide);
+            onPlayerPickSide(slotServer);
     }
 }

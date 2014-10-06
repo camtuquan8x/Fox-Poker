@@ -14,10 +14,12 @@ public class DialogRegister : SingletonPrefab<DialogRegister>
     public GameObject btnRegister, btnClose;
     Action<bool?, string, string> OnRegisterComplete;
     #endregion
-    void Start () {
+    void Start () 
+    {
 		UIPanel root = NGUITools.GetRoot(gameObject).GetComponent<UIPanel>();
 		backgroundTransparent.SetAnchor(root.gameObject, 0, 0, 0, 0);
 	}
+
     void OnEnable()
     {
         UIEventListener.Get(btnRegister).onClick += OnClickRegister;

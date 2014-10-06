@@ -8,7 +8,10 @@ using Puppet;
 
 public class PokerGameModel
 {
+    public event Action<ResponseUpdateGame> dataFirstJoinGame;
     public event Action<ResponseUpdateGame> dataUpdateGameChange;
+    public event Action<ResponsePlayerListChanged> dataPlayerListChanged;
+
     PokerGameplay pokerGame;
 
     static PokerGameModel _instance;
@@ -25,14 +28,19 @@ public class PokerGameModel
     {
         Puppet.Poker.EventDispatcher.onGameEvent += EventDispatcher_onGameEvent;
         pokerGame = Puppet.API.Client.APIPokerGame.GetGameplay();
-        if (pokerGame.dataUpdateGame != null && dataUpdateGameChange != null)
-            dataUpdateGameChange(pokerGame.dataUpdateGame);
     }
 
     void EventDispatcher_onGameEvent(string command, object data)
     {
-        if(data is ResponseUpdateGame && dataUpdateGameChange != null)
-            dataUpdateGameChange(pokerGame.dataUpdateGame);
+        if (data is ResponseUpdateGame)
+        {
+            if (command == "updateGame" && dataUpdateGameChange != null)
+                dataUpdateGameChange((ResponseUpdateGame)data);
+            else if (command == "updateGameToWaitingPlayer" && dataFirstJoinGame != null)
+                dataFirstJoinGame((ResponseUpdateGame)data);
+        }
+        else if (data is ResponsePlayerListChanged && dataPlayerListChanged != null)
+            dataPlayerListChanged((ResponsePlayerListChanged)data);
     }
 
     public void QuitGame()
@@ -40,8 +48,8 @@ public class PokerGameModel
         APIGeneric.BackScene(null);
     }
 
-    public void SitDown(PokerSide side)
+    public void SitDown(int slotServer)
     {
-        APIPokerGame.SitDown(side);
+        APIPokerGame.SitDown(slotServer);
     }
 }

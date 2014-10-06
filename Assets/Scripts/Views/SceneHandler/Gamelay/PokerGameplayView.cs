@@ -24,16 +24,7 @@ public class PokerGameplayView : MonoBehaviour
 
     void Start()
     {
-        PokerGameModel.Instance.dataUpdateGameChange += presenter_dataUpdateGameChange;
         PokerGameModel.Instance.StartGame();
-    }
-
-    void presenter_dataUpdateGameChange(ResponseUpdateGame data)
-    {
-        foreach(PokerPlayerController player in data.players)
-        {
-            playmat.SetPositionAvatarPlayer(player);
-        }
     }
 
     void OnEnable() {
