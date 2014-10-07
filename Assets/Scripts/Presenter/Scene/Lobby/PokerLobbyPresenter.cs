@@ -31,9 +31,14 @@ public class PokerLobbyPresenter : ILobbyPresenter
     }
     public PokerLobbyPresenter(ILobbyView view)
     {
+		HeaderMenuView.Instance.ShowInLobby ();
+	
         this.view = view;
         ViewStart();
     }
+
+
+
     public void LoadChannels()
     {
         APILobby.GetGroupsLobby(OnGetGroupNameCallback);
@@ -95,20 +100,11 @@ public class PokerLobbyPresenter : ILobbyPresenter
     public void ViewStart()
     {
         LoadChannels();
-        UserInfo userInfo = APIUser.GetUserInformation();
-        view.ShowUserName(userInfo.info.userName);
-		if(userInfo.assets !=null && userInfo.assets.content.Length > 0)
-        	view.ShowMoney(userInfo.assets.content[0].value.ToString());
+	
     }
 
     public void ViewEnd()
     {
-
-    }
-
-    public void BackScene()
-    {
-        Application.LoadLevel(Scene.Poker_Plaza.ToString());
     }
 
 

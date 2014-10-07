@@ -9,13 +9,12 @@ public class WorldGameScene : MonoBehaviour,IWorldGameView
 
     #region Unity Editor
     public UITable tableGame;
-	public UILabel lbUserName,lbMoney,lbLevel;
-	public UISlider expSlider;
     #endregion
 
     private WorldGamePresenter presenter { get; set; }
     void Start () {
         presenter = new WorldGamePresenter(this);
+		HeaderMenuView.Instance.ShowInWorldGame();
 	}
 
 	// Update is called once per frame
@@ -30,15 +29,6 @@ public class WorldGameScene : MonoBehaviour,IWorldGameView
             GameItem.Create(item, tableGame.transform);
         }
         tableGame.Reposition();
-    }
-
-    public void ShowUserName(string userName)
-    {
-        lbUserName.text = userName;
-    }
-    public void ShowChip(string chip)
-    {
-        lbMoney.text = chip;
     }
 
     public void ShowLevel(string level)

@@ -108,10 +108,6 @@ public class LoginPresenter : ILoginPresenter
         });
 
     }
-    public void BackScene()
-    {
-        throw new NotImplementedException();
-    }
 }
 
 

@@ -6,6 +6,5 @@ using System.Text;
 
 public interface IScenePresenter : IPresenter
 {
-    void BackScene();
 }
 

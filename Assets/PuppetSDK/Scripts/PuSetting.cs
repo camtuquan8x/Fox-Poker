@@ -11,6 +11,8 @@ public class PuSetting
 {
 	public static string UniqueDeviceId;
 
+	public string sceneName;
+
     public PuSetting(string domain, string socketServer)
     {
 		PuMain.Setting = new CurrentSetting(domain, socketServer);
@@ -21,7 +23,7 @@ public class PuSetting
 
     void ChangeScene(EScene fromScene, EScene toScene)
     {
-		string sceneName = string.Empty;
+		sceneName = string.Empty;
         if (toScene == EScene.LoginScreen)
 			sceneName = Scene.LoginScene.ToString ();
         else if (toScene == EScene.World_Game)

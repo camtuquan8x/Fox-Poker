@@ -11,7 +11,7 @@ using Puppet.Core.Model;
 public class PuApp : Singleton<PuApp>
 {
 	public bool changingScene;
-    PuSetting setting;
+    public PuSetting setting;
 
     List<KeyValuePair<EMessage, string>> listMessage = new List<KeyValuePair<EMessage, string>>();
     protected override void Init()

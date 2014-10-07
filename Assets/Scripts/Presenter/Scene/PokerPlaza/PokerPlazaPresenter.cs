@@ -22,6 +22,7 @@ public class PokerPlazaPresenter : IPlazaPresenter
 
     public void JoinLobby()
     {
+		PuApp.Instance.setting.sceneName = Scene.LobbyScene.ToString ();
         Application.LoadLevel(Scene.LobbyScene.ToString());
     }
 
@@ -38,19 +39,6 @@ public class PokerPlazaPresenter : IPlazaPresenter
     public IPlazaView view { get; set; }
 
 
-    public void ShowUserName()
-    {
-        UserInfo info = APIUser.GetUserInformation();
-        view.ShowUserName(info.info.userName);
-    }
-
-    public void ShowMoney()
-    {
-        UserInfo info = APIUser.GetUserInformation();
-		if(info.assets !=null && info.assets.content.Length > 0)
-        	view.ShowMoney(info.assets.content[0].value.ToString());
-    }
-
 
 
     public void JoinToEvent()
@@ -60,17 +48,10 @@ public class PokerPlazaPresenter : IPlazaPresenter
 
     public void ViewStart()
     {
-        ShowUserName();
-        ShowMoney();
     }
     public void ViewEnd()
     {
         throw new NotImplementedException();
-    }
-
-    public void BackScene()
-    {
-        PuApp.Instance.BackScene();
     }
 }
 

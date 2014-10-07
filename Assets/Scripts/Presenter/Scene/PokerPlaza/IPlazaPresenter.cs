@@ -10,8 +10,6 @@ public interface IPlazaPresenter : IScenePresenter
     void JoinLobby();
     void PlayNow();
     void GetListQuest();
-    void ShowUserName();
-    void ShowMoney();
     void JoinToEvent();
 
 }

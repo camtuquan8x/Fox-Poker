@@ -8,8 +8,7 @@ using Puppet.Service;
 
 public class LobbyScene : MonoBehaviour,ILobbyView
 {
-    public GameObject btnType, btnSearch, btnBack, btnCreateGame;
-    public UILabel txtUsername, txtChip;
+    public GameObject btnCreateGame;
 	public UITable tableType1,tableType2,tableTab;
     bool isShowType1 = true;
 
@@ -18,7 +17,9 @@ public class LobbyScene : MonoBehaviour,ILobbyView
     List<LobbyTab> tabs = new List<LobbyTab>();
     void Start()
     {
+		HeaderMenuView.Instance.SetChangeTypeLobbyCallBack(ShowLobbyByType);
         presenter = new PokerLobbyPresenter(this);
+
     }
     void OnDestroy() {
         presenter.ViewEnd();
@@ -34,9 +35,8 @@ public class LobbyScene : MonoBehaviour,ILobbyView
     }
     void OnEnable()
     {
-        UIEventListener.Get(btnType).onClick += btnTypeLobbyClick;
-        UIEventListener.Get(btnBack).onClick += OnClickBack;
         UIEventListener.Get(btnCreateGame).onClick += OnClickCreateGame; 
+
     }
 
     private void OnClickCreateGame(GameObject go)
@@ -53,9 +53,7 @@ public class LobbyScene : MonoBehaviour,ILobbyView
 
     void OnDisable()
     {
-        UIEventListener.Get(btnType).onClick -= btnTypeLobbyClick;
-        UIEventListener.Get(btnBack).onClick -= OnClickBack;
-        UIEventListener.Get(btnCreateGame).onClick += OnClickCreateGame;
+        UIEventListener.Get(btnCreateGame).onClick -= OnClickCreateGame;
     }
   
 	private void ClearAllRow(){
@@ -112,12 +110,12 @@ public class LobbyScene : MonoBehaviour,ILobbyView
         tableType2.repositionNow = true;
     }
 
-    void btnTypeLobbyClick(GameObject go)
+    public void ShowLobbyByType()
     {
         if (isShowType1)
         {
             isShowType1 = false;
-            go.transform.GetChild(0).GetComponent<UISprite>().spriteName = "icon_menu_type_2";
+//          go.transform.GetChild(0).GetComponent<UISprite>().spriteName = "icon_menu_type_2";
             tableType1.transform.parent.parent.gameObject.SetActive(false);
             tableType2.transform.parent.parent.gameObject.SetActive(true);
             StartCoroutine(initShowRowType2(presenter.Lobbies));
@@ -125,17 +123,12 @@ public class LobbyScene : MonoBehaviour,ILobbyView
         else
         {
             isShowType1 = true;
-            go.transform.GetChild(0).GetComponent<UISprite>().spriteName = "icon_menu";
+//            go.transform.GetChild(0).GetComponent<UISprite>().spriteName = "icon_menu";
             tableType1.transform.parent.parent.gameObject.SetActive(true);
             tableType2.transform.parent.parent.gameObject.SetActive(false);
             StartCoroutine(initShowRowType1(presenter.Lobbies));
         }
        
-    }
-
-    void OnClickBack(GameObject obj)
-    {
-        presenter.BackScene();
     }
 
     public void DrawChannels(List<DataChannel> channels)
@@ -194,17 +187,7 @@ public class LobbyScene : MonoBehaviour,ILobbyView
     }
 
     public PokerLobbyPresenter presenter { get; set; }
-
-    public void ShowUserName(string userName)
-    {
-        txtUsername.text = userName;
-
-    }
-
-    public void ShowMoney(string money)
-    {
-        txtChip.text = money;
-    }
+	
 
     public void JoinGame(DataLobby lobby)
     {

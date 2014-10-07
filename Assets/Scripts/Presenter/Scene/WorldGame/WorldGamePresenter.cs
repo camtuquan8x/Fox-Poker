@@ -28,20 +28,16 @@ public class WorldGamePresenter : IWorldGamePresenter
     public void ViewStart()
     {
         GetGameItem();
-        UserInfo info = APIUser.GetUserInformation();
-        view.ShowUserName(info.info.userName);
-		if(info.assets !=null && info.assets.content.Length > 0)
-        	view.ShowChip(info.assets.content[0].value.ToString());
+//        UserInfo info = APIUser.GetUserInformation();
+//        view.ShowUserName(info.info.userName);
+//		if(info.assets !=null && info.assets.content.Length > 0)
+//        	view.ShowChip(info.assets.content[0].value.ToString());
     }
     public void ViewEnd()
     {
 
     }
     public IWorldGameView view { get; set; }
-
-    public void BackScene()
-    {
-        PuApp.Instance.BackScene();
-    }
+	
 }
 
