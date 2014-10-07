@@ -5,14 +5,17 @@ using Puppet.Poker.Datagram;
 using System;
 using Puppet.API.Client;
 using Puppet;
+using Puppet.Core.Model;
 
 public class PokerGameModel
 {
     public event Action<ResponseUpdateGame> dataFirstJoinGame;
     public event Action<ResponseUpdateGame> dataUpdateGameChange;
     public event Action<ResponsePlayerListChanged> dataPlayerListChanged;
+    public event Action<ResponseUpdateHand> onEventUpdateHand;
 
-    PokerGameplay pokerGame;
+    public PokerGameplay pokerGame;
+    public UserInfo mUserInfo;
 
     static PokerGameModel _instance;
     public static void NewInstance()
@@ -26,6 +29,7 @@ public class PokerGameModel
 
     public void StartGame()
     {
+        mUserInfo = Puppet.API.Client.APIUser.GetUserInformation();
         Puppet.Poker.EventDispatcher.onGameEvent += EventDispatcher_onGameEvent;
         pokerGame = Puppet.API.Client.APIPokerGame.GetPokerGameplay();
         Puppet.API.Client.APIPokerGame.StartListenerEvent();
@@ -42,6 +46,8 @@ public class PokerGameModel
         }
         else if (data is ResponsePlayerListChanged && dataPlayerListChanged != null)
             dataPlayerListChanged((ResponsePlayerListChanged)data);
+        else if (data is ResponseUpdateHand && onEventUpdateHand != null)
+            onEventUpdateHand((ResponseUpdateHand)data);
     }
 
     public void QuitGame()

@@ -16,7 +16,6 @@ public class PokerGameplayView : MonoBehaviour
     public PokerGameplayPlaymat playmat;
     #endregion
     
-
     void Awake()
     {
         PokerGameModel.NewInstance();
@@ -65,67 +64,54 @@ public class PokerGameplayView : MonoBehaviour
 
     void OnButtonQuitClick(GameObject go)
     {
-        PokerGameModel.Instance.QuitGame();
     }
 
     private void OnButtonHeaderSettingClickCallBack(GameObject go)
     {
-        throw new NotImplementedException();
     }
 
     private void OnButtonHeaderRechargeClickCallBack(GameObject go)
     {
-        throw new NotImplementedException();
     }
 
     private void OnButtonHeaderUpClickCallBack(GameObject go)
     {
-        throw new NotImplementedException();
     }
 
     private void OnButtonHeaderBackClickCallBack(GameObject go)
     {
-        throw new NotImplementedException();
     }
 
     private void OnButtonSendMessageClickCallBack(GameObject go)
     {
-        throw new NotImplementedException();
     }
 
     private void OnButtonRuleClickCallBack(GameObject go)
     {
-        throw new NotImplementedException();
     }
 
     private void OnButtonGameMiniClickCallBack(GameObject go)
     {
-        throw new NotImplementedException();
     }
 
     private void OnButtonConvertMoneyClickCallBack(GameObject go)
     {
-        throw new NotImplementedException();
     }
 
     private void OnButtonFollowBetClickCallBack(GameObject go)
     {
-        throw new NotImplementedException();
     }
 
     private void OnButtonAddBetClickCallBack(GameObject go)
     {
-        throw new NotImplementedException();
     }
 
     private void OnButtonLeaveTurnClickCallBack(GameObject go)
     {
-        throw new NotImplementedException();
     }
 
     private void OnButtonViewClickCallBack(GameObject go)
     {
-        throw new NotImplementedException();
     }
     
 }

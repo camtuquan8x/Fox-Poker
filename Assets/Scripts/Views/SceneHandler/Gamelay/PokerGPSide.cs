@@ -7,10 +7,7 @@ using UnityEngine;
 public class PokerGPSide : MonoBehaviour
 {
     public PokerSide CurrentSide;
-    public PokerGPSide nextPosition;
-    public PokerGPSide prevPosition;
-    public int slotServer = -1;
-
+    
 	public GameObject[] positionCardFaceCards;
 	public GameObject[] positionCardBackCards;
 	public GameObject[] positionCardGameEnd;
@@ -20,7 +17,6 @@ public class PokerGPSide : MonoBehaviour
     void Awake()
     {
         sendSitdown = false;
-        slotServer = (int)CurrentSide;
     }
 
     void OnEnable()
@@ -50,6 +46,6 @@ public class PokerGPSide : MonoBehaviour
     void OnClickSit(GameObject go)
     {
         if(onPlayerPickSide != null)
-            onPlayerPickSide(slotServer);
+            onPlayerPickSide((int)CurrentSide);
     }
 }
