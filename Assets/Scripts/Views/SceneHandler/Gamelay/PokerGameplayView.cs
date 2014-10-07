@@ -9,9 +9,8 @@ using UnityEngine;
 public class PokerGameplayView : MonoBehaviour
 {
     #region UnityEditor
-    public GameObject btnQuit;
     public GameObject btnView, btnLeaveTurn, btnAddBet, btnFollowBet, btnConvertMoney, btnGameMini, btnRule, btnSendMessage;
-    public GameObject headerMenuBtnBack, headerMenuBtnUp, headerMenuBtnRecharge, headerMenuBtnSettings;
+	public GameObject btnViewCheckBox, btnFollowBetCheckBox, btnFollowAllBetCheckbox;
     public UIInput txtMessage;
     public PokerGameplayPlaymat playmat;
     #endregion
@@ -19,17 +18,17 @@ public class PokerGameplayView : MonoBehaviour
     void Awake()
     {
         PokerGameModel.NewInstance();
+		ShowOrHideCheckboxInButton (false);
     }
 
     void Start()
     {
+		HeaderMenuView.Instance.ShowInGameplay ();	
         PokerGameModel.Instance.StartGame();
     }
 
     void OnEnable() {
 
-        if(btnQuit != null)
-            UIEventListener.Get(btnQuit).onClick += OnButtonQuitClick;
 
         //UIEventListener.Get(btnView).onClick += OnButtonViewClickCallBack;
         //UIEventListener.Get(btnLeaveTurn).onClick += OnButtonLeaveTurnClickCallBack;
@@ -47,7 +46,6 @@ public class PokerGameplayView : MonoBehaviour
     }
     void OnDisable()
     {
-        UIEventListener.Get(btnQuit).onClick -= OnButtonQuitClick;
         //UIEventListener.Get(btnView).onClick -= OnButtonViewClickCallBack;
         //UIEventListener.Get(btnLeaveTurn).onClick -= OnButtonLeaveTurnClickCallBack;
         //UIEventListener.Get(btnAddBet).onClick -= OnButtonAddBetClickCallBack;
@@ -113,6 +111,17 @@ public class PokerGameplayView : MonoBehaviour
     private void OnButtonViewClickCallBack(GameObject go)
     {
     }
-    
+	void ShowOrHideCheckboxInButton(bool isShow){
+		if (!isShow) {
+			btnViewCheckBox.transform.FindChild ("Checkbox").gameObject.SetActive (false);
+			btnFollowBetCheckBox.transform.FindChild ("Checkbox").gameObject.SetActive (false);
+			btnFollowAllBetCheckbox.transform.FindChild ("Checkbox").gameObject.SetActive (false);
+		} else {
+			
+			btnViewCheckBox.transform.FindChild ("Checkbox").gameObject.SetActive (true);
+			btnFollowBetCheckBox.transform.FindChild ("Checkbox").gameObject.SetActive (true);
+			btnFollowAllBetCheckbox.transform.FindChild ("Checkbox").gameObject.SetActive (true);
+		}
+	}
 }
 

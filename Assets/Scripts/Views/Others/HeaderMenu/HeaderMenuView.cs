@@ -16,13 +16,16 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 {
 
 	#region Unity Editor
-	public UITable tableButton;
-	public GameObject btnBack, btnCommon, btnRecharge, btnMessage,btnLeague , btnSettings, btnLobbyChangeTypeShow, btnSearch;
+	public UITable tableButton,tableLeft;
+	public GameObject btnBack, btnCommon, btnRecharge, btnMessage,btnLeague , btnSettings, btnLobbyChangeTypeShow, btnSearch,btnUp;
+	public GameObject formInfo;
 	public GameObject logoInLobby;
 	public UITexture avatar;
 	public UILabel lbUserName,lbChip,lbLevel;
 	public UISlider slideLevel;
 	#endregion
+
+	Action lobbyChangeTypeCallBack;
 
 
 	public  HeaderMenuPresenter presenter;
@@ -38,6 +41,8 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		tableButton.Reposition ();
 		slideLevel.transform.parent.parent.gameObject.SetActive (true);
 		avatar.transform.parent.gameObject.SetActive (true);
+		tableLeft.Reposition ();
+
 	}
 
 	public void ShowInPlaza(){
@@ -48,10 +53,11 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		btnSettings.SetActive (true);
 		btnLeague.SetActive (true);
 
+
 		btnLobbyChangeTypeShow.SetActive (false);
 		btnSearch.SetActive (false);
 		tableButton.Reposition ();
-	
+		tableLeft.Reposition ();
 	}
 	public void ShowInLobby(){
 		btnLobbyChangeTypeShow.SetActive (true);
@@ -64,17 +70,22 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		btnMessage.SetActive (false);
 		btnSettings.SetActive (false);
 		btnLeague.SetActive (false);
+		tableLeft.Reposition ();
 		tableButton.Reposition ();
 	}
 	public void ShowInGameplay(){
 		btnSearch.SetActive (true);
 		btnRecharge.SetActive (true);
 		btnBack.SetActive (true);
+		btnUp.SetActive (true);
+
+		formInfo.SetActive (false);
 		btnLobbyChangeTypeShow.SetActive (false);
 		btnCommon.SetActive (false);
 		btnMessage.SetActive (false);
 		btnSettings.SetActive (false);
 		btnLeague.SetActive (false);
+		tableLeft.Reposition ();
 		tableButton.Reposition ();
 	}
 	void Start(){
@@ -82,13 +93,21 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		presenter.ViewStart ();
 		UIPanel panel = gameObject.GetComponent<UIPanel> ();
 		panel.SetAnchor( NGUITools.GetRoot (gameObject));
+		presenter.OnShowLobbyRowTypeCallBack = OnLobbyShowTypeHandler;
 	}
 	void OnDestroy(){
 		presenter.ViewEnd();
 	}
 	public void SetChangeTypeLobbyCallBack(Action callback){
-		presenter.OnShowLobbyRowTypeCallBack = callback;
+		lobbyChangeTypeCallBack = callback;
 	}
+
+	void OnLobbyShowTypeHandler ()
+	{
+		if (lobbyChangeTypeCallBack != null)
+			lobbyChangeTypeCallBack ();
+	}
+
 	void OnEnable(){
 		UIEventListener.Get (btnBack).onClick += OnBackClickCallBack;
 		UIEventListener.Get (btnCommon).onClick += OnCommonClickCallBack;

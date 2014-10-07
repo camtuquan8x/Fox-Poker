@@ -17,9 +17,28 @@ public class LobbyScene : MonoBehaviour,ILobbyView
     List<LobbyTab> tabs = new List<LobbyTab>();
     void Start()
     {
-		HeaderMenuView.Instance.SetChangeTypeLobbyCallBack(ShowLobbyByType);
+		HeaderMenuView.Instance.ShowInLobby ();
+
         presenter = new PokerLobbyPresenter(this);
 
+		HeaderMenuView.Instance.SetChangeTypeLobbyCallBack(delegate() {
+			if (isShowType1)
+			{
+				isShowType1 = false;
+				//          go.transform.GetChild(0).GetComponent<UISprite>().spriteName = "icon_menu_type_2";
+				tableType1.transform.parent.parent.gameObject.SetActive(false);
+				tableType2.transform.parent.parent.gameObject.SetActive(true);
+				StartCoroutine(initShowRowType2(presenter.Lobbies));
+			}
+			else
+			{
+				isShowType1 = true;
+				//            go.transform.GetChild(0).GetComponent<UISprite>().spriteName = "icon_menu";
+				tableType1.transform.parent.parent.gameObject.SetActive(true);
+				tableType2.transform.parent.parent.gameObject.SetActive(false);
+				StartCoroutine(initShowRowType1(presenter.Lobbies));
+			}
+		});
     }
     void OnDestroy() {
         presenter.ViewEnd();
@@ -112,22 +131,7 @@ public class LobbyScene : MonoBehaviour,ILobbyView
 
     public void ShowLobbyByType()
     {
-        if (isShowType1)
-        {
-            isShowType1 = false;
-//          go.transform.GetChild(0).GetComponent<UISprite>().spriteName = "icon_menu_type_2";
-            tableType1.transform.parent.parent.gameObject.SetActive(false);
-            tableType2.transform.parent.parent.gameObject.SetActive(true);
-            StartCoroutine(initShowRowType2(presenter.Lobbies));
-        }
-        else
-        {
-            isShowType1 = true;
-//            go.transform.GetChild(0).GetComponent<UISprite>().spriteName = "icon_menu";
-            tableType1.transform.parent.parent.gameObject.SetActive(true);
-            tableType2.transform.parent.parent.gameObject.SetActive(false);
-            StartCoroutine(initShowRowType1(presenter.Lobbies));
-        }
+        
        
     }
 
