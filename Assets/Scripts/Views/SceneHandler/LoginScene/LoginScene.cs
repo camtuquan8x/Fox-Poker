@@ -18,6 +18,9 @@ public class LoginScene : MonoBehaviour,ILoginView
 
 	void Awake()
 	{
+        if (Application.platform == RuntimePlatform.WindowsPlayer)
+            Screen.SetResolution(960, 640, false);
+
 		PuSetting.UniqueDeviceId = SystemInfo.deviceUniqueIdentifier;
 	}
 	void Start(){
@@ -54,9 +57,9 @@ public class LoginScene : MonoBehaviour,ILoginView
         string userName = txtUsername.value;
         string password = txtPassword.value;
         if (string.IsNullOrEmpty(userName))
-            userName = "cong91";
+            userName = "dungnv";
         if (string.IsNullOrEmpty(password))
-            password = "cong";
+            password = "puppet#89";
 		presenter.LoginWithUserName (userName, password);
     }
 

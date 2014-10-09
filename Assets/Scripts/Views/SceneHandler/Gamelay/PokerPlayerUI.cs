@@ -27,10 +27,10 @@ public class PokerPlayerUI : MonoBehaviour
 
         for (int i = 0; i < cardOnHands.Length; i++)
         {
-            cardOnHands[i].transform.parent = side.positionCardBackCards[i].transform;
+            cardOnHands[i].transform.parent = side.positionCardFaceCards[i].transform;
             cardOnHands[i].transform.localRotation = Quaternion.identity;
             cardOnHands[i].transform.localPosition = Vector3.zero;
-            cardOnHands[i].transform.localScale = PokerGameModel.Instance.mUserInfo.info.userName == data.userName ? Vector3.one : Vector3.one /2;
+            cardOnHands[i].transform.localScale = PokerGameModel.Instance.mUserInfo.info.userName == data.userName ? Vector3.one : Vector3.one /3;
         }
     }
 }

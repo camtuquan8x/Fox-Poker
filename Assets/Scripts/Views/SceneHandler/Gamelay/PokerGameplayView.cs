@@ -17,7 +17,6 @@ public class PokerGameplayView : MonoBehaviour
     
     void Awake()
     {
-        PokerGameModel.NewInstance();
 		ShowOrHideCheckboxInButton (false);
     }
 

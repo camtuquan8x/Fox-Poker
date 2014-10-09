@@ -13,18 +13,20 @@ public class PokerGameModel
     public event Action<ResponseUpdateGame> dataUpdateGameChange;
     public event Action<ResponsePlayerListChanged> dataPlayerListChanged;
     public event Action<ResponseUpdateHand> onEventUpdateHand;
+    public event Action<ResponseUpdateTurnChange> dataTurnGame;
 
     public PokerGameplay pokerGame;
     public UserInfo mUserInfo;
 
     static PokerGameModel _instance;
-    public static void NewInstance()
-    {
-        _instance = new PokerGameModel();
-    }
     public static PokerGameModel Instance
     {
-        get { return _instance; }
+        get 
+        {
+            if (_instance == null)
+                _instance = new PokerGameModel();
+            return _instance; 
+        }
     }
 
     public void StartGame()
@@ -48,11 +50,14 @@ public class PokerGameModel
             dataPlayerListChanged((ResponsePlayerListChanged)data);
         else if (data is ResponseUpdateHand && onEventUpdateHand != null)
             onEventUpdateHand((ResponseUpdateHand)data);
+        else if (data is ResponseUpdateTurnChange && dataTurnGame != null)
+            dataTurnGame((ResponseUpdateTurnChange)data);
     }
 
     public void QuitGame()
     {
         APIGeneric.BackScene(null);
+        _instance = null;
     }
 
     public void SitDown(int slotServer)

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Puppet.Poker.Models;
+using Puppet;
 
 public class PokerCardObject : MonoBehaviour 
 {
@@ -23,23 +24,53 @@ public class PokerCardObject : MonoBehaviour
         UpdateUI();
     }
 
+    public void SetDataCard(PokerCard card, int index)
+    {
+        SetDataCard(card);
+        SetIndexCard(index);
+    }
+
+    public void SetIndexCard(int i)
+    {
+        spriteBackground.depth += i * 5;
+        spriteRank.depth += i * 5;
+        spriteSuit.depth += i * 5;
+        spriteIcon.depth += i * 5;
+    }
+
     public void UpdateUI()
     {
         spriteBackground.spriteName = card.cardId < 0 ? BACKGROUND[0] : BACKGROUND[1];
         int rank = (int)card.GetRank();
         int suit = (int)card.GetSuit();
+
         NGUITools.SetActive(spriteIcon.gameObject, card.cardId >= 0);
         NGUITools.SetActive(spriteRank.gameObject, rank > 0);
         NGUITools.SetActive(spriteSuit.gameObject, suit >= 0);
 
+        if (card.cardId >= 0)
+        {
+            Logger.Log("CardId: " + card.cardId);
+            Logger.Log("CardRank: " + card.GetRank() + " - " + rank);
+            Logger.Log("CardSuit: " + card.GetSuit() + " - " + suit);
+        }
+
         if (rank > 0)
             spriteRank.spriteName = RANK_IMAGE[rank - 1];
+
         if (suit >= 0)
             spriteSuit.spriteName = SUIT_IMAGE[suit];
 
-        if (rank > 1 && rank < 11)
+        if (rank > 0 && rank < 11)
             spriteIcon.spriteName = spriteSuit.spriteName;
         else if (rank >= 11)
             spriteIcon.spriteName = ICON_IMAGE[rank - 11];
+
+        if(card.cardId >= 0)
+        {
+            spriteSuit.color = spriteRank.color = card.IsRedCard() ? Color.red : Color.black;
+            if (rank < 11)
+                spriteIcon.color = spriteSuit.color;
+        }
     }
 }

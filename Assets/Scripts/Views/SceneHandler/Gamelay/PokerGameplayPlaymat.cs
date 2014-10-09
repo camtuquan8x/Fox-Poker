@@ -38,10 +38,10 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
             if (PokerGameModel.Instance.mUserInfo.info.userName == p.userName)
                 for(int i=0;i<handSize;i++)
-                    cardObjects[i].GetComponent<PokerCardObject>().SetDataCard(new PokerCard(data.hand[i]));
+                    cardObjects[i].GetComponent<PokerCardObject>().SetDataCard(new PokerCard(data.hand[i]), i);
             else
                 for (int i = 0; i < handSize; i++)
-                    cardObjects[i].GetComponent<PokerCardObject>().SetDataCard(new PokerCard());
+                    cardObjects[i].GetComponent<PokerCardObject>().SetDataCard(new PokerCard(), i);
 
             dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().UpdateSetCardObject(cardObjects);
         }
