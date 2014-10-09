@@ -5,48 +5,52 @@ using Puppet;
 using System;
 using Puppet.Service;
 [PrefabAttribute(Name = "Prefabs/Dialog/DialogRegister", Depth = 9, IsAttachedToCamera = true, IsUIPanel = true)]
-public class DialogRegister : SingletonPrefab<DialogRegister>
+public class DialogRegisterView : BaseDialog<DialogRegister,DialogRegisterView>
 {
 
     #region UnityEditor
     public UIInput userName, password, rePassword;
 	public UISprite backgroundTransparent;
-    public GameObject btnRegister, btnClose;
     Action<bool?, string, string> OnRegisterComplete;
     #endregion
+
     void Start () 
     {
 		UIPanel root = NGUITools.GetRoot(gameObject).GetComponent<UIPanel>();
 		backgroundTransparent.SetAnchor(root.gameObject, 0, 0, 0, 0);
 	}
-
-    void OnEnable()
-    {
-        UIEventListener.Get(btnRegister).onClick += OnClickRegister;
-        UIEventListener.Get(btnClose).onClick += OnClickClose;
-    }
-
-
-    void OnDisable()
-    {
-        UIEventListener.Get(btnRegister).onClick -= OnClickRegister;
-        UIEventListener.Get(btnClose).onClick -= OnClickClose;
-    }
-
-    private void OnClickRegister(GameObject go)
-    {
-        string name = userName.value;
-        string pass = password.value;
-        string rePass = rePassword.value;
-        if (pass.Equals(rePass))
-        {
-            APILogin.QuickRegister(name, pass, QuickRegisterCallBack);
-        }
-        else
-        {
-            Logger.Log("Mật khẩu không giống nhau");
-        }
-    }
+	public override void ShowDialog (DialogRegister data)
+	{
+		base.ShowDialog (data);
+		this.OnRegisterComplete = data.OnRegisterComplete;
+		if (!string.IsNullOrEmpty (data.suggestUser)) {
+			userName.value = data.suggestUser;
+		}
+	}
+	protected override void OnPressButton (bool? pressValue, DialogRegister data)
+	{
+		if (pressValue == true) {
+			string name = userName.value;
+			string pass = password.value;
+			string rePass = rePassword.value;
+			if(string.IsNullOrEmpty(name) || string.IsNullOrEmpty(pass) || string.IsNullOrEmpty(rePass)){
+				PuMain.Setting.Threading.QueueOnMainThread(() =>
+				                                           {
+					DialogService.Instance.ShowDialog(new DialogMessage("Lỗi", "Không được để trống các trường", null));
+				});
+				return;
+			}
+				if (pass.Equals(rePass))
+				{
+					APILogin.QuickRegister(name, pass, QuickRegisterCallBack);
+				}
+				else
+				{
+					Logger.Log("Mật khẩu không giống nhau");
+				}
+		}
+		base.OnPressButton (pressValue, data);
+	}
 
     private void QuickRegisterCallBack(bool status, string message)
     {
@@ -56,7 +60,6 @@ public class DialogRegister : SingletonPrefab<DialogRegister>
             {
                 if (OnRegisterComplete != null)
                     OnRegisterComplete(status, userName.value, password.value);
-                GameObject.Destroy(gameObject);
             });
         }
         else
@@ -67,9 +70,7 @@ public class DialogRegister : SingletonPrefab<DialogRegister>
             });
         }
     }
-    public void ShowDialog( Action<bool?, string, string> OnRegisterComplete) {
-        this.OnRegisterComplete = OnRegisterComplete;
-    }
+
 
 
     private void OnClickClose(GameObject go)

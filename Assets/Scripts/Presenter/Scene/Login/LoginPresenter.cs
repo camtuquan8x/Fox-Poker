@@ -20,10 +20,9 @@ public class LoginPresenter : ILoginPresenter
 		this.view = view;
 
 	}
-
     public void ShowRegister()
     {
-        view.ShowRegister(RegisterComplete);
+		DialogService.Instance.ShowDialog (new DialogRegister (RegisterComplete));
 	}
     void RegisterComplete(bool? status,string userName,string password){
         if (status == true)
@@ -72,8 +71,14 @@ public class LoginPresenter : ILoginPresenter
 	void OnGetAccessTokenWithFacebookCallBack (bool status, string message, System.Collections.Generic.Dictionary<string, object> data)
 	{
 		foreach (string key in data.Keys) {
-			Logger.Log ("=======> " + key + " - " + data[key].ToString());	
+		
 		}
+		if (data.ContainsKey ("suggestUser")) {
+			DialogService.Instance.ShowDialog (new DialogRegister (data ["suggestUser"].ToString(), RegisterComplete));
+		} else if (data.ContainsKey ("accessToken")) {
+			LoginWithAccessToken(data["accessToken"].ToString());
+		}
+
 
 	}
 
@@ -96,9 +101,9 @@ public class LoginPresenter : ILoginPresenter
 
 	void onLoginComplete (SocialType arg1, bool arg2)
 	{
-			if(arg2){
-				GetAccessTokenWithSocial(SocialService.GetSocialNetwork(arg1).AccessToken);
-	        }
+		if(arg2){
+			GetAccessTokenWithSocial(SocialService.GetSocialNetwork(arg1).AccessToken);
+        }
 	}
     void ShowDialogErrorInMainThread(string message)
     {

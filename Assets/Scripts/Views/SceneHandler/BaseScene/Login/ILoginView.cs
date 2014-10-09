@@ -10,7 +10,7 @@
 using System;
 public interface ILoginView : IView
 {
-    void ShowRegister(Action<bool?, string, string> OnRegisterComplete);
+
 }
 
 

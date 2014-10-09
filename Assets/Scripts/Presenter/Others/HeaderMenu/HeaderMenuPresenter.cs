@@ -11,6 +11,8 @@ using System;
 using Puppet.Core.Model;
 using Puppet;
 using UnityEngine;
+using Puppet.Service;
+using Puppet.API.Client;
 
 public class HeaderMenuPresenter : IHeaderMenuPresenter
 {
@@ -36,8 +38,14 @@ public class HeaderMenuPresenter : IHeaderMenuPresenter
 			Application.LoadLevel (Scene.Poker_Plaza.ToString ());
 			PuApp.Instance.setting.sceneName = Scene.Poker_Plaza.ToString ();
 			return;
-		}
-		PuApp.Instance.BackScene();
+		}else if(PuApp.Instance.setting.sceneName == Scene.GameplayScene.ToString ()){
+			DialogService.Instance.ShowDialog(new DialogConfirm("XÁC NHẬN THOÁT","Bạn có chắc chắn muốn thoát khỏi bàn chơi",delegate(bool? confirm){
+				if(confirm == true){
+					PuApp.Instance.BackScene();
+				}
+			}));
+		}else
+			PuApp.Instance.BackScene();
 	}
 	
 

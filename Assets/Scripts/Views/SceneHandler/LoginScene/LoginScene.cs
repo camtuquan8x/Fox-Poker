@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using Puppet.Core.Network.Http;
 using Puppet;
@@ -21,7 +21,6 @@ public class LoginScene : MonoBehaviour,ILoginView
 		PuSetting.UniqueDeviceId = SystemInfo.deviceUniqueIdentifier;
 	}
 	void Start(){
-		Logger.Log ("=========> Chay vao day khong" );
 		presenter = new LoginPresenter (this);
 		presenter.ViewStart();
 	}
@@ -85,11 +84,7 @@ public class LoginScene : MonoBehaviour,ILoginView
 	{
 		DialogService.Instance.ShowDialog(new DialogMessage("Lỗi", message, null));
 	}
-
-	public void ShowRegister (Action<bool?, string, string> OnRegisterComplete)
-	{
-        DialogRegister.Instance.ShowDialog(OnRegisterComplete);
-	}
+	
 	#endregion
 
 

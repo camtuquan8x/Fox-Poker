@@ -169,7 +169,6 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 
 	void OnBackClickCallBack (GameObject go)
 	{
-
 		presenter.OnBackPressed ();	
 	}
 

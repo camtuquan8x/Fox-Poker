@@ -92,4 +92,22 @@ namespace Puppet.Service
 			DialogPromotionView.Instance.ShowDialog (this);
 		}
 	}
+	public class DialogRegister : AbstractDialogData{
+		public string suggestUser;
+		public Action<bool?, string, string> OnRegisterComplete;
+		public DialogRegister(string suggestUser,Action<bool?, string, string> OnRegisterComplete) : base()
+		{
+			this.suggestUser = suggestUser;
+			this.OnRegisterComplete = OnRegisterComplete;
+		}
+		public DialogRegister(Action<bool?, string, string> OnRegisterComplete) : base()
+		{
+			this.OnRegisterComplete = OnRegisterComplete;
+		}
+
+		public override void ShowDialog ()
+		{
+			DialogRegisterView.Instance.ShowDialog (this);
+		}
+	}
 }
