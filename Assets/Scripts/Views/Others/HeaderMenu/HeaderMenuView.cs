@@ -34,6 +34,8 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		btnRecharge.SetActive (true);
 		btnMessage.SetActive (true);
 		btnSettings.SetActive (true);
+		avatar.transform.parent.gameObject.SetActive (true);
+
 		btnBack.SetActive (false);
 		btnLobbyChangeTypeShow.SetActive (false);
 		btnLeague.SetActive (false);
@@ -42,7 +44,6 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		slideLevel.transform.parent.parent.gameObject.SetActive (true);
 		avatar.transform.parent.gameObject.SetActive (true);
 		tableLeft.Reposition ();
-
 	}
 
 	public void ShowInPlaza(){
@@ -52,8 +53,6 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		btnMessage.SetActive (true);
 		btnSettings.SetActive (true);
 		btnLeague.SetActive (true);
-
-
 		btnLobbyChangeTypeShow.SetActive (false);
 		btnSearch.SetActive (false);
 		tableButton.Reposition ();

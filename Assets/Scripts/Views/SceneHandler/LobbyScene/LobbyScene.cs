@@ -149,6 +149,7 @@ public class LobbyScene : MonoBehaviour,ILobbyView
         tableTab.Reposition();
         Vector3 currentPosition = tableTab.transform.localPosition;
         tableTab.transform.localPosition = new Vector3(currentPosition.x, currentPosition.y - 2, currentPosition.z);
+		tableTab.transform.parent.GetComponent<UIScrollView> ().ResetPosition ();
     }
 
     public void DrawLobbies(List<DataLobby> lobbies)
