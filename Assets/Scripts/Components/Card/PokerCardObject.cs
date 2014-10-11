@@ -48,13 +48,6 @@ public class PokerCardObject : MonoBehaviour
         NGUITools.SetActive(spriteRank.gameObject, rank > 0);
         NGUITools.SetActive(spriteSuit.gameObject, suit >= 0);
 
-        if (card.cardId >= 0)
-        {
-            Logger.Log("CardId: " + card.cardId);
-            Logger.Log("CardRank: " + card.GetRank() + " - " + rank);
-            Logger.Log("CardSuit: " + card.GetSuit() + " - " + suit);
-        }
-
         if (rank > 0)
             spriteRank.spriteName = RANK_IMAGE[rank - 1];
 
@@ -65,6 +58,7 @@ public class PokerCardObject : MonoBehaviour
             spriteIcon.spriteName = spriteSuit.spriteName;
         else if (rank >= 11)
             spriteIcon.spriteName = ICON_IMAGE[rank - 11];
+        spriteIcon.MakePixelPerfect();
 
         if(card.cardId >= 0)
         {

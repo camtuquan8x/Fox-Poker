@@ -7,8 +7,11 @@ using Puppet.Poker.Models;
 using Puppet.Poker.Datagram;
 using Puppet;
 
-public class PokerGameplayPlaymat : MonoBehaviour 
+public class PokerGameplayPlaymat : MonoBehaviour
 {
+    #region UNITY EDITOR
+    public Transform []positionDealCards;
+    #endregion
     PokerGPSide[] arrayPokerSide;
     Dictionary<string, GameObject> dictPlayerObject = new Dictionary<string, GameObject>();
 
@@ -20,6 +23,31 @@ public class PokerGameplayPlaymat : MonoBehaviour
         PokerGameModel.Instance.dataPlayerListChanged += Instance_dataPlayerListChanged;
         PokerGameModel.Instance.dataUpdateGameChange += Instance_dataUpdateGame;
         PokerGameModel.Instance.onEventUpdateHand += Instance_onEventUpdateHand;
+        PokerGameModel.Instance.dataTurnGame += Instance_dataTurnGame;
+    }
+
+    private void Instance_dataTurnGame(ResponseUpdateTurnChange data)
+    {
+        if(data.dealComminityCards != null && data.dealComminityCards.Length > 0)
+            CreateCardDeal(data.dealComminityCards);
+    }
+
+    GameObject[] cardsDeal = new GameObject[5];
+    void CreateCardDeal(int [] cards)
+    {
+        for(int i=0;i<cards.Length;i++)
+        {
+            if(cardsDeal[i] == null)
+            {
+                cardsDeal[i] = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Gameplay/CardUI"));
+                cardsDeal[i].GetComponent<PokerCardObject>().SetDataCard(new PokerCard(cards[i]), i);
+
+                cardsDeal[i].transform.parent = positionDealCards[i].transform;
+                cardsDeal[i].transform.localRotation = Quaternion.identity;
+                cardsDeal[i].transform.localPosition = Vector3.zero;
+                cardsDeal[i].transform.localScale = Vector3.one * 0.9f;
+            }
+        }
     }
 
     void Instance_onEventUpdateHand(ResponseUpdateHand data)

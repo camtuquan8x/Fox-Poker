@@ -33,6 +33,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         public EButtonSlot slot;
         public EButtonType type;
         public Vector3 labelPosition;
+        public int labelFontSize;
         public bool enableCheckBox;
         public Vector3 checkBoxPosition;
     }
@@ -116,10 +117,10 @@ public class PokerGameplayButtonHandler : MonoBehaviour
             if (data != null)
             {
                 item.label.text = data.text;
+                item.label.fontSize = data.labelFontSize;
                 item.label.transform.localPosition = data.labelPosition;
                 NGUITools.SetActive(item.checkboxObject.gameObject, data.enableCheckBox);
-                item.toggle.transform.localPosition = data.checkBoxPosition;
-                item.button.GetComponent<UIButtonScale>().enabled = !data.enableCheckBox;
+                item.checkboxObject.transform.localPosition = data.checkBoxPosition;
                 item.button.GetComponent<UIToggle>().enabled = data.enableCheckBox;
             }
         }
@@ -127,7 +128,6 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 
     void Instance_dataTurnGame(ResponseUpdateTurnChange data)
     {
-        Logger.Log("Player {0} - {1}: ", data.toPlayer.userName, PokerGameModel.Instance.mUserInfo.info.userName);
         SetEnableButtonType(data.toPlayer.userName == PokerGameModel.Instance.mUserInfo.info.userName ? EButtonType.InTurn : EButtonType.OutTurn);
     }
 

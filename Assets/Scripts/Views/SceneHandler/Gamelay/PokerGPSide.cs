@@ -7,7 +7,8 @@ using UnityEngine;
 public class PokerGPSide : MonoBehaviour
 {
     public PokerSide CurrentSide;
-    
+
+    public GameObject[] positionCardMainPlayer;
 	public GameObject[] positionCardFaceCards;
 	public GameObject[] positionCardBackCards;
 	public GameObject[] positionCardGameEnd;
