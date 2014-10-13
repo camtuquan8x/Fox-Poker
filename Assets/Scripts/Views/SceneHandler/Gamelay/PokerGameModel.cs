@@ -14,6 +14,8 @@ public class PokerGameModel
     public event Action<ResponsePlayerListChanged> dataPlayerListChanged;
     public event Action<ResponseUpdateHand> onEventUpdateHand;
     public event Action<ResponseUpdateTurnChange> dataTurnGame;
+    public event Action<ResponseFinishGame> onFinishGame;
+    public event Action<ResponseWaitingDealCard> onNewRound;
 
     public PokerGameplay pokerGame;
     public UserInfo mUserInfo;
@@ -52,6 +54,10 @@ public class PokerGameModel
             onEventUpdateHand((ResponseUpdateHand)data);
         else if (data is ResponseUpdateTurnChange && dataTurnGame != null)
             dataTurnGame((ResponseUpdateTurnChange)data);
+        else if (data is ResponseFinishGame && onFinishGame != null)
+            onFinishGame((ResponseFinishGame)data);
+        else if (data is ResponseWaitingDealCard && onNewRound != null)
+            onNewRound((ResponseWaitingDealCard)data);
     }
 
     public void QuitGame()

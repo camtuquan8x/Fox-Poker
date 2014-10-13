@@ -25,17 +25,19 @@ public class LogViewer : MonoBehaviour
 
     class ConsoleMessage
     {
+        public readonly string time;
         public readonly string message;
         public readonly string stackTrace;
         public readonly LogType type;
         public bool showStack;
 
-        public ConsoleMessage(string message, string stackTrace, LogType type)
+        public ConsoleMessage(string message, string stackTrace, LogType type, string time)
         {
             this.message = message;
             this.stackTrace = stackTrace;
             this.type = type;
             this.showStack = false;
+            this.time = time;
         }
     }
 
@@ -225,7 +227,10 @@ public class LogViewer : MonoBehaviour
                     GUILayout.BeginHorizontal(GUILayout.MaxWidth(Screen.width));
                     if (GUILayout.Button(entry.showStack ? "Hide" : "Show", GUILayout.MaxWidth(50)))
                         entry.showStack = !entry.showStack;
-                    GUILayout.Label("[" + i + "]" + entry.message);
+                    GUILayout.Label(string.Format("[{0} - {1}] {2}", i, entry.time, entry.message));
+                    //GUILayout.Label("[" + i + "]" + entry.message);
+
+
                     GUILayout.EndHorizontal();
                     if (entry.showStack)
                     {
@@ -349,7 +354,7 @@ public class LogViewer : MonoBehaviour
     /// <param name="type">The type of message: error/exception, warning, or assert.</param>
     void HandleLog(string message, string stackTrace, LogType type)
     {
-        ConsoleMessage entry = new ConsoleMessage(message, stackTrace, type);
+        ConsoleMessage entry = new ConsoleMessage(message, stackTrace, type, DateTime.Now.ToString("hh:mm:ss"));
         entries.Add(entry);
         if (entries.Count > LIMIT_LINE)
             entries.RemoveAt(0);

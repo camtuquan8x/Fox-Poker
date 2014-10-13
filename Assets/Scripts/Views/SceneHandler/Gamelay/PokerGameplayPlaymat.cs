@@ -24,6 +24,16 @@ public class PokerGameplayPlaymat : MonoBehaviour
         PokerGameModel.Instance.dataUpdateGameChange += Instance_dataUpdateGame;
         PokerGameModel.Instance.onEventUpdateHand += Instance_onEventUpdateHand;
         PokerGameModel.Instance.dataTurnGame += Instance_dataTurnGame;
+        PokerGameModel.Instance.onNewRound += Instance_onNewRound;
+    }
+
+    void Instance_onNewRound(ResponseWaitingDealCard data)
+    {
+        countGenericCard = 0;
+        for(int i = cardsDeal.Count-1;i>=0;i--)
+            GameObject.Destroy(cardsDeal[i]);
+
+        cardsDeal.Clear();
     }
 
     private void Instance_dataTurnGame(ResponseUpdateTurnChange data)
@@ -32,21 +42,19 @@ public class PokerGameplayPlaymat : MonoBehaviour
             CreateCardDeal(data.dealComminityCards);
     }
 
-    GameObject[] cardsDeal = new GameObject[5];
+    List<GameObject> cardsDeal = new List<GameObject>();
+    int countGenericCard = 0;
     void CreateCardDeal(int [] cards)
     {
         for(int i=0;i<cards.Length;i++)
         {
-            if(cardsDeal[i] == null)
-            {
-                cardsDeal[i] = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Gameplay/CardUI"));
-                cardsDeal[i].GetComponent<PokerCardObject>().SetDataCard(new PokerCard(cards[i]), i);
-
-                cardsDeal[i].transform.parent = positionDealCards[i].transform;
-                cardsDeal[i].transform.localRotation = Quaternion.identity;
-                cardsDeal[i].transform.localPosition = Vector3.zero;
-                cardsDeal[i].transform.localScale = Vector3.one * 0.9f;
-            }
+            GameObject card = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Gameplay/CardUI"));
+            card.GetComponent<PokerCardObject>().SetDataCard(new PokerCard(cards[i]));
+            card.transform.parent = positionDealCards[countGenericCard++].transform;
+            card.transform.localRotation = Quaternion.identity;
+            card.transform.localPosition = Vector3.zero;
+            card.transform.localScale = Vector3.one * 0.9f;
+            cardsDeal.Add(card);
         }
     }
 
@@ -54,6 +62,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
     {
         CreateHand(data);
     }
+
 
     void CreateHand(ResponseUpdateHand data)
     {
@@ -72,6 +81,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
                     cardObjects[i].GetComponent<PokerCardObject>().SetDataCard(new PokerCard(), i);
 
             dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().UpdateSetCardObject(cardObjects);
+
+            cardsDeal.AddRange(cardObjects);
         }
     }
 

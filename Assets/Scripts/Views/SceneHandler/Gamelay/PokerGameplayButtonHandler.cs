@@ -24,6 +24,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         InTurn = 0,
         OutTurn = 1,
         OutGame = 2,
+        InGame = 3,
     }
 
     [Serializable()]
@@ -58,6 +59,8 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     void OnEnable()
     {
         PokerGameModel.Instance.dataTurnGame += Instance_dataTurnGame;
+        PokerGameModel.Instance.onNewRound += Instance_onNewRound;
+        PokerGameModel.Instance.onFinishGame += Instance_onFinishGame;
 
         foreach(ButtonItem item in itemButtons)
         {
@@ -69,9 +72,12 @@ public class PokerGameplayButtonHandler : MonoBehaviour
                 UIEventListener.Get(item.button).onClick += OnClickButton3;
         }
     }
+
     void OnDisable()
     {
         PokerGameModel.Instance.dataTurnGame -= Instance_dataTurnGame;
+        PokerGameModel.Instance.onNewRound -= Instance_onNewRound;
+        PokerGameModel.Instance.onFinishGame -= Instance_onFinishGame;
 
         foreach (ButtonItem item in itemButtons)
         {
@@ -131,4 +137,13 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         SetEnableButtonType(data.toPlayer.userName == PokerGameModel.Instance.mUserInfo.info.userName ? EButtonType.InTurn : EButtonType.OutTurn);
     }
 
+    void Instance_onNewRound(ResponseWaitingDealCard data)
+    {
+        SetEnableButtonType(EButtonType.InGame);
+    }
+
+    void Instance_onFinishGame(ResponseFinishGame obj)
+    {
+        SetEnableButtonType(EButtonType.InGame);
+    }
 }
