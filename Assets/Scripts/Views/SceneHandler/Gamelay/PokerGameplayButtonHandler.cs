@@ -134,7 +134,10 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 
     void Instance_dataTurnGame(ResponseUpdateTurnChange data)
     {
-        SetEnableButtonType(data.toPlayer.userName == PokerGameModel.Instance.mUserInfo.info.userName ? EButtonType.InTurn : EButtonType.OutTurn);
+        if(data.toPlayer != null)
+            SetEnableButtonType(data.toPlayer.userName == PokerGameModel.Instance.mUserInfo.info.userName ? EButtonType.InTurn : EButtonType.OutTurn);
+        else
+            SetEnableButtonType(EButtonType.InGame);
     }
 
     void Instance_onNewRound(ResponseWaitingDealCard data)
