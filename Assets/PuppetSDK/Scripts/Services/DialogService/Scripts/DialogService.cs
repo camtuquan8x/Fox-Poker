@@ -47,5 +47,10 @@ namespace Puppet.Service
                 };
             }
         }
+
+        public bool IsShowing(IDialogData dialog)
+        {
+            return currentDialog == dialog;
+        }
     }
 }

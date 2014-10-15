@@ -6,6 +6,7 @@ using System;
 using Puppet.Poker.Models;
 using Puppet.Poker.Datagram;
 using Puppet;
+using Puppet.Service;
 
 public class PokerGameplayButtonHandler : MonoBehaviour 
 {
@@ -51,8 +52,16 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 
     EButtonType currentType;
 
+    DialogBetting bettingDialog;
+
     void Start()
     {
+        bettingDialog = new DialogBetting(500, 2000, (money) =>
+        {
+            Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.RAISE, money);
+        }, Array.Find<ButtonItem>(itemButtons, button => button.slot == EButtonSlot.Third).button.transform);
+
+
         SetEnableButtonType(EButtonType.OutGame);
     }
 
@@ -94,21 +103,26 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     {
         if(currentType == EButtonType.InTurn)
         {
-            Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.CALL, 500);
+            Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.CALL, 0);
         }
     }
     void OnClickButton2(GameObject go)
     {
         if (currentType == EButtonType.InTurn)
         {
-            Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.FOLD, 500);
+            Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.FOLD, 0);
         }
     }
+
     void OnClickButton3(GameObject go)
     {
         if (currentType == EButtonType.InTurn)
         {
-            Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.RAISE, 500);
+            if(DialogService.Instance.IsShowing(bettingDialog) == false)
+            {
+                DialogService.Instance.ShowDialog(bettingDialog);
+
+            }
         }
     }
 

@@ -10,6 +10,7 @@
 using System;
 using Puppet.Core.Model;
 using UnityEngine;
+using Puppet.Service;
 
 
 namespace Puppet.Service
@@ -71,4 +72,18 @@ namespace Puppet.Service
 	}
 }
 
+
+public class DialogPromotion : AbstractDialogData
+{
+    public DataDailyGift gift;
+    public DialogPromotion(DataDailyGift gift)
+        : base()
+    {
+        this.gift = gift;
+    }
+    public override void ShowDialog()
+    {
+        DialogPromotionView.Instance.ShowDialog(this);
+    }
+}
 

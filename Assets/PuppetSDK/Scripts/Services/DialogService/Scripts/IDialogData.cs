@@ -81,33 +81,4 @@ namespace Puppet.Service
             DialogInputView.Instance.ShowDialog(this);
         }
     }
-	public class DialogPromotion : AbstractDialogData{
-		public DataDailyGift gift;
-		public DialogPromotion(DataDailyGift gift) : base()
-		{
-			this.gift = gift;
-		}
-		public override void ShowDialog ()
-		{
-			DialogPromotionView.Instance.ShowDialog (this);
-		}
-	}
-	public class DialogRegister : AbstractDialogData{
-		public string suggestUser;
-		public Action<bool?, string, string> OnRegisterComplete;
-		public DialogRegister(string suggestUser,Action<bool?, string, string> OnRegisterComplete) : base()
-		{
-			this.suggestUser = suggestUser;
-			this.OnRegisterComplete = OnRegisterComplete;
-		}
-		public DialogRegister(Action<bool?, string, string> OnRegisterComplete) : base()
-		{
-			this.OnRegisterComplete = OnRegisterComplete;
-		}
-
-		public override void ShowDialog ()
-		{
-			DialogRegisterView.Instance.ShowDialog (this);
-		}
-	}
 }
