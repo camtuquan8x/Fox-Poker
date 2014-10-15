@@ -23,7 +23,7 @@ public class PokerGameplayView : MonoBehaviour
     void Start()
     {
 		HeaderMenuView.Instance.ShowInGameplay ();	
-        PokerGameModel.Instance.StartGame();
+        PokerObserver.Instance.StartGame();
     }
 
     void OnEnable() {

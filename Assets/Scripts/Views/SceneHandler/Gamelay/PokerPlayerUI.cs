@@ -18,7 +18,7 @@ public class PokerPlayerUI : MonoBehaviour
     {
         this.data = player;
         labelUsername.text = player.userName;
-        labelCurrentGold.text = "400.000";
+        labelCurrentGold.text = player.asset.GetAsset(Puppet.EAssets.Chip).value.ToString();
     }
 
     public void UpdateSetCardObject(GameObject [] cardOnHands)
@@ -27,10 +27,10 @@ public class PokerPlayerUI : MonoBehaviour
 
         for (int i = 0; i < cardOnHands.Length; i++)
         {
-            cardOnHands[i].transform.parent = PokerGameModel.Instance.mUserInfo.info.userName == data.userName ? side.positionCardMainPlayer[i].transform : side.positionCardFaceCards[i].transform;
+            cardOnHands[i].transform.parent = PokerObserver.Instance.IsMainPlayer(data.userName) ? side.positionCardMainPlayer[i].transform : side.positionCardFaceCards[i].transform;
             cardOnHands[i].transform.localRotation = Quaternion.identity;
             cardOnHands[i].transform.localPosition = Vector3.zero;
-            cardOnHands[i].transform.localScale = PokerGameModel.Instance.mUserInfo.info.userName == data.userName ? Vector3.one : Vector3.one /3;
+            cardOnHands[i].transform.localScale = PokerObserver.Instance.IsMainPlayer(data.userName) ? Vector3.one : Vector3.one /3;
         }
     }
 }

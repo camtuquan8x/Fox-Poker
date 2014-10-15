@@ -11,6 +11,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
 {
     #region UNITY EDITOR
     public Transform []positionDealCards;
+	public GameObject potObject;
     #endregion
     PokerGPSide[] arrayPokerSide;
     Dictionary<string, GameObject> dictPlayerObject = new Dictionary<string, GameObject>();
@@ -19,17 +20,32 @@ public class PokerGameplayPlaymat : MonoBehaviour
     {
         arrayPokerSide = GameObject.FindObjectsOfType<PokerGPSide>();
 
-        PokerGameModel.Instance.dataFirstJoinGame += Instance_dataFirstJoinGame;
-        PokerGameModel.Instance.dataPlayerListChanged += Instance_dataPlayerListChanged;
-        PokerGameModel.Instance.dataUpdateGameChange += Instance_dataUpdateGame;
-        PokerGameModel.Instance.onEventUpdateHand += Instance_onEventUpdateHand;
-        PokerGameModel.Instance.dataTurnGame += Instance_dataTurnGame;
-        PokerGameModel.Instance.onNewRound += Instance_onNewRound;
+        PokerObserver.Instance.dataFirstJoinGame += Instance_dataFirstJoinGame;
+        PokerObserver.Instance.dataPlayerListChanged += Instance_dataPlayerListChanged;
+        PokerObserver.Instance.dataUpdateGameChange += Instance_dataUpdateGame;
+        PokerObserver.Instance.onEventUpdateHand += Instance_onEventUpdateHand;
+        PokerObserver.Instance.dataTurnGame += Instance_dataTurnGame;
+        PokerObserver.Instance.onNewRound += Instance_onNewRound;
+        PokerObserver.Instance.onUpdatePot += Instance_onUpdatePot;
+    }
+
+    void Instance_onUpdatePot(ResponseUpdatePot obj)
+    {
+        NGUITools.SetActive(potObject, true);
+
+        string unit = string.Empty;
+        float money = obj.pot[0].value;
+        if(money >= 100000000) { money /= 100000000f; unit = "M"; }
+        else if(money >= 1000) { money /= 1000f; unit = "K"; }
+
+        potObject.GetComponentInChildren<UILabel>().text = string.Format("{0}{1}", money, unit);
     }
 
     void Instance_onNewRound(ResponseWaitingDealCard data)
     {
+        NGUITools.SetActive(potObject, false);
         countGenericCard = 0;
+
         for(int i = cardsDeal.Count-1;i>=0;i--)
             GameObject.Destroy(cardsDeal[i]);
 
@@ -73,7 +89,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
             for (int i = 0; i < handSize;i++)
                 cardObjects[i] = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Gameplay/CardUI"));
 
-            if (PokerGameModel.Instance.mUserInfo.info.userName == p.userName)
+            if (PokerObserver.Instance.mUserInfo.info.userName == p.userName)
                 for(int i=0;i<handSize;i++)
                     cardObjects[i].GetComponent<PokerCardObject>().SetDataCard(new PokerCard(data.hand[i]), i);
             else
@@ -133,7 +149,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
             dictPlayerObject.Add(player.userName, obj);
         }
 
-        PokerGPSide playerSide = GetPokerSide(player.GetSide());
+        PokerGPSide playerSide = Array.Find<PokerGPSide>(arrayPokerSide, s => s.CurrentSide == player.GetSide());
         obj.GetComponent<PokerPlayerUI>().side = playerSide;
 
         obj.transform.parent = playerSide.transform;

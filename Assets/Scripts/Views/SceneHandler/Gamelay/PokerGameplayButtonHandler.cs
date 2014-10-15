@@ -58,9 +58,9 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 
     void OnEnable()
     {
-        PokerGameModel.Instance.dataTurnGame += Instance_dataTurnGame;
-        PokerGameModel.Instance.onNewRound += Instance_onNewRound;
-        PokerGameModel.Instance.onFinishGame += Instance_onFinishGame;
+        PokerObserver.Instance.dataTurnGame += Instance_dataTurnGame;
+        PokerObserver.Instance.onNewRound += Instance_onNewRound;
+        PokerObserver.Instance.onFinishGame += Instance_onFinishGame;
 
         foreach(ButtonItem item in itemButtons)
         {
@@ -75,9 +75,9 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 
     void OnDisable()
     {
-        PokerGameModel.Instance.dataTurnGame -= Instance_dataTurnGame;
-        PokerGameModel.Instance.onNewRound -= Instance_onNewRound;
-        PokerGameModel.Instance.onFinishGame -= Instance_onFinishGame;
+        PokerObserver.Instance.dataTurnGame -= Instance_dataTurnGame;
+        PokerObserver.Instance.onNewRound -= Instance_onNewRound;
+        PokerObserver.Instance.onFinishGame -= Instance_onFinishGame;
 
         foreach (ButtonItem item in itemButtons)
         {
@@ -134,19 +134,24 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 
     void Instance_dataTurnGame(ResponseUpdateTurnChange data)
     {
-        if(data.toPlayer != null)
-            SetEnableButtonType(data.toPlayer.userName == PokerGameModel.Instance.mUserInfo.info.userName ? EButtonType.InTurn : EButtonType.OutTurn);
-        else
-            SetEnableButtonType(EButtonType.InGame);
+        if (PokerObserver.Instance.IsMainPlayerInGame())
+        {
+            if (data.toPlayer != null)
+                SetEnableButtonType(PokerObserver.Instance.IsMainPlayer(data.toPlayer.userName) ? EButtonType.InTurn : EButtonType.OutTurn);
+            else
+                SetEnableButtonType(EButtonType.InGame);
+        }
     }
 
     void Instance_onNewRound(ResponseWaitingDealCard data)
     {
-        SetEnableButtonType(EButtonType.InGame);
+        if (PokerObserver.Instance.IsMainPlayerInGame())
+            SetEnableButtonType(EButtonType.InGame);
     }
 
     void Instance_onFinishGame(ResponseFinishGame obj)
     {
-        SetEnableButtonType(EButtonType.InGame);
+        if (PokerObserver.Instance.IsMainPlayerInGame())
+            SetEnableButtonType(EButtonType.InGame);
     }
 }

@@ -38,7 +38,7 @@ public class PokerGPSide : MonoBehaviour
     {
         if (sendSitdown == false)
         {
-            PokerGameModel.Instance.SitDown(slot);
+            PokerObserver.Instance.SitDown(slot);
             sendSitdown = true;
         }
         NGUITools.SetActive(btnSit, false);

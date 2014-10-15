@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using Puppet.Poker;
 using Puppet.Poker.Datagram;
 using System;
@@ -7,7 +8,7 @@ using Puppet.API.Client;
 using Puppet;
 using Puppet.Core.Model;
 
-public class PokerGameModel
+public class PokerObserver
 {
     public event Action<ResponseUpdateGame> dataFirstJoinGame;
     public event Action<ResponseUpdateGame> dataUpdateGameChange;
@@ -16,17 +17,21 @@ public class PokerGameModel
     public event Action<ResponseUpdateTurnChange> dataTurnGame;
     public event Action<ResponseFinishGame> onFinishGame;
     public event Action<ResponseWaitingDealCard> onNewRound;
+    public event Action<ResponseUpdatePot> onUpdatePot;
+
+    public List<string> listPlayers = new List<string>();
+    public List<string> listWaitingPlayers = new List<string>();
 
     public PokerGameplay pokerGame;
     public UserInfo mUserInfo;
 
-    static PokerGameModel _instance;
-    public static PokerGameModel Instance
+    static PokerObserver _instance;
+    public static PokerObserver Instance
     {
         get 
         {
             if (_instance == null)
-                _instance = new PokerGameModel();
+                _instance = new PokerObserver();
             return _instance; 
         }
     }
@@ -49,7 +54,11 @@ public class PokerGameModel
                 dataFirstJoinGame((ResponseUpdateGame)data);
         }
         else if (data is ResponsePlayerListChanged && dataPlayerListChanged != null)
-            dataPlayerListChanged((ResponsePlayerListChanged)data);
+        {
+            ResponsePlayerListChanged dataPlayerChange = (ResponsePlayerListChanged)data;
+            UpdatePlayerInRoom(dataPlayerChange);
+            dataPlayerListChanged(dataPlayerChange);
+        }
         else if (data is ResponseUpdateHand && onEventUpdateHand != null)
             onEventUpdateHand((ResponseUpdateHand)data);
         else if (data is ResponseUpdateTurnChange && dataTurnGame != null)
@@ -58,6 +67,27 @@ public class PokerGameModel
             onFinishGame((ResponseFinishGame)data);
         else if (data is ResponseWaitingDealCard && onNewRound != null)
             onNewRound((ResponseWaitingDealCard)data);
+        else if (data is ResponseUpdatePot && onUpdatePot != null)
+            onUpdatePot((ResponseUpdatePot)data);
+    }
+
+    void UpdatePlayerInRoom(ResponsePlayerListChanged dataPlayerChange)
+    {
+        switch (dataPlayerChange.GetActionState())
+        {
+            case PokerPlayerChangeAction.playerAdded:
+                listPlayers.Add(dataPlayerChange.player.userName);
+                break;
+            case PokerPlayerChangeAction.playerRemoved:
+                listPlayers.Remove(dataPlayerChange.player.userName);
+                break;
+            case PokerPlayerChangeAction.waitingPlayerAdded:
+                listWaitingPlayers.Add(dataPlayerChange.player.userName);
+                break;
+            case PokerPlayerChangeAction.waitingPlayerRemoved:
+                listWaitingPlayers.Remove(dataPlayerChange.player.userName);
+                break;
+        }
     }
 
     public void QuitGame()
@@ -69,5 +99,15 @@ public class PokerGameModel
     public void SitDown(int slotServer)
     {
         APIPokerGame.SitDown(slotServer);
+    }
+
+    public bool IsMainPlayer(string userName)
+    {
+        return mUserInfo.info.userName == userName;
+    }
+
+    public bool IsMainPlayerInGame()
+    {
+        return listPlayers.Contains(mUserInfo.info.userName);
     }
 }
