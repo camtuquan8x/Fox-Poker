@@ -49,7 +49,7 @@ public class LobbyScene : MonoBehaviour,ILobbyView
             btnCreateGame.SetActive(true);
             return;
         }
-		btnCreateGame.SetActive ((tableType1.GetComponent<UICenterOnChild> ().centeredObject != null && tableType1.GetComponent<UICenterOnChild> ().centeredObject.name.Equals (types1 [0].name)));
+		btnCreateGame.SetActive ((tableType1.GetComponent<UICenterOnChild> ().centeredObject != null && tableType1.transform.GetChild(0).gameObject.GetComponent<LobbyRowType1>().data.roomId == tableType1.GetComponent<UICenterOnChild> ().centeredObject.GetComponent<LobbyRowType1>().data.roomId));
         
     }
     void OnEnable()

@@ -21,7 +21,7 @@ public class LobbyRowType1 : MonoBehaviour
         go.transform.localPosition = Vector3.zero;
         go.transform.localScale = Vector3.one;
         go.GetComponent<UIDragScrollView>().scrollView = parent.GetComponentInParent<UIScrollView>();
-        go.name = data.displayName;
+        go.name = data.roomId + ". " + "LobbyItem";
         LobbyRowType1 item = go.GetComponent<LobbyRowType1>();
         item.setData(data);
 		item.action = callBack;
