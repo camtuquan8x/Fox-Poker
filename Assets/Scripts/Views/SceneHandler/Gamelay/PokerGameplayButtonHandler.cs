@@ -61,7 +61,6 @@ public class PokerGameplayButtonHandler : MonoBehaviour
             Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.RAISE, money);
         }, Array.Find<ButtonItem>(itemButtons, button => button.slot == EButtonSlot.Third).button.transform);
 
-
         SetEnableButtonType(EButtonType.OutGame);
     }
 

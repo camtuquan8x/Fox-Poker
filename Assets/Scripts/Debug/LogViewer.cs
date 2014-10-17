@@ -58,7 +58,7 @@ public class LogViewer : MonoBehaviour
         {
             isShowLogs = value;
             if (value) BeginDraw(); else EndDraw();
-            BlockUI(value);
+            BlockUI(!value);
         }
     }
 
@@ -142,10 +142,8 @@ public class LogViewer : MonoBehaviour
 
     void Update()
     {
-		if (Input.GetKeyDown(toggleKey) && Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift))
-		{
-				showLogs = !showLogs;
-		}
+		if (Input.GetKeyDown(toggleKey) && Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) || Input.GetKeyUp(toggleKey))
+			showLogs = !showLogs;
         if (showLogs && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)))
         {
             scrollPos = new Vector2(0, entries.Count * margin);
@@ -158,13 +156,6 @@ public class LogViewer : MonoBehaviour
 
     void OnGUI()
     {
-		
-//		if (Common.CanTestMode
-//		    && GameManager.CurrentScene == ESceneName.Gameplay && GameModel.model != null
-//		    && GameModel.YourController != null && GameModel.YourController.isMaster && GameModel.ListPlayer.Count > 1
-//		    && !showLogs && GUI.Button(new Rect(Screen.width - (Screen.width - Screen.width * 0.9f), Screen.height - 35f, Screen.width - Screen.width * 0.9f, 35f), "TEST MODE"))
-//			TestModeGUI.Instance.gameObject.SetActive(true);
-
         if (!showLogs) return;
 
         windowRect = new Rect(0, 0, Screen.width, Screen.height);
