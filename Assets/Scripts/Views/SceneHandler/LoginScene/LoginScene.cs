@@ -65,7 +65,7 @@ public class LoginScene : MonoBehaviour,ILoginView
 
     void onBtnForgotClick(GameObject gobj)
     {
-        
+		presenter.ShowDialogForgot ();
     }
     private void onBtnRegisterClick(GameObject go)
     {

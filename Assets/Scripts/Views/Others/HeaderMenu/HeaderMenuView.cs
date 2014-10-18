@@ -173,7 +173,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 
 	void OnCommonClickCallBack (GameObject go)
 	{
-		throw new NotImplementedException ();
+		presenter.ShowDialogCommon ();
 	}
 
 	void OnRechargeClickCallBack (GameObject go)
@@ -188,7 +188,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 
 	void OnSettingsClickCallBack (GameObject go)
 	{
-		throw new NotImplementedException ();
+		presenter.ShowDialogSettings ();
 	}
 
 	void OnLobbyChangeTypeClickCallBack (GameObject go)

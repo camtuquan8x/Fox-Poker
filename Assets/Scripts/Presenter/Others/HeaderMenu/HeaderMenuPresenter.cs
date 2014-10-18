@@ -63,7 +63,7 @@ public class HeaderMenuPresenter : IHeaderMenuPresenter
 
 	public void ShowDialogCommon ()
 	{
-
+		DialogService.Instance.ShowDialog(new DialogListFriend(null));
 	}
 
 	public void ShowDialogRecharge ()
@@ -73,7 +73,8 @@ public class HeaderMenuPresenter : IHeaderMenuPresenter
 
 	public void ShowDialogSettings ()
 	{
-
+		UserInfo userInfo = Puppet.API.Client.APIUser.GetUserInformation ();
+		DialogService.Instance.ShowDialog(new DialogSetting(userInfo.info.userName,"1.0"));
 	}
 
 	public void ShowDialogMessage ()

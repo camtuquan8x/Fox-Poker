@@ -24,6 +24,22 @@ public class LoginPresenter : ILoginPresenter
     {
 		DialogService.Instance.ShowDialog (new DialogRegister (RegisterComplete));
 	}
+
+	public void ShowDialogForgot ()
+	{
+		DialogService.Instance.ShowDialog(new DialogForgot(OnClickForgotPass));
+	}
+
+	void OnClickForgotPass (bool? arg1, string arg2)
+	{
+		if (arg1 == true) {
+			if(string.IsNullOrEmpty(arg2)){
+				view.ShowError("Không được để trống email");
+				return;
+			}
+		}
+	}
+
     void RegisterComplete(bool? status,string userName,string password){
         if (status == true)
             LoginWithUserName(userName, password);
