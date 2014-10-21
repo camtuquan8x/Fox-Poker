@@ -12,6 +12,7 @@ public class LogViewer : MonoBehaviour
 {
     private const string COMMAND_KEY = "$COMMAND$";
     private const string COMMAND_RETURN = "$RETURN$";
+    private const bool DEFAULT_BLOCK_2D_UI = false;
 
     #region Unity Editor
     public Texture background;
@@ -58,12 +59,12 @@ public class LogViewer : MonoBehaviour
         {
             isShowLogs = value;
             if (value) BeginDraw(); else EndDraw();
-            BlockUI(!value);
         }
     }
 
     void Awake()
     {
+        isBlockUI = DEFAULT_BLOCK_2D_UI;
         GameObject.DontDestroyOnLoad(gameObject);
         Application.RegisterLogCallback(HandleLog);
     }
@@ -75,12 +76,15 @@ public class LogViewer : MonoBehaviour
 
     void BeginDraw()
     {
+        BlockUI(isBlockUI);
         if (margin != (Screen.height * 9 / 10) / NUMBER_LINE)
             margin = (Screen.height * 9 / 10) / NUMBER_LINE;
     }
 
     void EndDraw()
     {
+        if(isBlockUI)
+            BlockUI(false);
         windowHeight = 0;
         command = "";
     }
