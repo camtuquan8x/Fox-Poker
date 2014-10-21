@@ -20,8 +20,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
     {
         arrayPokerSide = GameObject.FindObjectsOfType<PokerGPSide>();
 
-        PokerObserver.Instance.dataFirstJoinGame += Instance_dataFirstJoinGame;
-        PokerObserver.Instance.dataPlayerListChanged += Instance_dataPlayerListChanged;
+        PokerObserver.Instance.onFirstJoinGame += Instance_onFirstJoinGame;
+        PokerObserver.Instance.onPlayerListChanged += Instance_onPlayerListChanged;
         PokerObserver.Instance.dataUpdateGameChange += Instance_dataUpdateGame;
         PokerObserver.Instance.onEventUpdateHand += Instance_onEventUpdateHand;
         PokerObserver.Instance.dataTurnGame += Instance_dataTurnGame;
@@ -31,14 +31,17 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     void Instance_onUpdatePot(ResponseUpdatePot obj)
     {
-        NGUITools.SetActive(potObject, true);
+        if (obj.pot != null && obj.pot.Length > 0)
+        {
+            NGUITools.SetActive(potObject, true);
 
-        string unit = string.Empty;
-        float money = obj.pot[0].value;
-        if(money >= 100000000) { money /= 100000000f; unit = "M"; }
-        else if(money >= 1000) { money /= 1000f; unit = "K"; }
+            string unit = string.Empty;
+            float money = obj.pot[0].value;
+            if (money >= 100000000) { money /= 100000000f; unit = "M"; }
+            else if (money >= 1000) { money /= 1000f; unit = "K"; }
 
-        potObject.GetComponentInChildren<UILabel>().text = string.Format("{0}{1}", money, unit);
+            potObject.GetComponentInChildren<UILabel>().text = string.Format("{0}{1}", money, unit);
+        }
     }
 
     void Instance_onNewRound(ResponseWaitingDealCard data)
@@ -102,7 +105,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         }
     }
 
-    void Instance_dataFirstJoinGame(ResponseUpdateGame data)
+    void Instance_onFirstJoinGame(ResponseUpdateGame data)
     {
         foreach (PokerPlayerController player in data.players)
         {
@@ -118,7 +121,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         }
     }
 
-    void Instance_dataPlayerListChanged(ResponsePlayerListChanged dataPlayer)
+    void Instance_onPlayerListChanged(ResponsePlayerListChanged dataPlayer)
     {
         PokerPlayerChangeAction state = dataPlayer.GetActionState();
         if(state == PokerPlayerChangeAction.playerAdded)

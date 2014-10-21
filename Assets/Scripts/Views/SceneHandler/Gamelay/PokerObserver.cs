@@ -10,14 +10,16 @@ using Puppet.Core.Model;
 
 public class PokerObserver
 {
-    public event Action<ResponseUpdateGame> dataFirstJoinGame;
+    public event Action<ResponseUpdateGame> onFirstJoinGame;
     public event Action<ResponseUpdateGame> dataUpdateGameChange;
-    public event Action<ResponsePlayerListChanged> dataPlayerListChanged;
+    public event Action<ResponsePlayerListChanged> onPlayerListChanged;
     public event Action<ResponseUpdateHand> onEventUpdateHand;
     public event Action<ResponseUpdateTurnChange> dataTurnGame;
     public event Action<ResponseFinishGame> onFinishGame;
     public event Action<ResponseWaitingDealCard> onNewRound;
     public event Action<ResponseUpdatePot> onUpdatePot;
+    public event Action<ResponseUpdateUserInfo> onUpdateUserInfo;
+    public event Action<ResponseError> onEncounterError;
 
     public List<string> listPlayers = new List<string>();
     public List<string> listWaitingPlayers = new List<string>();
@@ -50,14 +52,14 @@ public class PokerObserver
         {
             if (command == "updateGame" && dataUpdateGameChange != null)
                 dataUpdateGameChange((ResponseUpdateGame)data);
-            else if (command == "updateGameToWaitingPlayer" && dataFirstJoinGame != null)
-                dataFirstJoinGame((ResponseUpdateGame)data);
+            else if (command == "updateGameToWaitingPlayer" && onFirstJoinGame != null)
+                onFirstJoinGame((ResponseUpdateGame)data);
         }
-        else if (data is ResponsePlayerListChanged && dataPlayerListChanged != null)
+        else if (data is ResponsePlayerListChanged && onPlayerListChanged != null)
         {
             ResponsePlayerListChanged dataPlayerChange = (ResponsePlayerListChanged)data;
             UpdatePlayerInRoom(dataPlayerChange);
-            dataPlayerListChanged(dataPlayerChange);
+            onPlayerListChanged(dataPlayerChange);
         }
         else if (data is ResponseUpdateHand && onEventUpdateHand != null)
             onEventUpdateHand((ResponseUpdateHand)data);
@@ -69,6 +71,10 @@ public class PokerObserver
             onNewRound((ResponseWaitingDealCard)data);
         else if (data is ResponseUpdatePot && onUpdatePot != null)
             onUpdatePot((ResponseUpdatePot)data);
+        else if (data is ResponseUpdateUserInfo && onUpdateUserInfo != null)
+            onUpdateUserInfo((ResponseUpdateUserInfo)data);
+        else if (data is ResponseError && onEncounterError != null)
+            onEncounterError((ResponseError)data);
     }
 
     void UpdatePlayerInRoom(ResponsePlayerListChanged dataPlayerChange)

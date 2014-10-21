@@ -1,5 +1,6 @@
 ﻿using Puppet.Poker.Datagram;
 using Puppet.Poker.Models;
+using Puppet.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,17 +18,17 @@ public class PokerGameplayView : MonoBehaviour
     
     void Awake()
     {
-		ShowOrHideCheckboxInButton (false);
+        PokerObserver.Instance.StartGame();
     }
 
     void Start()
     {
 		HeaderMenuView.Instance.ShowInGameplay ();	
-        PokerObserver.Instance.StartGame();
     }
 
-    void OnEnable() {
-
+    void OnEnable() 
+    {
+        PokerObserver.Instance.onEncounterError += Instance_onEncounterError;
 
         //UIEventListener.Get(btnView).onClick += OnButtonViewClickCallBack;
         //UIEventListener.Get(btnLeaveTurn).onClick += OnButtonLeaveTurnClickCallBack;
@@ -43,8 +44,11 @@ public class PokerGameplayView : MonoBehaviour
         //UIEventListener.Get(headerMenuBtnSettings).onClick += OnButtonHeaderSettingClickCallBack;
 
     }
+
     void OnDisable()
     {
+        PokerObserver.Instance.onEncounterError -= Instance_onEncounterError;
+
         //UIEventListener.Get(btnView).onClick -= OnButtonViewClickCallBack;
         //UIEventListener.Get(btnLeaveTurn).onClick -= OnButtonLeaveTurnClickCallBack;
         //UIEventListener.Get(btnAddBet).onClick -= OnButtonAddBetClickCallBack;
@@ -57,6 +61,14 @@ public class PokerGameplayView : MonoBehaviour
         //UIEventListener.Get(headerMenuBtnUp).onClick -= OnButtonHeaderUpClickCallBack;
         //UIEventListener.Get(headerMenuBtnRecharge).onClick -= OnButtonHeaderRechargeClickCallBack;
         //UIEventListener.Get(headerMenuBtnSettings).onClick -= OnButtonHeaderSettingClickCallBack;
+    }
+
+    void Instance_onEncounterError(ResponseError data)
+    {
+        if(data.showPopup)
+        {
+            DialogService.Instance.ShowDialog(new DialogMessage("Error: " + data.errorCode, data.errorMessage, null));
+        }
     }
 
     void OnButtonQuitClick(GameObject go)
@@ -110,17 +122,5 @@ public class PokerGameplayView : MonoBehaviour
     private void OnButtonViewClickCallBack(GameObject go)
     {
     }
-	void ShowOrHideCheckboxInButton(bool isShow){
-		if (!isShow) {
-			btnViewCheckBox.transform.FindChild ("Checkbox").gameObject.SetActive (false);
-			btnFollowBetCheckBox.transform.FindChild ("Checkbox").gameObject.SetActive (false);
-			btnFollowAllBetCheckbox.transform.FindChild ("Checkbox").gameObject.SetActive (false);
-		} else {
-			
-			btnViewCheckBox.transform.FindChild ("Checkbox").gameObject.SetActive (true);
-			btnFollowBetCheckBox.transform.FindChild ("Checkbox").gameObject.SetActive (true);
-			btnFollowAllBetCheckbox.transform.FindChild ("Checkbox").gameObject.SetActive (true);
-		}
-	}
 }
 
