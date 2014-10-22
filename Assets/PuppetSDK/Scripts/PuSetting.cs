@@ -15,8 +15,11 @@ public class PuSetting
 
     public PuSetting(string domain, string socketServer)
     {
-		PuMain.Setting = new CurrentSetting(domain, socketServer);
+        CurrentSetting setting = new CurrentSetting();
+        PuMain.Setting = setting;
 		PuMain.Setting.Init();
+        setting.CustomServer(domain, socketServer);
+
         PuMain.Instance.Load();
         PuMain.Dispatcher.onChangeScene += ChangeScene;
     }
@@ -69,10 +72,14 @@ public class PuSetting
             get { return true; }
         }
 
-        public CurrentSetting(string domain, string socketServer)
+        public void CustomServer(string domain, string socketServer)
         {
-            DefaultSetting.domain = domain;
-			DefaultSetting.soketServer = socketServer;
+            //DefaultSetting.domain = domain;
+            //DefaultSetting.soketServer = socketServer;
+            server = new ServerMode(socketServer);
+            serverWebService = new WebServiceServerMode(domain);
+            serverBundle = new WebServerMode(domain);
+            serverWebHttp = new WebServerMode(domain);
         }
 
         protected override void AfterInit()
@@ -122,6 +129,68 @@ public class PuSetting
             {
 				return UniqueDeviceId ?? SystemInfo.deviceUniqueIdentifier;
             }
+        }
+
+
+
+        class ServerMode : IServerMode
+        {
+            string domain;
+            public ServerMode(string domain)
+            {
+                if (!string.IsNullOrEmpty(domain))
+                    this.domain = domain;
+                else
+                    this.domain = "127.0.0.1";
+            }
+
+            public string GetBaseUrl() { return string.Format("https://{0}:{1}", Domain, Port); }
+
+            public int Port { get { return 9933; } }
+
+            public string Domain { get { return domain; } }
+
+            public string GetPath(string path) { return string.Format("{0}/{1}", GetBaseUrl(), path); }
+        }
+
+        class WebServiceServerMode : IServerMode
+        {
+            string domain;
+            public WebServiceServerMode(string domain)
+            {
+                if (!string.IsNullOrEmpty(domain))
+                    this.domain = domain;
+                else
+                    this.domain = "127.0.0.1";
+            }
+
+            public string GetBaseUrl() { return string.Format("http://{0}:{1}", Domain, Port); }
+
+            public int Port { get { return 80; } }
+
+            public string Domain { get { return domain; } }
+
+            public string GetPath(string path) { return string.Format("{0}/realtime/puppet/{1}", GetBaseUrl(), path); }
+        }
+
+        class WebServerMode : IServerMode
+        {
+            string domain;
+            public WebServerMode(string domain)
+            {
+                if (!string.IsNullOrEmpty(domain))
+                    this.domain = domain;
+                else
+                    this.domain = "127.0.0.1";
+            }
+
+            public string GetBaseUrl() { return string.Format("http://{0}:{1}", Domain, Port); }
+
+            public int Port { get { return 80; } }
+
+            public string Domain { get { return domain; } }
+
+            public string GetPath(string path) { return string.Format("{0}/puppet/api/{1}", GetBaseUrl(), path); }
         }
     }
 }

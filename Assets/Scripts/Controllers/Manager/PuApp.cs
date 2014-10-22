@@ -16,7 +16,7 @@ public class PuApp : Singleton<PuApp>
     List<KeyValuePair<EMessage, string>> listMessage = new List<KeyValuePair<EMessage, string>>();
     protected override void Init()
     {
-		setting = new PuSetting("puppet.esimo.vn", "puppet.esimo.vn");
+        setting = new PuSetting("foxpokers.com", "foxpokers.com");
 		gameObject.AddComponent<LogViewer> ();
     }
 
