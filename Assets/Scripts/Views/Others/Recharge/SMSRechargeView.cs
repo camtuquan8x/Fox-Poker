@@ -37,5 +37,5 @@ public class SMSRechargeView : MonoBehaviour {
 }
 public class SMSRecharge{
 	public string money;
-	public Texture texture;
+	public Texture2D texture;
 }

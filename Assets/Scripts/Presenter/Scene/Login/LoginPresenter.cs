@@ -105,6 +105,7 @@ public class LoginPresenter : ILoginPresenter
 		if (status) {
 			LoginWithAccessToken (message);
 		} else {
+            Logger.Log("============> " + message);
             ShowDialogErrorInMainThread(message);
 		}
 	}
@@ -112,7 +113,11 @@ public class LoginPresenter : ILoginPresenter
 	void LoginCallBack (bool status, string message)
 	{
         if (!status)
+        {
+            Logger.Log("============> " + message);
             ShowDialogErrorInMainThread(message);
+        }
+            
 	}
 
 	void onLoginComplete (SocialType arg1, bool arg2)

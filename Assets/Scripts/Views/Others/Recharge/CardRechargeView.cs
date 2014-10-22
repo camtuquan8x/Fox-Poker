@@ -28,5 +28,5 @@ public class CardRechargeView : MonoBehaviour {
 	}
 }
 public class CardRecharge{
-	public Texture texture;
+	public Texture2D texture;
 }

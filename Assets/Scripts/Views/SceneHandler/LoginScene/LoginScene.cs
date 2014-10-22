@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using Puppet.Core.Network.Http;
 using Puppet;
@@ -8,48 +8,49 @@ using System.Collections.Generic;
 using Puppet.Service;
 using System;
 
-public class LoginScene : MonoBehaviour,ILoginView
+public class LoginScene : MonoBehaviour, ILoginView
 {
-    public GameObject btnLogin, btnForgot, btnFacebook, btnGuest,btnRegister;
+    public GameObject btnLogin, btnForgot, btnFacebook, btnGuest, btnRegister;
 
     public UIInput txtUsername, txtPassword;
 
-	LoginPresenter presenter;
+    LoginPresenter presenter;
 
-	void Awake()
-	{
+    void Awake()
+    {
         if (Application.platform == RuntimePlatform.WindowsPlayer)
             Screen.SetResolution(960, 640, false);
 
-		PuSetting.UniqueDeviceId = SystemInfo.deviceUniqueIdentifier;
-	}
-	void Start(){
-		presenter = new LoginPresenter (this);
-		presenter.ViewStart();
-		DialogRecharge recharge = new DialogRecharge ();
-		DialogService.Instance.ShowDialog (recharge);
-	}
-    void OnEnable()
-    {   
-
-		UIEventListener.Get(btnLogin).onClick += this.onBtnLoginClick;
-		UIEventListener.Get(btnForgot).onClick += this.onBtnForgotClick;
-		UIEventListener.Get(btnFacebook).onClick += this.onBtnFacebookClick;
-		UIEventListener.Get(btnGuest).onClick += this.onBtnGuestClick;
-		UIEventListener.Get(btnRegister).onClick += this.onBtnRegisterClick;
+        PuSetting.UniqueDeviceId = SystemInfo.deviceUniqueIdentifier;
+    }
+    void Start()
+    {
+        presenter = new LoginPresenter(this);
+        presenter.ViewStart();
 
     }
-	void OnDisable(){
+    void OnEnable()
+    {
 
-	}
-	void OnGUI()
-	{
-		PuSetting.UniqueDeviceId = GUI.TextField(new Rect(0, 0, Screen.width / 4, Screen.height/15), PuSetting.UniqueDeviceId);
-	}
+        UIEventListener.Get(btnLogin).onClick += this.onBtnLoginClick;
+        UIEventListener.Get(btnForgot).onClick += this.onBtnForgotClick;
+        UIEventListener.Get(btnFacebook).onClick += this.onBtnFacebookClick;
+        UIEventListener.Get(btnGuest).onClick += this.onBtnGuestClick;
+        UIEventListener.Get(btnRegister).onClick += this.onBtnRegisterClick;
+
+    }
+    void OnDisable()
+    {
+
+    }
+    void OnGUI()
+    {
+        PuSetting.UniqueDeviceId = GUI.TextField(new Rect(0, 0, Screen.width / 4, Screen.height / 15), PuSetting.UniqueDeviceId);
+    }
 
     void OnDestroy()
     {
-		presenter.ViewEnd ();
+        presenter.ViewEnd();
 
     }
 
@@ -62,12 +63,12 @@ public class LoginScene : MonoBehaviour,ILoginView
             userName = "dungnv";
         if (string.IsNullOrEmpty(password))
             password = "puppet#89";
-		presenter.LoginWithUserName (userName, password);
+        presenter.LoginWithUserName(userName, password);
     }
 
     void onBtnForgotClick(GameObject gobj)
     {
-		presenter.ShowDialogForgot ();
+        presenter.ShowDialogForgot();
     }
     private void onBtnRegisterClick(GameObject go)
     {
@@ -75,22 +76,22 @@ public class LoginScene : MonoBehaviour,ILoginView
     }
     void onBtnFacebookClick(GameObject gobj)
     {
-		presenter.LoginFacebook ();
+        presenter.LoginFacebook();
     }
     void onBtnGuestClick(GameObject gobj)
     {
-		presenter.LoginTrail ();
+        presenter.LoginTrail();
     }
 
 
-	#region ILoginView implementation
+    #region ILoginView implementation
 
-	public void ShowError (string message)
-	{
-		DialogService.Instance.ShowDialog(new DialogMessage("Lỗi", message, null));
-	}
-	
-	#endregion
+    public void ShowError(string message)
+    {
+        DialogService.Instance.ShowDialog(new DialogMessage("Lỗi", message, null));
+    }
+
+    #endregion
 
 
     public void ShowConfirm(string message, Action<bool?> action)
