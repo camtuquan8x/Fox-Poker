@@ -26,6 +26,8 @@ public class LoginScene : MonoBehaviour,ILoginView
 	void Start(){
 		presenter = new LoginPresenter (this);
 		presenter.ViewStart();
+		DialogRecharge recharge = new DialogRecharge ();
+		DialogService.Instance.ShowDialog (recharge);
 	}
     void OnEnable()
     {   

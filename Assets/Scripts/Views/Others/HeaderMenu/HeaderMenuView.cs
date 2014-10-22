@@ -10,6 +10,8 @@
 using System;
 using Puppet;
 using UnityEngine;
+using System.Collections.Generic;
+using Puppet.Service;
 
 [PrefabAttribute(Name = "Prefabs/GameManager/HeaderMenu", Depth = 3, IsAttachedToCamera = true, IsUIPanel = true)]
 public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
@@ -178,7 +180,8 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 
 	void OnRechargeClickCallBack (GameObject go)
 	{
-		throw new NotImplementedException ();
+		DialogRecharge recharge = new DialogRecharge ();
+		DialogService.Instance.ShowDialog (recharge);
 	}
 
 	void OnMessageClickCallBack (GameObject go)
