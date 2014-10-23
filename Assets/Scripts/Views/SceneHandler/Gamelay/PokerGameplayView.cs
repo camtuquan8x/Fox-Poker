@@ -2,6 +2,7 @@
 using Puppet.Poker.Models;
 using Puppet.Service;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,15 +16,17 @@ public class PokerGameplayView : MonoBehaviour
     public UIInput txtMessage;
     public PokerGameplayPlaymat playmat;
     #endregion
-    
+
     void Awake()
     {
-        PokerObserver.Instance.StartGame();
+        HeaderMenuView.Instance.ShowInGameplay();	
     }
-
-    void Start()
+    
+    IEnumerator Start()
     {
-		HeaderMenuView.Instance.ShowInGameplay ();	
+        //For Ensure all was init!!!!!
+        yield return new WaitForSeconds(0.5f);
+        PokerObserver.Instance.StartGame();
     }
 
     void OnEnable() 

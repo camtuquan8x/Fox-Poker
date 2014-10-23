@@ -10,8 +10,10 @@ using Puppet;
 public class PokerGameplayPlaymat : MonoBehaviour
 {
     #region UNITY EDITOR
+    public GameObject prefabBetObject;
+
     public Transform []positionDealCards;
-	public GameObject potObject;
+    public PokerCurrentBet currentPot;
     #endregion
     PokerGPSide[] arrayPokerSide;
     Dictionary<string, GameObject> dictPlayerObject = new Dictionary<string, GameObject>();
@@ -33,20 +35,14 @@ public class PokerGameplayPlaymat : MonoBehaviour
     {
         if (obj.pot != null && obj.pot.Length > 0)
         {
-            NGUITools.SetActive(potObject, true);
-
-            string unit = string.Empty;
-            float money = obj.pot[0].value;
-            if (money >= 100000000) { money /= 100000000f; unit = "M"; }
-            else if (money >= 1000) { money /= 1000f; unit = "K"; }
-
-            potObject.GetComponentInChildren<UILabel>().text = string.Format("{0}{1}", money, unit);
+            currentPot.SetActive(true);
+            currentPot.SetBet(obj.pot[0].value);
         }
     }
 
     void Instance_onNewRound(ResponseWaitingDealCard data)
     {
-        NGUITools.SetActive(potObject, false);
+        currentPot.SetActive(false);
         countGenericCard = 0;
 
         for(int i = cardsDeal.Count-1;i>=0;i--)
