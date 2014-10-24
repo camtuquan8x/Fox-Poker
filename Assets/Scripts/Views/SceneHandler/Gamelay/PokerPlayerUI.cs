@@ -48,7 +48,8 @@ public class PokerPlayerUI : MonoBehaviour
 
     void Instance_onFinishGame(ResponseFinishGame data)
     {
-        currentBet.SetActive(false);
+        if(currentBet != null)
+            currentBet.SetActive(false);
     }
 
     private void Instance_dataTurnGame(ResponseUpdateTurnChange data)

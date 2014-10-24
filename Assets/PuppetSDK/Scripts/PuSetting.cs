@@ -190,7 +190,7 @@ public class PuSetting
 
             public string Domain { get { return domain; } }
 
-            public string GetPath(string path) { return string.Format("{0}/puppet/api/{1}", GetBaseUrl(), path); }
+            public string GetPath(string path) { return string.Format("{0}/static/api/{1}", GetBaseUrl(), path); }
         }
     }
 }

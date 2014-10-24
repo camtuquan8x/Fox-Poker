@@ -75,13 +75,12 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     void Instance_onEventUpdateHand(ResponseUpdateHand data)
     {
-        CreateHand(data);
+        CreateHand(data.players, data.hand);
     }
 
-
-    void CreateHand(ResponseUpdateHand data)
+    void CreateHand(PokerPlayerController[] players, int [] hands)
     {
-        foreach(PokerPlayerController p in data.players)
+        foreach(PokerPlayerController p in players)
         {
             int handSize = p.handSize;
             GameObject[] cardObjects = new GameObject[handSize];
@@ -90,7 +89,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
             if (PokerObserver.Instance.mUserInfo.info.userName == p.userName)
                 for(int i=0;i<handSize;i++)
-                    cardObjects[i].GetComponent<PokerCardObject>().SetDataCard(new PokerCard(data.hand[i]), i);
+                    cardObjects[i].GetComponent<PokerCardObject>().SetDataCard(new PokerCard(hands[i]), i);
             else
                 for (int i = 0; i < handSize; i++)
                     cardObjects[i].GetComponent<PokerCardObject>().SetDataCard(new PokerCard(), i);
@@ -104,9 +103,10 @@ public class PokerGameplayPlaymat : MonoBehaviour
     void Instance_onFirstJoinGame(ResponseUpdateGame data)
     {
         foreach (PokerPlayerController player in data.players)
-        {
             SetPositionAvatarPlayer(player);
-        }
+
+        CreateHand(data.players, null);
+        //CreateCardDeal(data);
     }
 
     void Instance_dataUpdateGame(ResponseUpdateGame data)

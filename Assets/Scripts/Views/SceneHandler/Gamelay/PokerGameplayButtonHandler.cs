@@ -7,6 +7,7 @@ using Puppet.Poker.Models;
 using Puppet.Poker.Datagram;
 using Puppet;
 using Puppet.Service;
+using System.Linq;
 
 public class PokerGameplayButtonHandler : MonoBehaviour 
 {
@@ -120,8 +121,21 @@ public class PokerGameplayButtonHandler : MonoBehaviour
             if(DialogService.Instance.IsShowing(bettingDialog) == false)
             {
                 DialogService.Instance.ShowDialog(bettingDialog);
-
             }
+        }
+        else if(currentType == EButtonType.OutGame)
+        {
+            List<int> listIndex = (from player in Puppet.API.Client.APIPokerGame.GetPokerGameplay().ListPlayer select player.slotIndex).ToList<int>();
+            int minValue = -1;
+            for (int i = 0; i < Puppet.API.Client.APIPokerGame.GetPokerGameplay().MAX_PLAYER_IN_GAME; i++)
+            {
+                if(listIndex.Contains(i) == false) { minValue = i; break; }
+            }
+
+            if (minValue >= 0)
+                PokerObserver.Instance.SitDown(minValue);
+            else
+                DialogService.Instance.ShowDialog(new DialogMessage("Thông báo", "Phòng chơi không còn chỗ trống", null));
         }
     }
 
@@ -152,7 +166,22 @@ public class PokerGameplayButtonHandler : MonoBehaviour
             if (data.toPlayer != null)
                 SetEnableButtonType(PokerObserver.Instance.IsMainPlayer(data.toPlayer.userName) ? EButtonType.InTurn : EButtonType.OutTurn);
             else
-                SetEnableButtonType(EButtonType.InGame);
+            {
+                ButtonItem selectedButton = Array.Find<ButtonItem>(itemButtons, button => button.toggle.value);
+                if(selectedButton != null)
+                {
+                    if (selectedButton.slot == EButtonSlot.First)
+                        OnClickButton1(selectedButton.button);
+                    else if(selectedButton.slot == EButtonSlot.Second)
+                        OnClickButton2(selectedButton.button);
+                    else if (selectedButton.slot == EButtonSlot.Third)
+                        OnClickButton1(selectedButton.button);
+
+                    selectedButton.toggle.value = selectedButton.slot == EButtonSlot.Third;
+                }
+                else
+                    SetEnableButtonType(EButtonType.InGame);
+            }
         }
     }
 
