@@ -70,6 +70,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         PokerObserver.Instance.dataTurnGame += Instance_dataTurnGame;
         PokerObserver.Instance.onNewRound += Instance_onNewRound;
         PokerObserver.Instance.onFinishGame += Instance_onFinishGame;
+        PokerObserver.Instance.onPlayerListChanged += Instance_onPlayerListChanged;
 
         foreach(ButtonItem item in itemButtons)
         {
@@ -87,6 +88,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         PokerObserver.Instance.dataTurnGame -= Instance_dataTurnGame;
         PokerObserver.Instance.onNewRound -= Instance_onNewRound;
         PokerObserver.Instance.onFinishGame -= Instance_onFinishGame;
+        PokerObserver.Instance.onPlayerListChanged -= Instance_onPlayerListChanged;
 
         foreach (ButtonItem item in itemButtons)
         {
@@ -125,17 +127,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         }
         else if(currentType == EButtonType.OutGame)
         {
-            List<int> listIndex = (from player in Puppet.API.Client.APIPokerGame.GetPokerGameplay().ListPlayer select player.slotIndex).ToList<int>();
-            int minValue = -1;
-            for (int i = 0; i < Puppet.API.Client.APIPokerGame.GetPokerGameplay().MAX_PLAYER_IN_GAME; i++)
-            {
-                if(listIndex.Contains(i) == false) { minValue = i; break; }
-            }
-
-            if (minValue >= 0)
-                PokerObserver.Instance.SitDown(minValue);
-            else
-                DialogService.Instance.ShowDialog(new DialogMessage("Thông báo", "Phòng chơi không còn chỗ trống", null));
+            Puppet.API.Client.APIPokerGame.AutoSitDown();
         }
     }
 
@@ -159,29 +151,46 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         }
     }
 
+    void Instance_onPlayerListChanged(ResponsePlayerListChanged data)
+    {
+        if (PokerObserver.Instance.IsMainPlayer(data.player.userName))
+        {
+            switch (data.GetActionState())
+            {
+                case PokerPlayerChangeAction.playerAdded:
+                    SetEnableButtonType(EButtonType.InGame);
+                    break;
+                case PokerPlayerChangeAction.waitingPlayerAdded:
+                    SetEnableButtonType(EButtonType.OutGame);
+                    break;
+            }
+        }
+    }
+
     void Instance_dataTurnGame(ResponseUpdateTurnChange data)
     {
         if (PokerObserver.Instance.IsMainPlayerInGame())
         {
             if (data.toPlayer != null)
-                SetEnableButtonType(PokerObserver.Instance.IsMainPlayer(data.toPlayer.userName) ? EButtonType.InTurn : EButtonType.OutTurn);
-            else
             {
                 ButtonItem selectedButton = Array.Find<ButtonItem>(itemButtons, button => button.toggle.value);
-                if(selectedButton != null)
+
+                SetEnableButtonType(PokerObserver.Instance.IsMainPlayer(data.toPlayer.userName) ? EButtonType.InTurn : EButtonType.OutTurn);
+
+                if (selectedButton != null)
                 {
                     if (selectedButton.slot == EButtonSlot.First)
                         OnClickButton1(selectedButton.button);
-                    else if(selectedButton.slot == EButtonSlot.Second)
+                    else if (selectedButton.slot == EButtonSlot.Second)
                         OnClickButton2(selectedButton.button);
                     else if (selectedButton.slot == EButtonSlot.Third)
                         OnClickButton1(selectedButton.button);
 
                     selectedButton.toggle.value = selectedButton.slot == EButtonSlot.Third;
                 }
-                else
-                    SetEnableButtonType(EButtonType.InGame);
             }
+            else
+                SetEnableButtonType(EButtonType.InGame);
         }
     }
 
