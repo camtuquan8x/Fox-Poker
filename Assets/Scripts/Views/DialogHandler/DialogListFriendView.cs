@@ -14,7 +14,7 @@ using UnityEngine;
 using Puppet.Core.Model;
 using Puppet;
 namespace Puppet.Service{
-	[PrefabAttribute(Name = "Prefabs/Dialog/Friend/DialogListFriend", Depth = 7, IsAttachedToCamera = true, IsUIPanel = true)]
+[PrefabAttribute(Name = "Prefabs/Dialog/Friend/DialogListFriend", Depth = 7, IsAttachedToCamera = true, IsUIPanel = true)]
 public class DialogListFriendView : BaseDialog<DialogListFriend,DialogListFriendView>
 {
 		#region 

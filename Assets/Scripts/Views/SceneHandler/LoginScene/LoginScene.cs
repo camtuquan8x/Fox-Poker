@@ -80,7 +80,7 @@ public class LoginScene : MonoBehaviour, ILoginView
     }
     void onBtnGuestClick(GameObject gobj)
     {
-        presenter.LoginTrail();
+    	presenter.LoginTrail();
     }
 
 

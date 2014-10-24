@@ -58,7 +58,7 @@ public class HeaderMenuPresenter : IHeaderMenuPresenter
 
 	public void ShowDialogProfile ()
 	{
-		
+		DialogService.Instance.ShowDialog (new DialogInfo (APIUser.GetUserInformation()));
 	}
 
 	public void ShowDialogCommon ()
@@ -80,7 +80,7 @@ public class HeaderMenuPresenter : IHeaderMenuPresenter
 
 	public void ShowDialogMessage ()
 	{
-
+		DialogService.Instance.ShowDialog (new DialogInbox ());
 	}
 
 	public void ShowDialogSearch ()

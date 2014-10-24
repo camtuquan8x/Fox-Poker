@@ -118,6 +118,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		UIEventListener.Get (btnLobbyChangeTypeShow).onClick += OnLobbyChangeTypeClickCallBack;
 		UIEventListener.Get (btnSearch).onClick += OnSearchClickCallBack;
 		UIEventListener.Get (btnLeague).onClick += OnLeagueClickCallBack;
+		UIEventListener.Get (avatar.gameObject).onClick += OnClickProfileCallBack;
 
 	}
 	void OnDisable(){
@@ -129,6 +130,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		UIEventListener.Get (btnLobbyChangeTypeShow).onClick -= OnLobbyChangeTypeClickCallBack;
 		UIEventListener.Get (btnSearch).onClick -= OnSearchClickCallBack;
 		UIEventListener.Get (btnLeague).onClick -= OnLeagueClickCallBack;
+		UIEventListener.Get (avatar.gameObject).onClick += OnClickProfileCallBack;
 
 	}
 	#region IHeaderMenuView implementation
@@ -186,7 +188,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 
 	void OnMessageClickCallBack (GameObject go)
 	{
-		throw new NotImplementedException ();
+		presenter.ShowDialogMessage ();
 	}
 
 	void OnSettingsClickCallBack (GameObject go)
@@ -212,6 +214,11 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 
 	void OnLeagueClickCallBack (GameObject go)
 	{
+	}
+
+	void OnClickProfileCallBack (GameObject go)
+	{
+		presenter.ShowDialogProfile ();
 	}
 }
 
