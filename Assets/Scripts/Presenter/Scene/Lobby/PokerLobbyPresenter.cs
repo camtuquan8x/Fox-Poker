@@ -56,6 +56,7 @@ public class PokerLobbyPresenter : ILobbyPresenter
     IEnumerator DrawChannelsAndLoadDefaultsLobbyInChannel(List<DataChannel> data)
     {
         view.DrawChannels(data);
+
         yield return new WaitForEndOfFrame();
         LoadLobbiesByChannel(data[0]);
     }
@@ -67,6 +68,8 @@ public class PokerLobbyPresenter : ILobbyPresenter
 
     public void LoadLobbiesByChannel(Puppet.Core.Model.DataChannel channel)
     {
+		if(lobbies !=null)
+			lobbies = null;
         selectedChannel = channel;
         APILobby.SetSelectChannel(channel, OnGetAllLobbyInChannel);
     }
@@ -75,11 +78,14 @@ public class PokerLobbyPresenter : ILobbyPresenter
     {
         if (status)
         {
-            this.lobbies = data;
-			view.DrawLobbies(data);
-			
-//			PuApp.Instance.StartCoroutine(DrawLobbies(this.lobbies));
-        
+			if(lobbies == null){
+            	this.lobbies = data;
+				view.DrawLobbies(data);
+			}else{
+				List<DataLobby> lobbiesDeleted = lobbies.Except(data).ToList();
+				if(lobbiesDeleted.Count > 0)
+					view.RemoveLobby(lobbiesDeleted);
+			}
         }
         else
             view.ShowError(message);

@@ -9,7 +9,7 @@ public interface ILobbyView : IView
 {
     void DrawChannels(List<DataChannel> channels);
     void DrawLobbies(List<DataLobby> lobbies);
-    void RemoveLobby(DataLobby lobbies);
+    void RemoveLobby(List<DataLobby> lobbies);
     void UpdateLobby(DataLobby lobbies);
     void AddLobby(DataLobby lobbies);
 }
