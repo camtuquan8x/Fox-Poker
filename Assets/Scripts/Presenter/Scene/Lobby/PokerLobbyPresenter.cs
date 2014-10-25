@@ -116,7 +116,7 @@ public class PokerLobbyPresenter : ILobbyPresenter
 
     public void CreateLobby()
     {
-        APILobby.CreateLobby(OnCreateLobbyCallBack);
+        APILobby.CreateLobby(100, 9, OnCreateLobbyCallBack);
     }
 
     private void OnCreateLobbyCallBack(bool status, string message)

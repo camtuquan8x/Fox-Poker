@@ -60,7 +60,7 @@ public class LobbyScene : MonoBehaviour,ILobbyView
 
     private void OnClickCreateGame(GameObject go)
     {
-        APILobby.CreateLobby(OnCreateLobbyHandler);
+        presenter.CreateLobby();
     }
 
     private void OnCreateLobbyHandler(bool status, string message)

@@ -36,18 +36,24 @@ public class PokerGameplayPlaymat : MonoBehaviour
         if (obj.pot != null && obj.pot.Length > 0)
         {
             currentPot.SetActive(true);
-            currentPot.SetBet(obj.pot[0].value);
+            int value = 0;
+            Array.ForEach<ResponseUpdatePot.DataPot>(obj.pot, p => value += p.value);
+            currentPot.SetBet(value);
         }
     }
 
     void Instance_onNewRound(ResponseWaitingDealCard data)
     {
         currentPot.SetActive(false);
+
+        DestroyCardObject();
+    }
+
+    void DestroyCardObject()
+    {
         countGenericCard = 0;
-
-        for(int i = cardsDeal.Count-1;i>=0;i--)
+        for (int i = cardsDeal.Count - 1; i >= 0; i--)
             GameObject.Destroy(cardsDeal[i]);
-
         cardsDeal.Clear();
     }
 
@@ -106,15 +112,13 @@ public class PokerGameplayPlaymat : MonoBehaviour
             SetPositionAvatarPlayer(player);
 
         CreateHand(data.players, null);
-        //CreateCardDeal(data);
+        CreateCardDeal(data.dealComminityCards);
     }
 
     void Instance_dataUpdateGame(ResponseUpdateGame data)
     {
-        foreach (PokerPlayerController player in data.players)
-        {
-            SetPositionAvatarPlayer(player);
-        }
+        DestroyCardObject();
+        Instance_onFirstJoinGame(data);
     }
 
     void Instance_onPlayerListChanged(ResponsePlayerListChanged dataPlayer)

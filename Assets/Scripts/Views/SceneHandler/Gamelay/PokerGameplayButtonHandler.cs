@@ -179,14 +179,14 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 
                 if (selectedButton != null)
                 {
-                    if (selectedButton.slot == EButtonSlot.First)
+                    if (selectedButton.slot == EButtonSlot.First && data.action == "Call")
                         OnClickButton1(selectedButton.button);
                     else if (selectedButton.slot == EButtonSlot.Second)
                         OnClickButton2(selectedButton.button);
                     else if (selectedButton.slot == EButtonSlot.Third)
                         OnClickButton1(selectedButton.button);
 
-                    selectedButton.toggle.value = selectedButton.slot == EButtonSlot.Third;
+                    selectedButton.toggle.value = false;
                 }
             }
             else
