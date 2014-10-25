@@ -41,7 +41,11 @@ public class LoginScene : MonoBehaviour, ILoginView
     }
     void OnDisable()
     {
-
+		UIEventListener.Get(btnLogin).onClick -= this.onBtnLoginClick;
+		UIEventListener.Get(btnForgot).onClick -= this.onBtnForgotClick;
+		UIEventListener.Get(btnFacebook).onClick -= this.onBtnFacebookClick;
+		UIEventListener.Get(btnGuest).onClick -= this.onBtnGuestClick;
+		UIEventListener.Get(btnRegister).onClick -= this.onBtnRegisterClick;
     }
     void OnGUI()
     {
@@ -81,6 +85,7 @@ public class LoginScene : MonoBehaviour, ILoginView
     void onBtnGuestClick(GameObject gobj)
     {
     	presenter.LoginTrail();
+
     }
 
 

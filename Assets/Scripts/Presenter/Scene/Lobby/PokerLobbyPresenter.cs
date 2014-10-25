@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using Puppet.Service;
 
 
 public class PokerLobbyPresenter : ILobbyPresenter
@@ -106,7 +107,6 @@ public class PokerLobbyPresenter : ILobbyPresenter
     public void ViewStart()
     {
         LoadChannels();
-	
     }
 
     public void ViewEnd()
@@ -116,7 +116,8 @@ public class PokerLobbyPresenter : ILobbyPresenter
 
     public void CreateLobby()
     {
-        APILobby.CreateLobby(100, 9, OnCreateLobbyCallBack);
+		DialogService.Instance.ShowDialog (new DialogCreateGame (new List<int>(selectedChannel.configuration.betting)));
+        
     }
 
     private void OnCreateLobbyCallBack(bool status, string message)
