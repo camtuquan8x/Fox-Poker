@@ -18,8 +18,15 @@ namespace Puppet.Service
 
         public void ShowDialog(IDialogData dialog)
         {
-            listDialog.Add(dialog);
-            StartCoroutine(_ShowDialog(dialog));
+            if(dialog.IsMessageDialog == false)
+            {
+                dialog.ShowDialog();
+            }
+            else
+            {
+                listDialog.Add(dialog);
+                StartCoroutine(_ShowDialog(dialog));
+            }
         }
 
         IEnumerator _ShowDialog(IDialogData dialog)
@@ -31,17 +38,6 @@ namespace Puppet.Service
                 yield return new WaitForEndOfFrame();
             CheckAndShow();
         }
-		public void ShowDialog(IDialogData dialog,bool isSecond)
-		{
-			if (isSecond) {
-				dialog.ShowDialog ();
-				listDialog.Add (dialog);
-			}
-			else {
-				ShowDialog(dialog);
-			}
-		}
-
 
         void CheckAndShow()
         {

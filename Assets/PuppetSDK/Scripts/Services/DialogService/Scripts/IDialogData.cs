@@ -7,6 +7,7 @@ namespace Puppet.Service
 {
     public interface IDialogData
     {
+        bool IsMessageDialog { get; }
         string Title { get; set; }
         string Content { get; set; }
         Action<bool?> ButtonCallback { get; set; }
@@ -17,6 +18,7 @@ namespace Puppet.Service
 
     public abstract class AbstractDialogData : IDialogData
     {
+        public virtual bool IsMessageDialog { get { return false; } }
         public string Title { get; set; }
         public string Content { get; set; }
         public Action<bool?> ButtonCallback { get; set; }
@@ -43,6 +45,8 @@ namespace Puppet.Service
 
     public class DialogConfirm : AbstractDialogData
     {
+        public override bool IsMessageDialog { get { return true; } }
+
         public DialogConfirm(string title, string content, Action<bool?> callback)
             : base()
         {
@@ -59,6 +63,8 @@ namespace Puppet.Service
 
     public class DialogMessage : AbstractDialogData
     {
+        public override bool IsMessageDialog { get { return true; } }
+
         public DialogMessage(string title, string content, Action<bool?> callback) : base()
         {
             this.Title = title;
@@ -73,6 +79,8 @@ namespace Puppet.Service
     }
     public class DialogInput : AbstractDialogData
     {
+        public override bool IsMessageDialog { get { return true; } }
+
         public string startValue;
         public Action<bool?, string> onDoneInput;
 

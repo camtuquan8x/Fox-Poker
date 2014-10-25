@@ -36,8 +36,7 @@ public class DialogInfoView : BaseDialog<DialogInfo,DialogInfoView>
 
 	void onClickViewStatictis (GameObject go)
 	{
-		
-		DialogService.Instance.ShowDialog (new DialogStatistic(),true);
+		DialogService.Instance.ShowDialog (new DialogStatistic());
 	}
 
 	#endregion
