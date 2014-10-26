@@ -13,7 +13,7 @@ public class PokerGPSide : MonoBehaviour
 	public GameObject[] positionCardFaceCards;
 	public GameObject[] positionCardBackCards;
 	public GameObject[] positionCardGameEnd;
-	public GameObject positionMoney;
+	public GameObject positionMoney,positionDealer;
 	public GameObject btnSit;
 
     void Awake()
