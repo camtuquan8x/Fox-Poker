@@ -86,6 +86,9 @@ public class PokerLobbyPresenter : ILobbyPresenter
 				List<DataLobby> lobbiesDeleted = lobbies.Except(data).ToList();
 				if(lobbiesDeleted.Count > 0)
 					view.RemoveLobby(lobbiesDeleted);
+                List<DataLobby> lobbiesAdded = data.Except(lobbies).ToList();
+                if (lobbiesAdded.Count > 0)
+                    view.AddLobby(lobbiesAdded);
 			}
         }
         else

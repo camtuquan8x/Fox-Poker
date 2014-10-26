@@ -11,6 +11,6 @@ public interface ILobbyView : IView
     void DrawLobbies(List<DataLobby> lobbies);
     void RemoveLobby(List<DataLobby> lobbies);
     void UpdateLobby(DataLobby lobbies);
-    void AddLobby(DataLobby lobbies);
+    void AddLobby(List<DataLobby> lobbies);
 }
 

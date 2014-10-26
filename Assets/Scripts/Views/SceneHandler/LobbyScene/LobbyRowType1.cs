@@ -11,7 +11,7 @@ public class LobbyRowType1 : MonoBehaviour
     public UILabel title;
     #endregion
     public DataLobby data;
-
+    
 	private Action action ;
 
     public static LobbyRowType1 Create(DataLobby data, UITable parent,Action callBack)

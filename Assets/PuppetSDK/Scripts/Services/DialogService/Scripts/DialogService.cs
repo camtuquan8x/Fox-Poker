@@ -18,25 +18,26 @@ namespace Puppet.Service
 
         public void ShowDialog(IDialogData dialog)
         {
-            if(dialog.IsMessageDialog == false)
+            StartCoroutine(_ShowDialog(dialog));
+        }
+
+        IEnumerator _ShowDialog(IDialogData dialog)
+        {
+
+            if (dialog is DialogPromotion)
+                yield return new WaitForSeconds(0.5f);
+            if (dialog.IsMessageDialog == false)
             {
                 dialog.ShowDialog();
             }
             else
             {
                 listDialog.Add(dialog);
-                StartCoroutine(_ShowDialog(dialog));
+                while (PuApp.Instance.changingScene)
+                    yield return new WaitForEndOfFrame();
+                CheckAndShow();
             }
-        }
 
-        IEnumerator _ShowDialog(IDialogData dialog)
-        {
-            if (dialog is DialogPromotion)
-                yield return new WaitForSeconds(0.5f);
-
-            while (PuApp.Instance.changingScene) 
-                yield return new WaitForEndOfFrame();
-            CheckAndShow();
         }
 
         void CheckAndShow()

@@ -171,12 +171,12 @@ public class LobbyScene : MonoBehaviour,ILobbyView
 			lobbies.RemoveAt(0);
 			if(isShowType1){
 				LobbyRowType1 lobbyRow =  types1.Find(lobbiesView=> lobbiesView.data.roomId == lobby.roomId);
-				types1.Remove(lobbyRow);
 				GameObject.Destroy(lobbyRow.gameObject);
+                types1.Remove(lobbyRow);
 			}else{
 				LobbyRowType2 lobbyRow =  types2.Find(lobbiesView=> lobbiesView.data.roomId == lobby.roomId);
-				types2.Remove(lobbyRow);
 				GameObject.Destroy(lobbyRow.gameObject);
+                types2.Remove(lobbyRow);
 			}
 		}
     }
@@ -186,9 +186,9 @@ public class LobbyScene : MonoBehaviour,ILobbyView
         throw new System.NotImplementedException();
     }
 
-    public void AddLobby(DataLobby lobbies)
+    public void AddLobby(List<DataLobby> lobbies)
     {
-        throw new System.NotImplementedException();
+        DrawLobbies(lobbies);
     }
 
     public void ShowError(string message)
