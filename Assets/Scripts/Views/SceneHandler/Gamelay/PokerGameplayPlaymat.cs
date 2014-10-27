@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Puppet.Poker;
 using System;
+using System.Linq; 
 using Puppet.Poker.Models;
 using Puppet.Poker.Datagram;
 using Puppet;
@@ -29,6 +30,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         PokerObserver.Instance.dataTurnGame += Instance_dataTurnGame;
         PokerObserver.Instance.onNewRound += Instance_onNewRound;
         PokerObserver.Instance.onUpdatePot += Instance_onUpdatePot;
+        PokerObserver.Instance.onFinishGame += Instance_onFinishGame;
     }
 
     void Instance_onUpdatePot(ResponseUpdatePot obj)
@@ -104,6 +106,43 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
             cardsDeal.AddRange(cardObjects);
         }
+    }
+
+    void Instance_onFinishGame(ResponseFinishGame responseData)
+    {
+        StartCoroutine(_onFinishGame(responseData));
+    }
+
+    IEnumerator _onFinishGame(ResponseFinishGame responseData)
+    {
+        float time = responseData.time/1000f;
+        float waitTimeViewCard = time > 1 ? 1f : 0f;
+        float timeEffectPot = responseData.pots.Length > 0 ? time - (waitTimeViewCard / responseData.pots.Length) : time - waitTimeViewCard;
+        yield return new WaitForSeconds(waitTimeViewCard /2f);
+
+        foreach(ResponseResultSummary summary in responseData.pots)
+        {
+            ResponseMoneyExchange playerWin = Array.Find<ResponseMoneyExchange>(summary.players, p => p.winner);
+            if(currentPot != null && playerWin != null)
+            {
+                dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(true);
+
+                List<int> list = new List<int>(playerWin.cards);
+                List<GameObject> listCardObject = cardsDeal.FindAll(o => list.Contains(o.GetComponent<PokerCardObject>().card.cardId));
+                //GameObject obj = NGUITools.AddChild(currentPot.transform.parent.gameObject, currentPot.gameObject);
+                //obj.transform.parent = dictPlayerObject[playerWin.userName].transform.parent;
+                //iTween.MoveTo(obj, iTween.Hash("islocal", true, "time", timeEffectPot, "position", Vector3.zero));
+                for (int i = 0; i < 20; i++ )
+                {
+                    listCardObject.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(i % 2 == 0));
+                    yield return new WaitForSeconds(timeEffectPot / 20f);
+                }
+                //GameObject.Destroy(obj);
+                listCardObject.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(false));
+                dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(false);
+            }
+        }
+        yield return new WaitForSeconds(waitTimeViewCard / 2);
     }
 
     void Instance_onFirstJoinGame(ResponseUpdateGame data)

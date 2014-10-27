@@ -83,7 +83,10 @@ public class DialogPromotion : AbstractDialogData
     }
     public override void ShowDialog()
     {
-        DialogPromotionView.Instance.ShowDialog(this);
+        PuApp.Instance.ExecuteFuntion(.5f, () =>
+        {
+            DialogPromotionView.Instance.ShowDialog(this);
+        });
     }
 }
 

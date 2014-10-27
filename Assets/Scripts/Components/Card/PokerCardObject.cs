@@ -15,11 +15,13 @@ public class PokerCardObject : MonoBehaviour
         spriteRank, 
         spriteSuit, 
         spriteIcon;
+    public GameObject highlightObject;
 
-    PokerCard card;
+    public PokerCard card;
 
     public void SetDataCard(PokerCard card)
     {
+        this.SetHighlight(false);
         this.card = card;
         UpdateUI();
     }
@@ -67,4 +69,10 @@ public class PokerCardObject : MonoBehaviour
                 spriteIcon.color = spriteSuit.color;
         }
     }
+
+    public void SetHighlight(bool state)
+    {
+        NGUITools.SetActive(highlightObject, state);
+    }
+         
 }

@@ -12,6 +12,7 @@ public class PokerPlayerUI : MonoBehaviour
     public UILabel labelUsername;
     public UISlider timerSlider;
     public GameObject btnGift;
+    public UISprite spriteResultIcon;
     #endregion
 
     GameObject[] cardOnHands;
@@ -23,6 +24,7 @@ public class PokerPlayerUI : MonoBehaviour
 
     void Awake()
     {
+        this.SetResult(false);
         playmat = GameObject.FindObjectOfType<PokerGameplayPlaymat>();
     }
 
@@ -48,8 +50,23 @@ public class PokerPlayerUI : MonoBehaviour
 
     void Instance_onFinishGame(ResponseFinishGame data)
     {
+        StopTimer();
+
         if(currentBet != null)
             currentBet.SetActive(false);
+
+        ResponseFinishCardPlayer cardPlayer = Array.Find<ResponseFinishCardPlayer>(data.players, p => p.userName == this.data.userName);
+        if(cardPlayer != null && cardPlayer.cards != null)
+        {
+            for(int i=0;i<cardPlayer.cards.Length;i++)
+            {
+                cardOnHands[i].GetComponent<PokerCardObject>().SetDataCard(new PokerCard(cardPlayer.cards[i]));
+                cardOnHands[i].transform.parent = side.positionCardGameEnd[i].transform;
+                cardOnHands[i].transform.localRotation = Quaternion.identity;
+                cardOnHands[i].transform.localPosition = Vector3.zero;
+                cardOnHands[i].transform.localScale = Vector3.one;
+            }
+        }
     }
 
     private void Instance_dataTurnGame(ResponseUpdateTurnChange data)
@@ -76,6 +93,11 @@ public class PokerPlayerUI : MonoBehaviour
         }
         currentBet.SetActive(value > 0);
         currentBet.SetBet(value);
+    }
+
+    public void SetResult(bool isWinner)
+    {
+        NGUITools.SetActive(spriteResultIcon.gameObject, isWinner);
     }
 
     public void SetData(PokerPlayerController player)
@@ -118,13 +140,13 @@ public class PokerPlayerUI : MonoBehaviour
             if (remainingTime > 0)
                 timeCountDown = remainingTime;
             realtime = Time.realtimeSinceStartup;
-
         }
     }
     void StopTimer()
     {
         timeCountDown = -1f;
         realtime = 0f;
+        timerSlider.value = 0;
     }
     #endregion
 

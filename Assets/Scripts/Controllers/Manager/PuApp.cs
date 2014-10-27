@@ -72,4 +72,16 @@ public class PuApp : Singleton<PuApp>
 	{
 		PuMain.Socket.Disconnect();
 	}
+
+    public void ExecuteFuntion(float delayTime, System.Action callback)
+    {
+        StartCoroutine(_DelayFunction(delayTime, callback));
+    }
+
+    IEnumerator _DelayFunction(float delayTime, System.Action callback)
+    {
+        yield return new WaitForSeconds(delayTime);
+        if (callback != null)
+            callback();
+    }
 }
