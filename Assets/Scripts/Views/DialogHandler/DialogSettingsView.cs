@@ -6,7 +6,8 @@ namespace Puppet.Service{
 	public class DialogSettingsView : BaseDialog<DialogSetting,DialogSettingsView> {
 		#region Unity Editor
 		public UILabel lbUserName, lbVersion;
-		public GameObject btnLogout,toggleAutoSit,toggleAutoBuy,togglePlayNotification,toggleGameNotification;
+		public GameObject btnLogout;
+        public UIProgressBar toggleAutoSit,toggleAutoBuy,togglePlayNotification,toggleGameNotification;
 		#endregion
 		public override void ShowDialog (DialogSetting data)
 		{
@@ -16,19 +17,19 @@ namespace Puppet.Service{
 		protected override void OnEnable(){
 			base.OnEnable();
 			UIEventListener.Get (btnLogout).onClick += onBtnLogoutClick;
-			UIEventListener.Get (toggleAutoSit).onClick += onToggleAutoSit;
-			UIEventListener.Get (toggleAutoBuy).onClick += onToggleAutoBuy;
-			UIEventListener.Get (togglePlayNotification).onClick += onTogglePlayNotification;
-			UIEventListener.Get (toggleGameNotification).onClick += onToggleGameNotification;
+			UIEventListener.Get (toggleAutoSit.gameObject).onClick += onToggleAutoSit;
+            UIEventListener.Get(toggleAutoBuy.gameObject).onClick += onToggleAutoBuy;
+            UIEventListener.Get(togglePlayNotification.gameObject).onClick += onTogglePlayNotification;
+            UIEventListener.Get(toggleGameNotification.gameObject).onClick += onToggleGameNotification;
 			
 		}
 		protected override void  OnDisable(){
 			base.OnDisable();
 			UIEventListener.Get (btnLogout).onClick -= onBtnLogoutClick;
-			UIEventListener.Get (toggleAutoSit).onClick -= onToggleAutoSit;
-			UIEventListener.Get (toggleAutoBuy).onClick -= onToggleAutoBuy;
-			UIEventListener.Get (togglePlayNotification).onClick -= onTogglePlayNotification;
-			UIEventListener.Get (toggleGameNotification).onClick -= onToggleGameNotification;
+            UIEventListener.Get(toggleAutoSit.gameObject).onClick -= onToggleAutoSit;
+            UIEventListener.Get(toggleAutoBuy.gameObject).onClick -= onToggleAutoBuy;
+            UIEventListener.Get(togglePlayNotification.gameObject).onClick -= onTogglePlayNotification;
+            UIEventListener.Get(toggleGameNotification.gameObject).onClick -= onToggleGameNotification;
 		}
 		void InitData (DialogSetting data)
 		{
@@ -44,35 +45,38 @@ namespace Puppet.Service{
 
 		void onToggleAutoSit (GameObject go)
 		{
-			if (go.GetComponent<UISlider> ().value == 0)
-				go.GetComponent<UISlider> ().value = 1;
+			if (toggleAutoSit.value == 0)
+                toggleAutoSit.value = 1;
 			else
-				go.GetComponent<UISlider> ().value = 0;
-
+                toggleAutoSit.value = 0;
+            toggleAutoSit.ForceUpdate();
 		}
 
 		void onToggleAutoBuy (GameObject go)
 		{
-			if (go.GetComponent<UISlider> ().value == 0)
-				go.GetComponent<UISlider> ().value = 1;
+			if (toggleAutoBuy.value == 0)
+                toggleAutoBuy.value = 1;
 			else
-				go.GetComponent<UISlider> ().value = 0;
+                toggleAutoBuy.value = 0;
+            toggleAutoBuy.ForceUpdate();
 		}
 
 		void onTogglePlayNotification (GameObject go)
 		{
-			if (go.GetComponent<UISlider> ().value == 0)
-				go.GetComponent<UISlider> ().value = 1;
+			if (togglePlayNotification.value == 0)
+                togglePlayNotification.value = 1;
 			else
-				go.GetComponent<UISlider> ().value = 0;
+                togglePlayNotification.value = 0;
+            togglePlayNotification.ForceUpdate();
 		}
 
 		void onToggleGameNotification (GameObject go)
 		{
-			if (go.GetComponent<UISlider> ().value == 0)
-				go.GetComponent<UISlider> ().value = 1;
+			if (toggleGameNotification.value == 0)
+                toggleGameNotification.value = 1;
 			else
-				go.GetComponent<UISlider> ().value = 0;
+                toggleGameNotification.value = 0;
+            toggleGameNotification.ForceUpdate();
 		}
 	}
 	public class DialogSetting : AbstractDialogData {
