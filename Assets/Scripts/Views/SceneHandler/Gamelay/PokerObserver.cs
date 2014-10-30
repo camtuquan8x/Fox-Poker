@@ -7,9 +7,15 @@ using System;
 using Puppet.API.Client;
 using Puppet;
 using Puppet.Core.Model;
+using Puppet.Poker.Models;
 
 public class PokerObserver
 {
+    public int currentBetting;
+    public int maxBetting;
+    public int[] arrBettings;
+    public PokerPlayerController playerData;
+
     public event Action<ResponseUpdateGame> onFirstJoinGame;
     public event Action<ResponseUpdateGame> dataUpdateGameChange;
     public event Action<ResponsePlayerListChanged> onPlayerListChanged;
@@ -50,10 +56,22 @@ public class PokerObserver
     {
         if (data is ResponseUpdateGame)
         {
+            ResponseUpdateGame dataGame = (ResponseUpdateGame)data;
             if (command == "updateGame" && dataUpdateGameChange != null)
-                dataUpdateGameChange((ResponseUpdateGame)data);
+                dataUpdateGameChange(dataGame);
             else if (command == "updateGameToWaitingPlayer" && onFirstJoinGame != null)
-                onFirstJoinGame((ResponseUpdateGame)data);
+            {
+                currentBetting = maxBetting;
+                maxBetting = dataGame.gameDetails.customConfiguration.betting;
+                arrBettings = dataGame.gameDetails.configuration.betting;
+
+                string str = string.Empty;
+                foreach(int i in arrBettings)
+                    str += i + ",";
+                Logger.Log(str);
+
+                onFirstJoinGame(dataGame);
+            }
         }
         else if (data is ResponsePlayerListChanged && onPlayerListChanged != null)
         {
@@ -64,7 +82,15 @@ public class PokerObserver
         else if (data is ResponseUpdateHand && onEventUpdateHand != null)
             onEventUpdateHand((ResponseUpdateHand)data);
         else if (data is ResponseUpdateTurnChange && dataTurnGame != null)
-            dataTurnGame((ResponseUpdateTurnChange)data);
+        {
+            ResponseUpdateTurnChange dataTurn = (ResponseUpdateTurnChange)data;
+            if (dataTurn.toPlayer != null && PokerObserver.Instance.IsMainPlayer(dataTurn.toPlayer.userName))
+                PokerObserver.Instance.playerData = dataTurn.toPlayer;
+            else if (dataTurn.fromPlayer != null && dataTurn.fromPlayer.currentBet > 0)
+                PokerObserver.Instance.currentBetting = dataTurn.fromPlayer.currentBet;
+
+            dataTurnGame(dataTurn);
+        }
         else if (data is ResponseFinishGame && onFinishGame != null)
             onFinishGame((ResponseFinishGame)data);
         else if (data is ResponseWaitingDealCard && onNewRound != null)
