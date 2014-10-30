@@ -26,9 +26,18 @@ public class PuApp : Singleton<PuApp>
         {
             PuMain.Dispatcher.onWarningUpgrade += Dispatcher_onWarningUpgrade;
 			PuMain.Dispatcher.onDailyGift +=Dispatcher_onDailyGift;
+            PuMain.Dispatcher.onNoticeMessage += Dispatcher_onNoticeMessage;
         });
 
 		SocialService.SocialStart ();
+    }
+
+    void Dispatcher_onNoticeMessage(EMessage type, string message)
+    {
+        PuMain.Setting.Threading.QueueOnMainThread(() =>
+        {
+            DialogService.Instance.ShowDialog(new DialogMessage("Warning", message, null));
+        });
     }
 
 	void Dispatcher_onDailyGift(DataDailyGift obj)
