@@ -69,19 +69,28 @@ public class PokerPlayerUI : MonoBehaviour
         }
     }
 
-    private void Instance_dataTurnGame(ResponseUpdateTurnChange data)
+    private void Instance_dataTurnGame(ResponseUpdateTurnChange responseData)
     {
-        NGUITools.SetActive(timerSlider.gameObject, data.toPlayer != null && data.toPlayer.userName == this.data.userName);
+        if (responseData.firstTurn)
+        {
+            if (responseData.bigBlind != null && responseData.bigBlind.userName == this.data.userName)
+                labelUsername.text = "Big Blind";
+            else if (responseData.smallBlind != null && responseData.smallBlind.userName == this.data.userName)
+                labelUsername.text = "Small Blind";
+        }
+        else if (labelUsername.text != this.data.userName)
+            labelUsername.text = this.data.userName;
 
-        if (data.toPlayer != null && data.toPlayer.userName == this.data.userName)
-            StartTimer(data.time > 1000 ? data.time / 1000f : data.time);
+        NGUITools.SetActive(timerSlider.gameObject, responseData.toPlayer != null && responseData.toPlayer.userName == this.data.userName);
+        if (responseData.toPlayer != null && responseData.toPlayer.userName == this.data.userName)
+            StartTimer(responseData.time > 1000 ? responseData.time / 1000f : responseData.time);
         else
             StopTimer();
 
-        if(data.fromPlayer != null && data.fromPlayer.userName == this.data.userName)
-            LoadCurrentBet(data.fromPlayer.currentBet);
-        if (data.toPlayer != null && data.toPlayer.userName == this.data.userName)
-            LoadCurrentBet(data.toPlayer.currentBet);
+        if (responseData.fromPlayer != null && responseData.fromPlayer.userName == this.data.userName)
+            LoadCurrentBet(responseData.fromPlayer.currentBet);
+        if (responseData.toPlayer != null && responseData.toPlayer.userName == this.data.userName)
+            LoadCurrentBet(responseData.toPlayer.currentBet);
     }
 
     void LoadCurrentBet(long value)

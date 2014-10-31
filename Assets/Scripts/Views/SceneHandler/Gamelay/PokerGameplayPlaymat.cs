@@ -15,12 +15,16 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     public Transform []positionDealCards;
     public PokerCurrentBet currentPot;
+    public GameObject objectDealer;
     #endregion
     PokerGPSide[] arrayPokerSide;
     Dictionary<string, GameObject> dictPlayerObject = new Dictionary<string, GameObject>();
 
     void Awake()
     {
+        currentPot.SetActive(false);
+        objectDealer.SetActive(false);
+
         arrayPokerSide = GameObject.FindObjectsOfType<PokerGPSide>();
 
         PokerObserver.Instance.onFirstJoinGame += Instance_onFirstJoinGame;
@@ -148,7 +152,11 @@ public class PokerGameplayPlaymat : MonoBehaviour
     void Instance_onFirstJoinGame(ResponseUpdateGame data)
     {
         foreach (PokerPlayerController player in data.players)
+        {
+            if (player.isMaster)
+                SetDealerObjectToPlayer(player);
             SetPositionAvatarPlayer(player);
+        }
 
         CreateHand(data.players, null);
         CreateCardDeal(data.dealComminityCards);
@@ -172,6 +180,18 @@ public class PokerGameplayPlaymat : MonoBehaviour
             GameObject.Destroy(dictPlayerObject[dataPlayer.player.userName]);
             dictPlayerObject.Remove(dataPlayer.player.userName);
         }
+
+        if(dataPlayer.player.isMaster)
+            SetDealerObjectToPlayer(dataPlayer.player);
+    }
+
+    public void SetDealerObjectToPlayer(PokerPlayerController player)
+    {
+        objectDealer.SetActive(true);
+        PokerGPSide playerSide = Array.Find<PokerGPSide>(arrayPokerSide, s => s.CurrentSide == player.GetSide());
+        objectDealer.transform.parent = playerSide.positionDealer.transform;
+        objectDealer.transform.localPosition = Vector3.zero;
+        objectDealer.transform.localScale = Vector3.one;
     }
 
     public PokerGPSide GetPokerSide(PokerSide side)
