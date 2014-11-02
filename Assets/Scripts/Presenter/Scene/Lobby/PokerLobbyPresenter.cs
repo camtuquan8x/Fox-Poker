@@ -149,8 +149,6 @@ public class PokerLobbyPresenter : ILobbyPresenter
         {
             view.DrawLobbies(lobbies);
         }
-
-
     }
 }
 
