@@ -2,7 +2,7 @@
 using System.Collections;
 using Puppet;
 using System;
-[PrefabAttribute(Name = "Prefabs/Dialog/SearchView/SearchView", Depth = 9)]
+[PrefabAttribute(Name = "Prefabs/Dialog/SearchView/SearchView", Depth = 9,IsAttachedToCamera=true,IsUIPanel=true)]
 public class SearchView : SingletonPrefab<SearchView>
 {
 
@@ -46,6 +46,7 @@ public class SearchView : SingletonPrefab<SearchView>
         string text = txtInput.value;
         if (onSearchSubmit != null)
             onSearchSubmit(text, arrayCheckbox);
+        GameObject.Destroy(gameObject);
     }
     void Update()
     {

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using Puppet.Service;
+using Puppet;
 
 
 public class PokerLobbyPresenter : ILobbyPresenter
@@ -32,8 +33,8 @@ public class PokerLobbyPresenter : ILobbyPresenter
     }
     public PokerLobbyPresenter(ILobbyView view)
     {
-		HeaderMenuView.Instance.ShowInLobby ();
-	
+        HeaderMenuView.Instance.ShowInLobby();
+
         this.view = view;
         ViewStart();
     }
@@ -47,7 +48,8 @@ public class PokerLobbyPresenter : ILobbyPresenter
 
     private void OnGetGroupNameCallback(bool status, string message, List<Puppet.Core.Model.DataChannel> data)
     {
-        if (status){
+        if (status)
+        {
             this.channels = data;
             PuApp.Instance.StartCoroutine(DrawChannelsAndLoadDefaultsLobbyInChannel(channels));
         }
@@ -69,8 +71,8 @@ public class PokerLobbyPresenter : ILobbyPresenter
 
     public void LoadLobbiesByChannel(Puppet.Core.Model.DataChannel channel)
     {
-		if(lobbies !=null)
-			lobbies = null;
+        if (lobbies != null)
+            lobbies = null;
         selectedChannel = channel;
         APILobby.SetSelectChannel(channel, OnGetAllLobbyInChannel);
     }
@@ -79,25 +81,29 @@ public class PokerLobbyPresenter : ILobbyPresenter
     {
         if (status)
         {
-			if(lobbies == null){
-            	this.lobbies = data;
-				view.DrawLobbies(data);
-			}else{
-				List<DataLobby> lobbiesDeleted = lobbies.Except(data).ToList();
-				if(lobbiesDeleted.Count > 0)
-					view.RemoveLobby(lobbiesDeleted);
+            if (lobbies == null)
+            {
+                this.lobbies = data;
+                view.DrawLobbies(data);
+            }
+            else
+            {
+                List<DataLobby> lobbiesDeleted = lobbies.Except(data).ToList();
+                if (lobbiesDeleted.Count > 0)
+                    view.RemoveLobby(lobbiesDeleted);
                 List<DataLobby> lobbiesAdded = data.Except(lobbies).ToList();
                 if (lobbiesAdded.Count > 0)
                     view.AddLobby(lobbiesAdded);
-			}
+            }
         }
         else
             view.ShowError(message);
     }
-	IEnumerator DrawLobbies(List<DataLobby> data){
-		yield return new WaitForSeconds (0.5f);
-		view.DrawLobbies(data);
-	}
+    IEnumerator DrawLobbies(List<DataLobby> data)
+    {
+        yield return new WaitForSeconds(0.5f);
+        view.DrawLobbies(data);
+    }
     public void JoinToGame(Puppet.Core.Model.DataLobby lobby)
     {
         APILobby.JoinLobby(lobby, (bool status, string message) =>
@@ -119,8 +125,8 @@ public class PokerLobbyPresenter : ILobbyPresenter
 
     public void CreateLobby()
     {
-		DialogService.Instance.ShowDialog (new DialogCreateGame (new List<int>(selectedChannel.configuration.betting)));
-        
+        DialogService.Instance.ShowDialog(new DialogCreateGame(new List<int>(selectedChannel.configuration.betting)));
+
     }
 
     private void OnCreateLobbyCallBack(bool status, string message)
@@ -133,6 +139,17 @@ public class PokerLobbyPresenter : ILobbyPresenter
 
     public void SearchLobby(string id, bool[] cbArr)
     {
+        List<DataLobby> lobbyFilters = new List<DataLobby>();
+        if (!string.IsNullOrEmpty(id))
+        {
+            lobbyFilters.AddRange(lobbies.FindAll(s => s.roomId == Int16.Parse(id)));
+            view.DrawLobbies(lobbyFilters);
+        }
+        else
+        {
+            view.DrawLobbies(lobbies);
+        }
+
 
     }
 }
