@@ -18,9 +18,8 @@ public class LobbyScene : MonoBehaviour,ILobbyView
     void Start()
     {
 		HeaderMenuView.Instance.ShowInLobby ();
-
+        HeaderMenuView.Instance.SetSearchSubmitCallBack(OnSearchLobbyHandler);
         presenter = new PokerLobbyPresenter(this);
-
 		HeaderMenuView.Instance.SetChangeTypeLobbyCallBack(delegate() {
 			if (isShowType1)
 			{
@@ -39,6 +38,11 @@ public class LobbyScene : MonoBehaviour,ILobbyView
 				StartCoroutine(initShowRowType1(presenter.Lobbies));
 			}
 		});
+    }
+
+    private void OnSearchLobbyHandler(string arg1, bool[] arg2)
+    {
+        presenter.SearchLobby(arg1, arg2);
     }
     void OnDestroy() {
         presenter.ViewEnd();
@@ -89,7 +93,7 @@ public class LobbyScene : MonoBehaviour,ILobbyView
 	}
 	public static Vector3 VectorItemCenter = Vector3.one;
 
-	private void OnDragFinishGift()
+	private void OnDragFinish()
 	{
 		if (tableType1.GetComponent<UICenterOnChild> ().centeredObject == null) {
 				tableType1.GetComponent<UICenterOnChild> ().Recenter ();
@@ -114,8 +118,8 @@ public class LobbyScene : MonoBehaviour,ILobbyView
 		yield return new WaitForSeconds (0.05f);
 		tableType1.GetComponent<UICenterOnChild>().Recenter();
 		yield return new WaitForSeconds (0.1f);
-		tableType1.GetComponent<UICenterOnChild>().onFinished = OnDragFinishGift;
-		OnDragFinishGift();
+		tableType1.GetComponent<UICenterOnChild>().onFinished = OnDragFinish;
+		OnDragFinish();
 
     }
     IEnumerator initShowRowType2(List<DataLobby> lobbies)

@@ -103,6 +103,9 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		lobbyChangeTypeCallBack = callback;
 	}
 
+    public void SetSearchSubmitCallBack(Action<string,bool[]> callback) {
+        onSearchSubmitCallBack = callback;
+    }
 	void OnLobbyShowTypeHandler ()
 	{
 		if (lobbyChangeTypeCallBack != null)
@@ -210,6 +213,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 
 	void OnSearchClickCallBack (GameObject go)
 	{
+        SearchView.Instance.SetActionSubmit(onSearchSubmitCallBack);
 	}
 
 	void OnLeagueClickCallBack (GameObject go)
@@ -220,6 +224,9 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 	{
 		presenter.ShowDialogProfile ();
 	}
+
+    public Action<string, bool[]> onSearchSubmitCallBack { get; set; }
+
 }
 
 

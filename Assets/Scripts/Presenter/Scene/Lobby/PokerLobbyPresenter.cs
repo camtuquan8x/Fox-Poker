@@ -128,7 +128,12 @@ public class PokerLobbyPresenter : ILobbyPresenter
         if (!status)
             view.ShowError(message);
     }
-
     public ILobbyView view { get; set; }
+
+
+    public void SearchLobby(string id, bool[] cbArr)
+    {
+
+    }
 }
 
