@@ -1,4 +1,5 @@
-﻿using Puppet.Poker.Datagram;
+﻿using Puppet;
+using Puppet.Poker.Datagram;
 using Puppet.Poker.Models;
 using System;
 using System.Collections.Generic;
@@ -42,10 +43,26 @@ public class PokerPlayerUI : MonoBehaviour
         PokerObserver.Instance.onFinishGame -= Instance_onFinishGame;
     }
 
+    void UpdateUI(PokerPlayerController player)
+    {
+        if (player != null && player.userName == data.userName)
+        {
+            labelCurrentGold.text = player.asset.GetAsset(Puppet.EAssets.Chip).value.ToString("#,###");
+            
+            if(player.GetPlayerState() == Puppet.Poker.PokerPlayerState.bigBlind)
+                labelUsername.text = "Big Blind";
+            else if(player.GetPlayerState() == Puppet.Poker.PokerPlayerState.smallBlind)
+                labelUsername.text = "Small Blind";
+            else
+                labelUsername.text = data.userName;
+
+            LoadCurrentBet(player.currentBet);
+        }
+    }
+
     void Instance_onUpdateUserInfo(ResponseUpdateUserInfo data)
     {
-        if(data.userInfo.userName == this.data.userName)
-            labelCurrentGold.text = data.userInfo.asset.GetAsset(Puppet.EAssets.Chip).value.ToString("#,###");
+        UpdateUI(data.userInfo);
     }
 
     void Instance_onFinishGame(ResponseFinishGame data)
@@ -71,31 +88,19 @@ public class PokerPlayerUI : MonoBehaviour
 
     private void Instance_dataTurnGame(ResponseUpdateTurnChange responseData)
     {
-        if (responseData.firstTurn)
-        {
-            if (responseData.bigBlind != null && responseData.bigBlind.userName == this.data.userName)
-                labelUsername.text = "Big Blind";
-            else if (responseData.smallBlind != null && responseData.smallBlind.userName == this.data.userName)
-                labelUsername.text = "Small Blind";
-        }
-        else if (labelUsername.text != this.data.userName)
-            labelUsername.text = this.data.userName;
+        UpdateUI(responseData.toPlayer);
+        UpdateUI(responseData.fromPlayer);
 
         NGUITools.SetActive(timerSlider.gameObject, responseData.toPlayer != null && responseData.toPlayer.userName == this.data.userName);
         if (responseData.toPlayer != null && responseData.toPlayer.userName == this.data.userName)
             StartTimer(responseData.time > 1000 ? responseData.time / 1000f : responseData.time);
         else
             StopTimer();
-
-        if (responseData.fromPlayer != null && responseData.fromPlayer.userName == this.data.userName)
-            LoadCurrentBet(responseData.fromPlayer.currentBet);
-        if (responseData.toPlayer != null && responseData.toPlayer.userName == this.data.userName)
-            LoadCurrentBet(responseData.toPlayer.currentBet);
     }
 
     void LoadCurrentBet(long value)
     {
-        if (currentBet == null)
+        if (currentBet == null && side )
         {
             GameObject obj = NGUITools.AddChild (side.positionMoney, playmat.prefabBetObject);
             currentBet = obj.GetComponent<PokerCurrentBet>();
@@ -112,8 +117,7 @@ public class PokerPlayerUI : MonoBehaviour
     public void SetData(PokerPlayerController player)
     {
         this.data = player;
-        labelUsername.text = player.userName;
-        labelCurrentGold.text = player.asset.GetAsset(Puppet.EAssets.Chip).value.ToString("#,###");
+        UpdateUI(player);
 
         Vector3 giftPosition = btnGift.transform.localPosition;
         if ((int)player.GetSide() > (int)Puppet.Poker.PokerSide.Slot_5)

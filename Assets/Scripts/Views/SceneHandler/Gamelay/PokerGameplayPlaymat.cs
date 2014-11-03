@@ -207,13 +207,12 @@ public class PokerGameplayPlaymat : MonoBehaviour
         else
         {
             obj = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Gameplay/PlayerUI"));
-            obj.GetComponent<PokerPlayerUI>().SetData(player);
             dictPlayerObject.Add(player.userName, obj);
         }
 
         PokerGPSide playerSide = Array.Find<PokerGPSide>(arrayPokerSide, s => s.CurrentSide == player.GetSide());
         obj.GetComponent<PokerPlayerUI>().side = playerSide;
-
+        obj.GetComponent<PokerPlayerUI>().SetData(player);
         obj.transform.parent = playerSide.transform;
         obj.transform.localPosition = Vector3.zero;
         obj.transform.localScale = Vector3.one;
