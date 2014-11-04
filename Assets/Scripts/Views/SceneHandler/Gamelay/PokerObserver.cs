@@ -11,8 +11,6 @@ using Puppet.Poker.Models;
 
 public class PokerObserver
 {
-    public int currentBetting;
-    public int maxBetting;
     public int[] arrBettings;
     public PokerPlayerController playerData;
 
@@ -61,8 +59,7 @@ public class PokerObserver
                 dataUpdateGameChange(dataGame);
             else if (command == "updateGameToWaitingPlayer" && onFirstJoinGame != null)
             {
-                currentBetting = maxBetting;
-                maxBetting = dataGame.gameDetails.customConfiguration.betting;
+                LastBetting = dataGame.gameDetails.customConfiguration.betting / 2;
                 arrBettings = dataGame.gameDetails.configuration.betting;
 
                 string str = string.Empty;
@@ -87,7 +84,7 @@ public class PokerObserver
             if (dataTurn.toPlayer != null && PokerObserver.Instance.IsMainPlayer(dataTurn.toPlayer.userName))
                 PokerObserver.Instance.playerData = dataTurn.toPlayer;
             else if (dataTurn.fromPlayer != null && dataTurn.fromPlayer.currentBet > 0)
-                PokerObserver.Instance.currentBetting = dataTurn.fromPlayer.currentBet;
+                PokerObserver.Instance.LastBetting = dataTurn.fromPlayer.currentBet;
 
             dataTurnGame(dataTurn);
         }
@@ -142,4 +139,25 @@ public class PokerObserver
     {
         return listPlayers.Contains(mUserInfo.info.userName);
     }
+
+    long _lastBetting;
+    long _maxBetting;
+    public long LastBetting
+    {
+        get
+        {
+            return _lastBetting;
+        }
+        set
+        {
+            _lastBetting = value;
+            if (LastBetting > MaxBetting)
+                _maxBetting = _lastBetting;
+        }
+    }
+    public long MaxBetting
+    {
+        get { return _maxBetting; }
+    }
+    
 }

@@ -40,7 +40,7 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
 
     void OnSliderChange()
     {
-        labelMoney.text = GetCurrentMoney.ToString();
+        labelMoney.text =(GetCurrentMoney >= data.MaxBetting) ? "All In" : GetCurrentMoney.ToString("#,###");
     }
 
     public override void ShowDialog(DialogBetting data)

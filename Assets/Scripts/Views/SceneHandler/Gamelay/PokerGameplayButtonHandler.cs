@@ -100,7 +100,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     {
         if(currentType == EButtonType.InTurn)
         {
-            Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.CALL, PokerObserver.Instance.currentBetting);
+            Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.CALL, PokerObserver.Instance.LastBetting);
         }
     }
     void OnClickButton2(GameObject go)
@@ -115,9 +115,12 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     {
         if (currentType == EButtonType.InTurn)
         {
-            bettingDialog = new DialogBetting(PokerObserver.Instance.currentBetting, Convert.ToInt32(PokerObserver.Instance.playerData.asset.GetAsset(EAssets.Chip).value) , (money) =>
+            bettingDialog = new DialogBetting(PokerObserver.Instance.LastBetting, Convert.ToInt32(PokerObserver.Instance.playerData.asset.GetAsset(EAssets.Chip).value) , (money) =>
             {
-                Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.RAISE, money);
+                if (money == Convert.ToInt32(PokerObserver.Instance.playerData.asset.GetAsset(EAssets.Chip).value))
+                    Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.ALL, money);
+                else
+                    Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.RAISE, money);
             }, Array.Find<ButtonItem>(itemButtons, button => button.slot == EButtonSlot.Third).button.transform);
 
             if(DialogService.Instance.IsShowing(bettingDialog) == false)
@@ -139,7 +142,8 @@ public class PokerGameplayButtonHandler : MonoBehaviour
             NGUITools.SetActive(item.button, data != null);
             if (data != null)
             {
-                item.label.text = data.text;
+                string moreText = AddMoreTextButton(type, item.slot);
+                item.label.text = data.text + (string.IsNullOrEmpty(moreText) ? string.Empty : string.Format("\n({0})", moreText));
                 item.label.fontSize = data.labelFontSize;
                 item.label.transform.localPosition = data.labelPosition;
                 NGUITools.SetActive(item.checkboxObject.gameObject, data.enableCheckBox);
@@ -147,6 +151,13 @@ public class PokerGameplayButtonHandler : MonoBehaviour
                 item.button.GetComponent<UIToggle>().enabled = data.enableCheckBox;
             }
         }
+    }
+
+    string AddMoreTextButton(EButtonType type, EButtonSlot slot)
+    {
+        if ((type == EButtonType.InTurn || type == EButtonType.OutTurn) && slot == EButtonSlot.First)
+            return PokerObserver.Instance.MaxBetting.ToString("#,##");
+        return string.Empty;
     }
 
     void Instance_onPlayerListChanged(ResponsePlayerListChanged data)
