@@ -100,10 +100,12 @@ public class PokerPlayerUI : MonoBehaviour
 
     void LoadCurrentBet(long value)
     {
-        if (currentBet == null && side )
+        if (side != null)
         {
-            GameObject obj = NGUITools.AddChild (side.positionMoney, playmat.prefabBetObject);
-            currentBet = obj.GetComponent<PokerCurrentBet>();
+            if(currentBet == null)
+                currentBet = NGUITools.AddChild(side.positionMoney, playmat.prefabBetObject).GetComponent<PokerCurrentBet>();
+            else
+                currentBet.transform.parent = side.positionMoney.transform;
         }
         currentBet.SetActive(value > 0);
         currentBet.SetBet(value);
