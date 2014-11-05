@@ -7,7 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
-
+using Puppet;
+using Puppet.API.Client;
 public class PokerGameplayView : MonoBehaviour
 {
     #region UnityEditor
@@ -70,6 +71,7 @@ public class PokerGameplayView : MonoBehaviour
     {
         if(data.showPopup)
         {
+            
             DialogService.Instance.ShowDialog(new DialogMessage("Error: " + data.errorCode, data.errorMessage, null));
         }
     }
@@ -124,6 +126,32 @@ public class PokerGameplayView : MonoBehaviour
 
     private void OnButtonViewClickCallBack(GameObject go)
     {
+    }
+    void OnGUI()
+    {
+        if (GUI.Button(new Rect(0, 150, Screen.width - Screen.width * 0.9f, 35f), "TEST MODE"))
+        {
+            Logger.Log("========> " + APIPokerGame.GetPokerGameplay().ListPlayer.Count);
+            TestModeGUI.Create(ActionRequestOrderHand);
+        }   
+    }
+    public void ActionRequestOrderHand(Dictionary<string, int[]> obj)
+    {
+        foreach (var item in obj.Keys)
+        {
+            Logger.Log("========> keys" + item + " --- value lenght " + obj[item] );
+        }
+        Dictionary<string, int[]> dictHand = obj;
+        if (dictHand.ContainsKey(TestModeGUI.KEY_COMUTITY_CARD))
+        {
+            Dictionary<string,int[]> comunityCard = new Dictionary<string,int[]>();
+            comunityCard.Add(TestModeGUI.KEY_COMUTITY_CARD, dictHand[TestModeGUI.KEY_COMUTITY_CARD]);
+            dictHand.Remove(TestModeGUI.KEY_COMUTITY_CARD);
+            /// Request COMUNITY CARD;
+        }
+        ///REQUEST HAND with dictHand
+        ///
+        
     }
 }
 
