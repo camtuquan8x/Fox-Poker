@@ -127,7 +127,7 @@ public class PokerObserver
 
     public void SitDown(int slotServer)
     {
-        APIPokerGame.SitDown(slotServer);
+        APIPokerGame.SitDown(slotServer, 10000);
     }
 
     public bool IsMainPlayer(string userName)

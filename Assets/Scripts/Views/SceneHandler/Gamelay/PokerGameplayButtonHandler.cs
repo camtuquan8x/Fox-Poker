@@ -128,7 +128,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         }
         else if(currentType == EButtonType.OutGame)
         {
-            Puppet.API.Client.APIPokerGame.AutoSitDown();
+            Puppet.API.Client.APIPokerGame.AutoSitDown(10000);
         }
     }
 
