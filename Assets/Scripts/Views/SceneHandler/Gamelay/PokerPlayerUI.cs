@@ -17,7 +17,7 @@ public class PokerPlayerUI : MonoBehaviour
     #endregion
 
     GameObject[] cardOnHands;
-    PokerPlayerController data;
+    public PokerPlayerController data;
     PokerGameplayPlaymat playmat;
     [HideInInspector]
     public PokerGPSide side;

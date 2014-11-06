@@ -96,9 +96,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		panel.SetAnchor( NGUITools.GetRoot (gameObject));
 		presenter.OnShowLobbyRowTypeCallBack = OnLobbyShowTypeHandler;
 	}
-	void OnDestroy(){
-		presenter.ViewEnd();
-	}
+    
 	public void SetChangeTypeLobbyCallBack(Action callback){
 		lobbyChangeTypeCallBack = callback;
 	}
@@ -134,6 +132,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		UIEventListener.Get (btnSearch).onClick -= OnSearchClickCallBack;
 		UIEventListener.Get (btnLeague).onClick -= OnLeagueClickCallBack;
 		UIEventListener.Get (avatar.gameObject).onClick += OnClickProfileCallBack;
+        presenter.ViewEnd();
 
 	}
 	#region IHeaderMenuView implementation

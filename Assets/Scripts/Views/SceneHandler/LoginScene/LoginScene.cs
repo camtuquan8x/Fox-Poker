@@ -46,16 +46,11 @@ public class LoginScene : MonoBehaviour, ILoginView
 		UIEventListener.Get(btnFacebook).onClick -= this.onBtnFacebookClick;
 		UIEventListener.Get(btnGuest).onClick -= this.onBtnGuestClick;
 		UIEventListener.Get(btnRegister).onClick -= this.onBtnRegisterClick;
+        presenter.ViewEnd();
     }
     void OnGUI()
     {
         PuSetting.UniqueDeviceId = GUI.TextField(new Rect(0, 0, Screen.width / 4, Screen.height / 15), PuSetting.UniqueDeviceId);
-    }
-
-    void OnDestroy()
-    {
-        presenter.ViewEnd();
-
     }
 
 

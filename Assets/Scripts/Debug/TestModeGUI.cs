@@ -43,9 +43,9 @@ public class TestModeGUI : MonoBehaviour
     {
         for (int i = 0; i < 52; i++)
             lstCard.Add(new PokerCard(i));
-        foreach (PokerPlayerController item in APIPokerGame.GetPokerGameplay().ListPlayer)
+        foreach (PokerPlayerUI item in GameObject.FindObjectsOfType<PokerPlayerUI>())
         {
-            playerPick[item.slotIndex] = "";
+            playerPick[item.data.slotIndex] = "";
         }
     }
     const float SPACE_TOP = 50f;
@@ -77,7 +77,7 @@ public class TestModeGUI : MonoBehaviour
                     }
                     GUILayout.BeginVertical();
 
-                    foreach (PokerPlayerController p in APIPokerGame.GetPokerGameplay().ListPlayer)
+                    foreach (PokerPlayerUI p in GameObject.FindObjectsOfType<PokerPlayerUI>())
                     {
                         GUILayout.BeginVertical();
                         {
@@ -85,11 +85,11 @@ public class TestModeGUI : MonoBehaviour
                             {
                                 float contentWidth = BOX_WIDTH - 100f;
                                 GUILayout.Space(30f);
-                                GUILayout.Label(p.userName, GUILayout.Width(100f));
-                                GUILayout.TextField(playerPick[p.slotIndex] == null ? "" : playerPick[p.slotIndex], GUILayout.Width(contentWidth - 150f));
+                                GUILayout.Label(p.data.userName, GUILayout.Width(100f));
+                                GUILayout.TextField(playerPick[p.data.slotIndex] == null ? "" : playerPick[p.data.slotIndex], GUILayout.Width(contentWidth - 150f));
 
                                 if (GUILayout.Button("CLEAR", GUILayout.Width(70f)))
-                                    playerPick[p.slotIndex] = "";
+                                    playerPick[p.data.slotIndex] = "";
                             }
                             GUILayout.EndHorizontal();
                         }
@@ -119,13 +119,13 @@ public class TestModeGUI : MonoBehaviour
                         if (GUILayout.Button("CLEAR"))
                             strPick = "";
 
-                        foreach (PokerPlayerController p in APIPokerGame.GetPokerGameplay().ListPlayer)
+                        foreach (PokerPlayerUI p in GameObject.FindObjectsOfType<PokerPlayerUI>())
                         {
-                            if (GUILayout.Button("SET TO " + p.userName))
+                            if (GUILayout.Button("SET TO " + p.data.userName))
                             {
                                 if (strPick.Trim().Split(" ".ToCharArray(), StringSplitOptions.None).Length <= 2)
                                 {
-                                    playerPick[p.slotIndex] = strPick;
+                                    playerPick[p.data.slotIndex] = strPick;
                                     strPick = "";
                                 }
                                 else
@@ -157,22 +157,23 @@ public class TestModeGUI : MonoBehaviour
                         {
 
                             Dictionary<string, int[]> handsPlayer = new Dictionary<string, int[]>();
-                            APIPokerGame.GetPokerGameplay().ListPlayer.ForEach(p =>
+                            List<PokerPlayerUI> playersUI = new List<PokerPlayerUI>( GameObject.FindObjectsOfType<PokerPlayerUI>());
+                            playersUI.ForEach(p =>
                             {
-                                string[] arrStrs = string.IsNullOrEmpty(playerPick[p.slotIndex]) ? new string[0] : playerPick[p.slotIndex].Trim().Split(" ".ToCharArray());
+                                string[] arrStrs = string.IsNullOrEmpty(playerPick[p.data.slotIndex]) ? new string[0] : playerPick[p.data.slotIndex].Trim().Split(" ".ToCharArray());
                                 List<int> ids = new List<int>();
 
                                 for (int i = 0; i < arrStrs.Length; i++)
                                 {
                                     ids.Add(int.Parse(arrStrs[i].Trim().Split("-".ToCharArray())[1]));
                                 }
-                                handsPlayer.Add(p.userName, ids.ToArray());
+                                handsPlayer.Add(p.data.userName, ids.ToArray());
                             });
                             string[] comunityCardName = string.IsNullOrEmpty(comunityCard) ? new string[0] : comunityCard.Trim().Split(" ".ToCharArray());
                             List<int> comunityCardIds = new List<int>();
                             for (int i = 0; i < comunityCardName.Length; i++)
                             {
-                                //Logger.Log("======> " + comunityCardName[i] + "=========== " + comunityCardName[i].Split('-').Length + "======= " + comunityCardName[i].Split('-')[1]);
+                                
                                 comunityCardIds.Add(int.Parse(comunityCardName[i].Split('-')[1]));
                             }
                             if (comunityCardIds.Count > 0)
@@ -208,12 +209,12 @@ public class TestModeGUI : MonoBehaviour
 
                             if (Array.TrueForAll<string>(playerPick, p => p == null || (p != null && p.IndexOf(str) == -1)))
                             {
-                                if (GUILayout.Button(str, GUILayout.Width((BOX_WIDTH - 100f) / 12f)))
+                                if (GUILayout.Button(str, GUILayout.Width((BOX_WIDTH - 150f) / 12f)))
                                     if (string.IsNullOrEmpty(str) == false && strPick.Split(" ".ToCharArray(), StringSplitOptions.None).Length <= 5)
                                         strPick += str + " ";
                             }
                             else
-                                GUILayout.Button("", GUILayout.Width((BOX_WIDTH - 100f) / 12f));
+                                GUILayout.Button("", GUILayout.Width((BOX_WIDTH - 150f) / 12f));
                             index++;
                         }
                         GUILayout.EndVertical();

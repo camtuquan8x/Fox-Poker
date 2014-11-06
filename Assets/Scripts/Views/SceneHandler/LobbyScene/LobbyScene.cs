@@ -44,9 +44,6 @@ public class LobbyScene : MonoBehaviour,ILobbyView
     {
         presenter.SearchLobby(arg1, arg2);
     }
-    void OnDestroy() {
-        presenter.ViewEnd();
-    }
     void FixedUpdate() {
         if(types1.Count == 0)
         {
@@ -77,6 +74,7 @@ public class LobbyScene : MonoBehaviour,ILobbyView
     void OnDisable()
     {
         UIEventListener.Get(btnCreateGame).onClick -= OnClickCreateGame;
+        presenter.ViewEnd();
     }
   
 	private void ClearAllRow(){
