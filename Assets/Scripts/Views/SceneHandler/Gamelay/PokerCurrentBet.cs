@@ -16,13 +16,13 @@ public class PokerCurrentBet : MonoBehaviour
         NGUITools.SetActive(gameObject, state);
     }
 
-    public void SetBet(long value)
+    public void SetBet(double value)
     {
         string unit = string.Empty;
-        float money = value;
+        double money = value;
         if (money >= 100000000) { money /= 100000000f; unit = "M"; }
-        else if (money >= 1000) { money /= 1000f; unit = "K"; }
+        else if (money >= 100000) { money /= 100000f; unit = "K"; }
 
-        labelCurrentbet.text = string.Format("{0}{1}", money, unit);
+        labelCurrentbet.text = string.Format("{0:#,##}{1}", Math.Round(money, 1), unit);
     }
 }

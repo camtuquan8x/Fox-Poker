@@ -98,14 +98,17 @@ public class PokerPlayerUI : MonoBehaviour
             StopTimer();
     }
 
-    void LoadCurrentBet(long value)
+    void LoadCurrentBet(double value)
     {
         if (side != null)
         {
             if(currentBet == null)
                 currentBet = NGUITools.AddChild(side.positionMoney, playmat.prefabBetObject).GetComponent<PokerCurrentBet>();
             else
+            {
                 currentBet.transform.parent = side.positionMoney.transform;
+                currentBet.transform.localPosition = Vector3.zero;
+            }
         }
         currentBet.SetActive(value > 0);
         currentBet.SetBet(value);

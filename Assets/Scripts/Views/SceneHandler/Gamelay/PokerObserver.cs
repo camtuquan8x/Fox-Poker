@@ -157,7 +157,7 @@ public class PokerObserver
         return listPlayers.Contains(mUserInfo.info.userName);
     }
 
-    public bool IsMainTurn { get { return currentPlayer.userName == mainPlayer.userName; } }
+    public bool IsMainTurn { get { try { return currentPlayer.userName == mainPlayer.userName; } catch { return false; } } }
     #endregion
 
     #region BETTING VALUE
@@ -181,6 +181,9 @@ public class PokerObserver
         get
         {
             double maxBettingInGame = PokerObserver.Instance.MaxCurrentBetting;
+            if(PokerObserver.Instance.mainPlayer == null)
+                return maxBettingInGame;
+
             double yourMoney = PokerObserver.Instance.mainPlayer.GetMoney();
             double pay = maxBettingInGame - PokerObserver.Instance.mainPlayer.currentBet;
             if (yourMoney < pay)

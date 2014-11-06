@@ -42,7 +42,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         if (obj.pot != null && obj.pot.Length > 0)
         {
             currentPot.SetActive(true);
-            int value = 0;
+            double value = 0;
             Array.ForEach<ResponseUpdatePot.DataPot>(obj.pot, p => value += p.value);
             currentPot.SetBet(value);
         }

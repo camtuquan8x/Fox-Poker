@@ -143,7 +143,8 @@ public class PokerGameplayButtonHandler : MonoBehaviour
             if (data != null)
             {
                 string moreText = AddMoreTextButton(type, item.slot);
-                item.label.text = data.text + (string.IsNullOrEmpty(moreText) ? string.Empty : string.Format("\n({0})", moreText));
+                string overrideName = OverrideName(type, item.slot);
+                item.label.text = (overrideName ?? data.text) + (string.IsNullOrEmpty(moreText) ? string.Empty : string.Format("\n({0})", moreText));
                 item.label.fontSize = data.labelFontSize;
                 item.label.transform.localPosition = data.labelPosition;
                 NGUITools.SetActive(item.checkboxObject.gameObject, data.enableCheckBox);
@@ -167,8 +168,13 @@ public class PokerGameplayButtonHandler : MonoBehaviour
                     return difference.ToString("#,##");
             }
         }
-
-        return string.Empty;
+        return null;
+    }
+    string OverrideName(EButtonType type, EButtonSlot slot)
+    {
+        if (slot == EButtonSlot.First && type == EButtonType.InTurn && PokerObserver.Instance.Difference == 0)
+            return "Xem Bài";
+        return null;
     }
 
     void Instance_onPlayerListChanged(ResponsePlayerListChanged data)
