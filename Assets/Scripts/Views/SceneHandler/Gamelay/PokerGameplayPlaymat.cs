@@ -31,7 +31,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         PokerObserver.Instance.onPlayerListChanged += Instance_onPlayerListChanged;
         PokerObserver.Instance.dataUpdateGameChange += Instance_dataUpdateGame;
         PokerObserver.Instance.onEventUpdateHand += Instance_onEventUpdateHand;
-        PokerObserver.Instance.dataTurnGame += Instance_dataTurnGame;
+        PokerObserver.Instance.onTurnChange += Instance_dataTurnGame;
         PokerObserver.Instance.onNewRound += Instance_onNewRound;
         PokerObserver.Instance.onUpdatePot += Instance_onUpdatePot;
         PokerObserver.Instance.onFinishGame += Instance_onFinishGame;

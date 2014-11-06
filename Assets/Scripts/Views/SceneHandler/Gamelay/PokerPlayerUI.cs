@@ -31,14 +31,14 @@ public class PokerPlayerUI : MonoBehaviour
 
     void OnEnable()
     {
-        PokerObserver.Instance.dataTurnGame += Instance_dataTurnGame;
+        PokerObserver.Instance.onTurnChange += Instance_dataTurnGame;
         PokerObserver.Instance.onUpdateUserInfo += Instance_onUpdateUserInfo;
         PokerObserver.Instance.onFinishGame += Instance_onFinishGame;
     }
 
     void OnDisable()
     {
-        PokerObserver.Instance.dataTurnGame -= Instance_dataTurnGame;
+        PokerObserver.Instance.onTurnChange -= Instance_dataTurnGame;
         PokerObserver.Instance.onUpdateUserInfo -= Instance_onUpdateUserInfo;
         PokerObserver.Instance.onFinishGame -= Instance_onFinishGame;
     }

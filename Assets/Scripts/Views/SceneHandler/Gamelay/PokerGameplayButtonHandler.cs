@@ -62,7 +62,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 
     void OnEnable()
     {
-        PokerObserver.Instance.dataTurnGame += Instance_dataTurnGame;
+        PokerObserver.Instance.onTurnChange += Instance_dataTurnGame;
         PokerObserver.Instance.onNewRound += Instance_onNewRound;
         PokerObserver.Instance.onFinishGame += Instance_onFinishGame;
         PokerObserver.Instance.onPlayerListChanged += Instance_onPlayerListChanged;
@@ -80,7 +80,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 
     void OnDisable()
     {
-        PokerObserver.Instance.dataTurnGame -= Instance_dataTurnGame;
+        PokerObserver.Instance.onTurnChange -= Instance_dataTurnGame;
         PokerObserver.Instance.onNewRound -= Instance_onNewRound;
         PokerObserver.Instance.onFinishGame -= Instance_onFinishGame;
         PokerObserver.Instance.onPlayerListChanged -= Instance_onPlayerListChanged;
@@ -100,7 +100,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     {
         if(currentType == EButtonType.InTurn)
         {
-            Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.CALL, PokerObserver.Instance.LastBetting);
+            Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.CALL, PokerObserver.Instance.MaxCurrentBetting);
         }
     }
     void OnClickButton2(GameObject go)
@@ -115,9 +115,9 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     {
         if (currentType == EButtonType.InTurn)
         {
-            bettingDialog = new DialogBetting(PokerObserver.Instance.LastBetting, Convert.ToInt32(PokerObserver.Instance.playerData.asset.GetAsset(EAssets.Chip).value) , (money) =>
+            bettingDialog = new DialogBetting(PokerObserver.Instance.MaxCurrentBetting, Convert.ToInt32(PokerObserver.Instance.mainPlayer.asset.GetAsset(EAssets.Chip).value), (money) =>
             {
-                if (money == Convert.ToInt32(PokerObserver.Instance.playerData.asset.GetAsset(EAssets.Chip).value))
+                if (money == Convert.ToInt32(PokerObserver.Instance.mainPlayer.asset.GetAsset(EAssets.Chip).value))
                     Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.ALL, money);
                 else
                     Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.RAISE, money);
@@ -128,7 +128,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         }
         else if(currentType == EButtonType.OutGame)
         {
-            Puppet.API.Client.APIPokerGame.AutoSitDown(10000);
+            Puppet.API.Client.APIPokerGame.AutoSitDown(PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind * 20);
         }
     }
 
@@ -155,8 +155,19 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 
     string AddMoreTextButton(EButtonType type, EButtonSlot slot)
     {
-        if ((type == EButtonType.InTurn || type == EButtonType.OutTurn) && slot == EButtonSlot.First)
-            return PokerObserver.Instance.MaxBetting.ToString("#,##");
+        if (PokerObserver.Instance.gameDetails != null)
+        {
+            if (slot == EButtonSlot.Third && type == EButtonType.OutGame)
+                return (PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind * 20).ToString("#,##");
+
+            if ((type == EButtonType.InTurn || type == EButtonType.OutTurn) && slot == EButtonSlot.First)
+            {
+                double difference = PokerObserver.Instance.Difference;
+                if (difference > 0)
+                    return difference.ToString("#,##");
+            }
+        }
+
         return string.Empty;
     }
 
@@ -184,7 +195,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
             {
                 ButtonItem selectedButton = Array.Find<ButtonItem>(itemButtons, button => button.toggle.value);
 
-                SetEnableButtonType(PokerObserver.Instance.IsMainPlayer(data.toPlayer.userName) ? EButtonType.InTurn : EButtonType.OutTurn);
+                SetEnableButtonType(PokerObserver.Instance.IsMainTurn ? EButtonType.InTurn : EButtonType.OutTurn);
 
                 if (selectedButton != null)
                 {
