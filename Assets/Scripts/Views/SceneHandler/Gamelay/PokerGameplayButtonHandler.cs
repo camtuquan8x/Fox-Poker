@@ -117,10 +117,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         {
             bettingDialog = new DialogBetting(PokerObserver.Instance.MaxCurrentBetting, Convert.ToInt32(PokerObserver.Instance.mainPlayer.asset.GetAsset(EAssets.Chip).value), (money) =>
             {
-                if (money == Convert.ToInt32(PokerObserver.Instance.mainPlayer.asset.GetAsset(EAssets.Chip).value))
-                    Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.ALL, money);
-                else
-                    Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.RAISE, money);
+                Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.RAISE, money);
             }, Array.Find<ButtonItem>(itemButtons, button => button.slot == EButtonSlot.Third).button.transform);
 
             if(DialogService.Instance.IsShowing(bettingDialog) == false)
