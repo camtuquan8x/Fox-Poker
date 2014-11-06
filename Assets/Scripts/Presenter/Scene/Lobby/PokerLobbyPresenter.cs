@@ -125,7 +125,7 @@ public class PokerLobbyPresenter : ILobbyPresenter
 
     public void CreateLobby()
     {
-        DialogService.Instance.ShowDialog(new DialogCreateGame(new List<int>(selectedChannel.configuration.betting)));
+        DialogService.Instance.ShowDialog(new DialogCreateGame(new List<double>(selectedChannel.configuration.betting)));
 
     }
 

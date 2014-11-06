@@ -30,11 +30,11 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
         sliderBar.onChange.Remove(del);
     }
 
-    long GetCurrentMoney
+    double GetCurrentMoney
     {
         get
         {
-            return Mathf.RoundToInt((data.MaxBetting - data.MinBetting) * sliderBar.value) + data.MinBetting;
+            return Mathf.RoundToInt((float)(data.MaxBetting - data.MinBetting) * sliderBar.value) + data.MinBetting;
         }
     }
 
@@ -62,11 +62,11 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
 
 public class DialogBetting : AbstractDialogData
 {
-    public long MinBetting, MaxBetting;
-    public Action<long> onBetting;
+    public double MinBetting, MaxBetting;
+    public Action<double> onBetting;
     public Transform parent;
 
-    public DialogBetting(long min, long max, Action<long> onBetting, Transform parent)
+    public DialogBetting(double min, double max, Action<double> onBetting, Transform parent)
     {
         this.MinBetting = min;
         this.MaxBetting = max;

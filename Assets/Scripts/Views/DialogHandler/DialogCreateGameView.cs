@@ -21,7 +21,7 @@ public class DialogCreateGameView : BaseDialog<DialogCreateGame,DialogCreateGame
 		public UISlider moneySlide;
 		public GameObject btnMinus,btnPlus,btnCreateGame,btnNumberPlayer;
 		public UILabel lbMoney;
-		int currentBetting;
+        double currentBetting;
 		#endregion
 		protected override void OnEnable ()
 		{
@@ -89,16 +89,17 @@ public class DialogCreateGameView : BaseDialog<DialogCreateGame,DialogCreateGame
 
 	void OnCreateLobbyCallBack (bool status, string message)
 	{
-
 		if (!status)
 			DialogService.Instance.ShowDialog (new DialogMessage ("Lỗi",message,null));	
 		GameObject.Destroy (gameObject);
 	}
 }
 public class DialogCreateGame : AbstractDialogData{
-	public List<int> bettingsArrs;
+    public List<double> bettingsArrs;
 	public int numberPlayer = 9;
-	public DialogCreateGame(List<int> arrs) : base(){
+    public DialogCreateGame(List<double> arrs)
+        : base()
+    {
 		this.bettingsArrs = arrs;
 	}
 	public override void ShowDialog ()

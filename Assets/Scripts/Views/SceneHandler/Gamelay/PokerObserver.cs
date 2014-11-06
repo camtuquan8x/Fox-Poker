@@ -11,7 +11,7 @@ using Puppet.Poker.Models;
 
 public class PokerObserver
 {
-    public int[] arrBettings;
+    public double[] arrBettings;
     public PokerPlayerController playerData;
 
     public event Action<ResponseUpdateGame> onFirstJoinGame;
@@ -140,9 +140,9 @@ public class PokerObserver
         return listPlayers.Contains(mUserInfo.info.userName);
     }
 
-    long _lastBetting;
-    long _maxBetting;
-    public long LastBetting
+    double _lastBetting;
+    double _maxBetting;
+    public double LastBetting
     {
         get
         {
@@ -155,7 +155,7 @@ public class PokerObserver
                 _maxBetting = _lastBetting;
         }
     }
-    public long MaxBetting
+    public double MaxBetting
     {
         get { return _maxBetting; }
     }
