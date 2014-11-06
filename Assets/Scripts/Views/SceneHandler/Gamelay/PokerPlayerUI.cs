@@ -110,8 +110,12 @@ public class PokerPlayerUI : MonoBehaviour
                 currentBet.transform.localPosition = Vector3.zero;
             }
         }
-        currentBet.SetActive(value > 0);
-        currentBet.SetBet(value);
+
+        if (currentBet != null)
+        {
+            currentBet.SetActive(value > 0);
+            currentBet.SetBet(value);
+        }
     }
 
     public void SetResult(bool isWinner)
