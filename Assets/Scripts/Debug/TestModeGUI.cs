@@ -23,6 +23,14 @@ public class TestModeGUI : MonoBehaviour
             actionOrderHand = value;
         }
     }
+    void Update() { 
+        if (Input.GetKey(KeyCode.Escape)) 
+        {
+            GameObject.Destroy(gameObject);
+        } 
+    }
+
+
     public static void Create(Action<Dictionary<string, int[]>> actionOrderHand)
     {
         if (GameObject.Find("__Prefab Test Pick Card") != null) return;
@@ -31,7 +39,6 @@ public class TestModeGUI : MonoBehaviour
         obj.GetComponent<TestModeGUI>().ActionOrderHand = actionOrderHand;
         obj.name = "__Prefab Test Pick Card";
     }
-
     void Start()
     {
         for (int i = 0; i < 52; i++)
@@ -57,20 +64,19 @@ public class TestModeGUI : MonoBehaviour
                 #region LINE 1
                 GUILayout.BeginHorizontal(GUILayout.Height(BOX_HEIGHT / 3));
                 {
-
-                    GUILayout.FlexibleSpace();
                     GUILayout.BeginVertical();
                     {
                         GUILayout.BeginHorizontal();
-                        { 
+                        {
                             float contentWidth = BOX_WIDTH - 100f;
-                                GUILayout.Space(30f);
-                                GUILayout.Label("COMUNITY CARD", GUILayout.Width(150f));
-                                GUILayout.TextField(comunityCard, GUILayout.Width(contentWidth - 150f));
+                            GUILayout.Space(30f);
+                            GUILayout.Label("COMUNITY CARD", GUILayout.Width(150f));
+                            GUILayout.TextField(comunityCard, GUILayout.Width(contentWidth - 150f));
                         }
                         GUILayout.EndHorizontal();
                     }
-                    GUILayout.EndVertical();
+                    GUILayout.BeginVertical();
+
                     foreach (PokerPlayerController p in APIPokerGame.GetPokerGameplay().ListPlayer)
                     {
                         GUILayout.BeginVertical();
@@ -122,14 +128,16 @@ public class TestModeGUI : MonoBehaviour
                                     playerPick[p.slotIndex] = strPick;
                                     strPick = "";
                                 }
-                                else {
+                                else
+                                {
                                     strPick = "";
                                 }
                             }
                         }
                         if (GUILayout.Button("SET TO COMUNITY CARD"))
                         {
-                            if (strPick.Trim().Split(" ".ToCharArray(), StringSplitOptions.None).Length <= 5) { 
+                            if (strPick.Trim().Split(" ".ToCharArray(), StringSplitOptions.None).Length <= 5)
+                            {
                                 comunityCard = strPick;
                                 strPick = "";
                             }
@@ -149,23 +157,25 @@ public class TestModeGUI : MonoBehaviour
                         {
 
                             Dictionary<string, int[]> handsPlayer = new Dictionary<string, int[]>();
-                            APIPokerGame.GetPokerGameplay().ListPlayer.ForEach(p => 
+                            APIPokerGame.GetPokerGameplay().ListPlayer.ForEach(p =>
                             {
-                                string[] arrStrs = playerPick[p.slotIndex] == null ? new string[0] : playerPick[p.slotIndex].Split(" ".ToCharArray());
+                                string[] arrStrs = string.IsNullOrEmpty(playerPick[p.slotIndex]) ? new string[0] : playerPick[p.slotIndex].Trim().Split(" ".ToCharArray());
                                 List<int> ids = new List<int>();
+
                                 for (int i = 0; i < arrStrs.Length; i++)
                                 {
-                                    ids.Add(int.Parse(arrStrs[i].Split("-".ToCharArray())[1]));
+                                    ids.Add(int.Parse(arrStrs[i].Trim().Split("-".ToCharArray())[1]));
                                 }
                                 handsPlayer.Add(p.userName, ids.ToArray());
                             });
-                            string[] comunityCardName = comunityCard == "" ? new string[0] : comunityCard.Split(" ".ToCharArray());
+                            string[] comunityCardName = string.IsNullOrEmpty(comunityCard) ? new string[0] : comunityCard.Trim().Split(" ".ToCharArray());
                             List<int> comunityCardIds = new List<int>();
                             for (int i = 0; i < comunityCardName.Length; i++)
                             {
-                                comunityCardIds.Add(int.Parse(comunityCardName[i].Split("-".ToCharArray())[1]));
+                                //Logger.Log("======> " + comunityCardName[i] + "=========== " + comunityCardName[i].Split('-').Length + "======= " + comunityCardName[i].Split('-')[1]);
+                                comunityCardIds.Add(int.Parse(comunityCardName[i].Split('-')[1]));
                             }
-                            if (comunityCardIds.Count  >0)
+                            if (comunityCardIds.Count > 0)
                                 handsPlayer.Add(KEY_COMUTITY_CARD, comunityCardIds.ToArray());
                             if (actionOrderHand != null)
                                 actionOrderHand(handsPlayer);
@@ -188,7 +198,7 @@ public class TestModeGUI : MonoBehaviour
                         GUILayout.BeginVertical();
                         for (int j = 0; j < 4; j++)
                         {
-                            int cardValue = ((int)(lstCard[index].GetRank()) );
+                            int cardValue = ((int)(lstCard[index].GetRank()));
                             string str = (cardValue == 1 ? "A" : cardValue == 11 ? "J" : cardValue == 12 ? "Q" : cardValue == 13 ? "K" : cardValue.ToString()) +
                                 (lstCard[index].GetSuit() == ECardSuit.Bitch ? "♠" : lstCard[index].GetSuit() == ECardSuit.Spade ? "♣" :
                                 lstCard[index].GetSuit() == ECardSuit.Diamond ? "♦" : "♥") + "-" + index;
@@ -216,5 +226,5 @@ public class TestModeGUI : MonoBehaviour
         }
     }
 
-    
+
 }

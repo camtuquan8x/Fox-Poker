@@ -139,19 +139,22 @@ public class PokerGameplayView : MonoBehaviour
     {
         foreach (var item in obj.Keys)
         {
-            Logger.Log("========> keys" + item + " --- value lenght " + obj[item] );
+            Logger.Log("========> keys" + item + " --- value lenght " + obj[item].Length);
+            foreach (var items in obj[item])
+            {
+                Logger.Log("========> id" + items );    
+            }
+           
         }
         Dictionary<string, int[]> dictHand = obj;
         if (dictHand.ContainsKey(TestModeGUI.KEY_COMUTITY_CARD))
         {
             Dictionary<string,int[]> comunityCard = new Dictionary<string,int[]>();
-            comunityCard.Add(TestModeGUI.KEY_COMUTITY_CARD, dictHand[TestModeGUI.KEY_COMUTITY_CARD]);
-            dictHand.Remove(TestModeGUI.KEY_COMUTITY_CARD);
             /// Request COMUNITY CARD;
+            APIPokerGame.GetOrderCommunity(dictHand[TestModeGUI.KEY_COMUTITY_CARD]);
+            dictHand.Remove(TestModeGUI.KEY_COMUTITY_CARD);
         }
-        ///REQUEST HAND with dictHand
-        ///
-        
+        APIPokerGame.GetOrderHand(dictHand);        
     }
 }
 
