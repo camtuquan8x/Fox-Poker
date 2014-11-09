@@ -10,7 +10,7 @@ using System;
 
 public class LoginScene : MonoBehaviour, ILoginView
 {
-    public GameObject btnLogin, btnForgot, btnFacebook, btnGuest, btnRegister;
+    public GameObject btnLogin, btnForgot, btnFacebook, btnGuest, btnRegister,btnHelp;
 
     public UIInput txtUsername, txtPassword;
 
@@ -27,7 +27,6 @@ public class LoginScene : MonoBehaviour, ILoginView
     {
         presenter = new LoginPresenter(this);
         presenter.ViewStart();
-
     }
     void OnEnable()
     {
@@ -37,8 +36,11 @@ public class LoginScene : MonoBehaviour, ILoginView
         UIEventListener.Get(btnFacebook).onClick += this.onBtnFacebookClick;
         UIEventListener.Get(btnGuest).onClick += this.onBtnGuestClick;
         UIEventListener.Get(btnRegister).onClick += this.onBtnRegisterClick;
+        UIEventListener.Get(btnHelp).onClick += this.onBtnHelpClick;
 
     }
+
+
     void OnDisable()
     {
 		UIEventListener.Get(btnLogin).onClick -= this.onBtnLoginClick;
@@ -46,6 +48,7 @@ public class LoginScene : MonoBehaviour, ILoginView
 		UIEventListener.Get(btnFacebook).onClick -= this.onBtnFacebookClick;
 		UIEventListener.Get(btnGuest).onClick -= this.onBtnGuestClick;
 		UIEventListener.Get(btnRegister).onClick -= this.onBtnRegisterClick;
+        UIEventListener.Get(btnHelp).onClick += this.onBtnHelpClick;
         presenter.ViewEnd();
     }
     void OnGUI()
@@ -68,6 +71,11 @@ public class LoginScene : MonoBehaviour, ILoginView
     void onBtnForgotClick(GameObject gobj)
     {
         presenter.ShowDialogForgot();
+     
+    }
+    private void onBtnHelpClick(GameObject go)
+    {
+        DialogService.Instance.ShowDialog(new DialogHelp());
     }
     private void onBtnRegisterClick(GameObject go)
     {
