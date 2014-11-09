@@ -9,9 +9,10 @@ namespace Puppet.Service
     {
 
         #region UnityEditor
-        public UIToggle btnFAQ, btnRule, btnExp;
+        public UIToggle btnFAQ, btnRule, btnExp,btnFeedBack;
         public UniWebView webView;
         public UISprite foreground;
+        public GameObject contentFeedBack;
         #endregion
         protected override void OnEnable()
         {
@@ -19,11 +20,14 @@ namespace Puppet.Service
             EventDelegate.Add(btnFAQ.onChange, OnBtnFAQChanged);
             EventDelegate.Add(btnRule.onChange, OnBtnRuleChanged);
             EventDelegate.Add(btnExp.onChange, OnBtnEXPChanged);
+            EventDelegate.Add(btnFeedBack.onChange, OnBtnFeedBackChanged);
             webView.OnReceivedMessage += OnReceivedMessage;
             webView.OnLoadComplete += OnLoadComplete;
             webView.OnWebViewShouldClose += OnWebViewShouldClose;
             webView.OnEvalJavaScriptFinished += OnEvalJavaScriptFinished;
         }
+
+    
 
 
         protected override void OnDisable()
@@ -32,6 +36,7 @@ namespace Puppet.Service
             EventDelegate.Remove(btnFAQ.onChange, OnBtnFAQChanged);
             EventDelegate.Remove(btnRule.onChange, OnBtnRuleChanged);
             EventDelegate.Remove(btnExp.onChange, OnBtnEXPChanged);
+            EventDelegate.Remove(btnFeedBack.onChange, OnBtnFeedBackChanged);
             webView.OnReceivedMessage -= OnReceivedMessage;
             webView.OnLoadComplete -= OnLoadComplete;
             webView.OnWebViewShouldClose -= OnWebViewShouldClose;
@@ -41,25 +46,43 @@ namespace Puppet.Service
         {
             base.ShowDialog(data);
             SetWebView();
+            btnFAQ.value = true;
         }
+       
         private void SetWebView()
         {
+
             //int uiFactor = UniWebViewHelper.RunningOnRetinaIOS() ? 2 : 1;
             int uiFactor = 1;
             UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);
-            float ratio = ((float)mRoot.activeHeight / Screen.height) * uiFactor;
-            int width = Mathf.FloorToInt(UniWebViewHelper.screenWidth * ratio / uiFactor);
-            int height = Mathf.FloorToInt(UniWebViewHelper.screenHeight * ratio / uiFactor);
-
+            float ratioHeight = ((float)mRoot.activeHeight / UniWebViewHelper.screenHeight) * uiFactor;
+            float ratioWidth = ((float)mRoot.manualWidth / UniWebViewHelper.screenWidth) * uiFactor;
+            int width = Mathf.FloorToInt(UniWebViewHelper.screenWidth * ratioWidth / uiFactor);
+            int height = Mathf.FloorToInt(UniWebViewHelper.screenHeight * ratioHeight / uiFactor);
+            Logger.Log("========> mRoot " + mRoot.manualWidth + "/" + mRoot.manualHeight + "=====");
+            Logger.Log("========> widthReal " + width + "/" + height + "=====");
+            Logger.Log("========> foreground  " + foreground.width + "/" + foreground.height + "=====");
+            Logger.Log("========> transparent  " + bkgTransparent.width + "/" + bkgTransparent.height + "=====");
             //UISliceBackgroundPopup backgroundPopup = gameObject.GetComponentInChildren<UISliceBackgroundPopup>();
             int webMarginWidth = Mathf.FloorToInt(width - (foreground.width));
             int webMarginHeight = Mathf.FloorToInt(height - (foreground.height));
 
-            int leftRight = Mathf.FloorToInt(webMarginWidth / (2 * ratio));
+            int leftRight = Mathf.FloorToInt(webMarginWidth / (2 * ratioWidth));
 
-            int topbottom = Mathf.RoundToInt((webMarginHeight / 2));
-            webView.insets = new UniWebViewEdgeInsets(topbottom, leftRight, topbottom, leftRight);
+            int topbottom = Mathf.RoundToInt((webMarginHeight / (2 * ratioHeight)));
+            webView.insets = new UniWebViewEdgeInsets(Mathf.RoundToInt(topbottom + 130*ratioHeight), leftRight, Mathf.RoundToInt(topbottom - 130 * ratioHeight), leftRight);
 
+        }
+        private void OnBtnFeedBackChanged()
+        {
+            if (btnFeedBack.value)
+            {
+                if (!contentFeedBack.active)
+                {
+                    contentFeedBack.SetActive(true);
+                    webView.gameObject.SetActive(false);
+                }
+            }
         }
         private void OnBtnFAQChanged()
         {
@@ -67,14 +90,24 @@ namespace Puppet.Service
             {
                 webView.url = "http://vnexpress.net/";
                 webView.Load();
+                if (!webView.gameObject.active)
+                {
+                    contentFeedBack.SetActive(false);
+                    webView.gameObject.SetActive(true);
+                }
             }
         }
         private void OnBtnRuleChanged()
         {
-            if (btnExp.value)
+            if (btnRule.value)
             {
                 webView.url = "http://www.24h.com.vn/";
                 webView.Load();
+                if (!webView.gameObject.active)
+                {
+                    contentFeedBack.SetActive(false);
+                    webView.gameObject.SetActive(true);
+                }
             }
         }
         private void OnBtnEXPChanged()
@@ -83,6 +116,11 @@ namespace Puppet.Service
             {
                 webView.url = "http://www.baomoi.com/";
                 webView.Load();
+                if (!webView.gameObject.active)
+                {
+                    contentFeedBack.SetActive(false);
+                    webView.gameObject.SetActive(true);
+                }
             }
         }
 
