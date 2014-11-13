@@ -8,6 +8,7 @@ using Puppet.Poker.Datagram;
 using Puppet;
 using Puppet.Service;
 using System.Linq;
+using Puppet.Core.Model;
 
 public class PokerGameplayButtonHandler : MonoBehaviour 
 {
@@ -125,7 +126,9 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         }
         else if(currentType == EButtonType.OutGame)
         {
-            Puppet.API.Client.APIPokerGame.AutoSitDown(PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind * 20);
+            UserInfo userInfo = Puppet.API.Client.APIUser.GetUserInformation ();
+            DialogService.Instance.ShowDialog(new DialogBuyChip(PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind, userInfo.assets.content[0].value));
+            //Puppet.API.Client.APIPokerGame.AutoSitDown(PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind * 20);
         }
     }
 

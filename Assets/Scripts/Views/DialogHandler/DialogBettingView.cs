@@ -4,7 +4,7 @@ using Puppet.API.Client;
 using Puppet;
 using System;
 using Puppet.Service;
-[PrefabAttribute(Name = "Prefabs/Dialog/DialogGameplayBetting", Depth = 9)]
+[PrefabAttribute(Name = "Prefabs/Dialog/Gameplay/DialogGameplayBetting", Depth = 9)]
 public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
 {
     #region UnityEditor
