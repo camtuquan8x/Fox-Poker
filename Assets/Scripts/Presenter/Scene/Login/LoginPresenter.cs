@@ -47,7 +47,8 @@ public class LoginPresenter : ILoginPresenter
             view.ShowError("Không đăng ký được tài khoản");
     }
 	public void ViewEnd(){
-		SocialService.Instance.onLoginComplete -= onLoginComplete;
+        if (SocialService.Instance != null)
+		    SocialService.Instance.onLoginComplete -= onLoginComplete;
 	}
 
     public void ViewStart()

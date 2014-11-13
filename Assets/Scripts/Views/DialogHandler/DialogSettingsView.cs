@@ -40,7 +40,7 @@ namespace Puppet.Service{
 
 		void onBtnLogoutClick (GameObject go)
 		{
-			
+            API.Client.APIGeneric.LoginOut(null);
 		}
 
 		void onToggleAutoSit (GameObject go)
