@@ -10,7 +10,7 @@ namespace Puppet.Service
 
         #region UnityEditor
         public UIToggle btnFAQ, btnRule, btnExp,btnFeedBack;
-        public UniWebView webView;
+        //public UniWebView webView;
         public UISprite foreground;
         public GameObject contentFeedBack;
         #endregion
@@ -21,10 +21,10 @@ namespace Puppet.Service
             EventDelegate.Add(btnRule.onChange, OnBtnRuleChanged);
             EventDelegate.Add(btnExp.onChange, OnBtnEXPChanged);
             EventDelegate.Add(btnFeedBack.onChange, OnBtnFeedBackChanged);
-            webView.OnReceivedMessage += OnReceivedMessage;
-            webView.OnLoadComplete += OnLoadComplete;
-            webView.OnWebViewShouldClose += OnWebViewShouldClose;
-            webView.OnEvalJavaScriptFinished += OnEvalJavaScriptFinished;
+            //webView.OnReceivedMessage += OnReceivedMessage;
+            //webView.OnLoadComplete += OnLoadComplete;
+            //webView.OnWebViewShouldClose += OnWebViewShouldClose;
+            //webView.OnEvalJavaScriptFinished += OnEvalJavaScriptFinished;
         }
 
     
@@ -37,10 +37,10 @@ namespace Puppet.Service
             EventDelegate.Remove(btnRule.onChange, OnBtnRuleChanged);
             EventDelegate.Remove(btnExp.onChange, OnBtnEXPChanged);
             EventDelegate.Remove(btnFeedBack.onChange, OnBtnFeedBackChanged);
-            webView.OnReceivedMessage -= OnReceivedMessage;
-            webView.OnLoadComplete -= OnLoadComplete;
-            webView.OnWebViewShouldClose -= OnWebViewShouldClose;
-            webView.OnEvalJavaScriptFinished -= OnEvalJavaScriptFinished;
+            //webView.OnReceivedMessage -= OnReceivedMessage;
+            //webView.OnLoadComplete -= OnLoadComplete;
+            //webView.OnWebViewShouldClose -= OnWebViewShouldClose;
+            //webView.OnEvalJavaScriptFinished -= OnEvalJavaScriptFinished;
         }
         public override void ShowDialog(DialogHelp data)
         {
@@ -70,7 +70,7 @@ namespace Puppet.Service
             int leftRight = Mathf.FloorToInt(webMarginWidth / (2 * ratioWidth));
 
             int topbottom = Mathf.RoundToInt((webMarginHeight / (2 * ratioHeight)));
-            webView.insets = new UniWebViewEdgeInsets(Mathf.RoundToInt(topbottom + 130*ratioHeight), leftRight, Mathf.RoundToInt(topbottom - 130 * ratioHeight), leftRight);
+            //webView.insets = new UniWebViewEdgeInsets(Mathf.RoundToInt(topbottom + 130*ratioHeight), leftRight, Mathf.RoundToInt(topbottom - 130 * ratioHeight), leftRight);
 
         }
         private void OnBtnFeedBackChanged()
@@ -80,7 +80,7 @@ namespace Puppet.Service
                 if (!contentFeedBack.active)
                 {
                     contentFeedBack.SetActive(true);
-                    webView.gameObject.SetActive(false);
+                    //webView.gameObject.SetActive(false);
                 }
             }
         }
@@ -88,75 +88,75 @@ namespace Puppet.Service
         {
             if (btnFAQ.value)
             {
-                webView.url = "http://vnexpress.net/";
-                webView.Load();
-                if (!webView.gameObject.active)
-                {
-                    contentFeedBack.SetActive(false);
-                    webView.gameObject.SetActive(true);
-                }
+                //webView.url = "http://vnexpress.net/";
+                //webView.Load();
+                //if (!webView.gameObject.active)
+                //{
+                //    contentFeedBack.SetActive(false);
+                //    webView.gameObject.SetActive(true);
+                //}
             }
         }
         private void OnBtnRuleChanged()
         {
             if (btnRule.value)
             {
-                webView.url = "http://www.24h.com.vn/";
-                webView.Load();
-                if (!webView.gameObject.active)
-                {
-                    contentFeedBack.SetActive(false);
-                    webView.gameObject.SetActive(true);
-                }
+                //webView.url = "http://www.24h.com.vn/";
+                //webView.Load();
+                //if (!webView.gameObject.active)
+                //{
+                //    contentFeedBack.SetActive(false);
+                //    webView.gameObject.SetActive(true);
+                //}
             }
         }
         private void OnBtnEXPChanged()
         {
-            if (btnExp.value)
-            {
-                webView.url = "http://www.baomoi.com/";
-                webView.Load();
-                if (!webView.gameObject.active)
-                {
-                    contentFeedBack.SetActive(false);
-                    webView.gameObject.SetActive(true);
-                }
-            }
+            //if (btnExp.value)
+            //{
+            //    webView.url = "http://www.baomoi.com/";
+            //    webView.Load();
+            //    if (!webView.gameObject.active)
+            //    {
+            //        contentFeedBack.SetActive(false);
+            //        webView.gameObject.SetActive(true);
+            //    }
+            //}
         }
 
-        private void OnEvalJavaScriptFinished(UniWebView webView, string result)
-        {
-            throw new System.NotImplementedException();
-        }
+        //private void OnEvalJavaScriptFinished(UniWebView webView, string result)
+        //{
+        //    throw new System.NotImplementedException();
+        //}
 
-        bool OnWebViewShouldClose(UniWebView webView)
-        {
-            if (this.webView == webView)
-            {
-                this.webView = null;
-                GameObject.Destroy(gameObject);
-                return true;
-            }
-            return false;
-        }
+        //bool OnWebViewShouldClose(UniWebView webView)
+        //{
+        //    if (this.webView == webView)
+        //    {
+        //        this.webView = null;
+        //        GameObject.Destroy(gameObject);
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
-        private void OnLoadComplete(UniWebView webView, bool success, string errorMessage)
-        {
-            if (success)
-            {
-                webView.Show();
-            }
-            else
-            {
-                Debug.Log("Something wrong in webview loading: " + errorMessage);
-                //_errorMessage = errorMessage;
-            }
-        }
+        //private void OnLoadComplete(UniWebView webView, bool success, string errorMessage)
+        //{
+        //    if (success)
+        //    {
+        //        webView.Show();
+        //    }
+        //    else
+        //    {
+        //        Debug.Log("Something wrong in webview loading: " + errorMessage);
+        //        //_errorMessage = errorMessage;
+        //    }
+        //}
 
-        private void OnReceivedMessage(UniWebView webView, UniWebViewMessage message)
-        {
-            throw new System.NotImplementedException();
-        }
+        //private void OnReceivedMessage(UniWebView webView, UniWebViewMessage message)
+        //{
+        //    throw new System.NotImplementedException();
+        //}
     }
     public class DialogHelp : AbstractDialogData
     {
