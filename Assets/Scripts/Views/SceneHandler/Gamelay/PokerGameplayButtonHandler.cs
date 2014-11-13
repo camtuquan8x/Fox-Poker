@@ -101,7 +101,18 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     {
         if(currentType == EButtonType.InTurn)
         {
-            Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.CALL, PokerObserver.Instance.MaxCurrentBetting);
+            if(PokerObserver.Instance.MaxCurrentBetting == 0)
+                Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.CHECK, 0);
+            else
+            {
+                double diff = PokerObserver.Instance.MaxCurrentBetting - PokerObserver.Instance.currentPlayer.currentBet;
+                if(diff > 0)
+                    Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.CALL, diff);
+                else if(diff == 0)
+                    Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.CHECK, 0);
+                else
+                    Logger.LogError("Call Betting INVALID");
+            }
         }
     }
     void OnClickButton2(GameObject go)
@@ -163,16 +174,16 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 
             if ((type == EButtonType.InTurn || type == EButtonType.OutTurn) && slot == EButtonSlot.First)
             {
-                double difference = PokerObserver.Instance.Difference;
-                if (difference > 0)
-                    return difference.ToString("#,##");
+                double diff = PokerObserver.Instance.MaxCurrentBetting - PokerObserver.Instance.currentPlayer.currentBet;
+                if(diff > 0)
+                    return diff.ToString("#,##");
             }
         }
         return null;
     }
     string OverrideName(EButtonType type, EButtonSlot slot)
     {
-        if (slot == EButtonSlot.First && type == EButtonType.InTurn && PokerObserver.Instance.Difference == 0)
+        if (slot == EButtonSlot.First && type == EButtonType.InTurn && PokerObserver.Instance.MaxCurrentBetting == 0)
             return "Xem Bài";
         return null;
     }

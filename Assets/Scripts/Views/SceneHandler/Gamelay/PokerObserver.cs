@@ -68,7 +68,9 @@ public class PokerObserver
         {
             ResponseUpdateGame dataGame = (ResponseUpdateGame)data;
             if (command == "updateGame" && dataUpdateGameChange != null)
+            {
                 dataUpdateGameChange(dataGame);
+            }
             else if (command == "updateGameToWaitingPlayer" && onFirstJoinGame != null)
             {
                 gameDetails = dataGame.gameDetails;
@@ -93,7 +95,14 @@ public class PokerObserver
                 currentPlayer = dataTurn.toPlayer;
                 lastPlayer = dataTurn.fromPlayer;
                 if (currentPlayer != null && IsMainPlayer(currentPlayer.userName))
-                    mainPlayer = dataTurn.toPlayer;    
+                    mainPlayer = dataTurn.toPlayer;
+
+                if(currentPlayer != null)
+                    MaxCurrentBetting = currentPlayer.currentBet;
+                if(lastPlayer != null)
+                    MaxCurrentBetting = lastPlayer.currentBet;
+                if (dataTurn.firstTurn && dataTurn.bigBlind != null)
+                    MaxCurrentBetting = dataTurn.bigBlind.currentBet;
             }
 
             if(onTurnChange != null)
@@ -173,23 +182,7 @@ public class PokerObserver
     }
     void ResetCurrentBetting ()
     {
-        _maxCurrentBetting = gameDetails.customConfiguration.SmallBlind;
-    }
-
-    public double Difference
-    {
-        get
-        {
-            double maxBettingInGame = PokerObserver.Instance.MaxCurrentBetting;
-            if(PokerObserver.Instance.mainPlayer == null)
-                return maxBettingInGame;
-
-            double yourMoney = PokerObserver.Instance.mainPlayer.GetMoney();
-            double pay = maxBettingInGame - PokerObserver.Instance.mainPlayer.currentBet;
-            if (yourMoney < pay)
-                pay = yourMoney;
-            return pay;
-        }
+        _maxCurrentBetting = 0;
     }
     #endregion
 }

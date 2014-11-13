@@ -37,6 +37,18 @@ public class PokerGameplayPlaymat : MonoBehaviour
         PokerObserver.Instance.onFinishGame += Instance_onFinishGame;
     }
 
+    void OnDestroy()
+    {
+        PokerObserver.Instance.onFirstJoinGame -= Instance_onFirstJoinGame;
+        PokerObserver.Instance.onPlayerListChanged -= Instance_onPlayerListChanged;
+        PokerObserver.Instance.dataUpdateGameChange -= Instance_dataUpdateGame;
+        PokerObserver.Instance.onEventUpdateHand -= Instance_onEventUpdateHand;
+        PokerObserver.Instance.onTurnChange -= Instance_dataTurnGame;
+        PokerObserver.Instance.onNewRound -= Instance_onNewRound;
+        PokerObserver.Instance.onUpdatePot -= Instance_onUpdatePot;
+        PokerObserver.Instance.onFinishGame -= Instance_onFinishGame;
+    }
+
     void Instance_onUpdatePot(ResponseUpdatePot obj)
     {
         if (obj.pot != null && obj.pot.Length > 0)
