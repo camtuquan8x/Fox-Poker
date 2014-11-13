@@ -31,6 +31,7 @@ public class DialogBuyChipView : BaseDialog<DialogBuyChip,DialogBuyChipView>
         int index = (int)Mathf.Lerp(1, slider.numberOfSteps, slider.value);
         string[] moneyAndShortcut = Utility.Convert.ConvertMoneyAndShortCut(int.Parse(minChip.text) * index);
         money.text = "$ " + moneyAndShortcut[0] + moneyAndShortcut[1];
+       
     }
     protected override void OnDisable()
     {

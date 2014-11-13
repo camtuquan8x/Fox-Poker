@@ -7,13 +7,13 @@ namespace Puppet.Service
     [PrefabAttribute(Name = "Prefabs/Dialog/DialogHelp", Depth = 7, IsAttachedToCamera = true, IsUIPanel = true)]
     public class DialogHelpView : BaseDialog<DialogHelp, DialogHelpView>
     {
-
         #region UnityEditor
-        public UIToggle btnFAQ, btnRule, btnExp,btnFeedBack;
-        //public UniWebView webView;
+        public UIToggle btnFAQ, btnRule, btnExp, btnFeedBack;
         public UISprite foreground;
-        public GameObject contentFeedBack;
+        public GameObject contentFeedBack, contentwebView;
         #endregion
+#if UNITY_ANDROID || UNITY_IOS
+       
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -21,13 +21,25 @@ namespace Puppet.Service
             EventDelegate.Add(btnRule.onChange, OnBtnRuleChanged);
             EventDelegate.Add(btnExp.onChange, OnBtnEXPChanged);
             EventDelegate.Add(btnFeedBack.onChange, OnBtnFeedBackChanged);
-            //webView.OnReceivedMessage += OnReceivedMessage;
-            //webView.OnLoadComplete += OnLoadComplete;
-            //webView.OnWebViewShouldClose += OnWebViewShouldClose;
-            //webView.OnEvalJavaScriptFinished += OnEvalJavaScriptFinished;
+            initEventWebView();
+        }
+        private void initEventWebView()
+        {
+            contentwebView.GetComponent<UniWebView>().OnReceivedMessage += OnReceivedMessage;
+            contentwebView.GetComponent<UniWebView>().OnLoadComplete += OnLoadComplete;
+            contentwebView.GetComponent<UniWebView>().OnWebViewShouldClose += OnWebViewShouldClose;
+            contentwebView.GetComponent<UniWebView>().OnEvalJavaScriptFinished += OnEvalJavaScriptFinished;
+        }
+        private void removeEventWebView() {
+            if (contentwebView.GetComponent<UniWebView>() != null)
+            {
+                contentwebView.GetComponent<UniWebView>().OnReceivedMessage -= OnReceivedMessage;
+                contentwebView.GetComponent<UniWebView>().OnLoadComplete -= OnLoadComplete;
+                contentwebView.GetComponent<UniWebView>().OnWebViewShouldClose -= OnWebViewShouldClose;
+                contentwebView.GetComponent<UniWebView>().OnEvalJavaScriptFinished -= OnEvalJavaScriptFinished;
+            }
         }
 
-    
 
 
         protected override void OnDisable()
@@ -37,18 +49,10 @@ namespace Puppet.Service
             EventDelegate.Remove(btnRule.onChange, OnBtnRuleChanged);
             EventDelegate.Remove(btnExp.onChange, OnBtnEXPChanged);
             EventDelegate.Remove(btnFeedBack.onChange, OnBtnFeedBackChanged);
-            //webView.OnReceivedMessage -= OnReceivedMessage;
-            //webView.OnLoadComplete -= OnLoadComplete;
-            //webView.OnWebViewShouldClose -= OnWebViewShouldClose;
-            //webView.OnEvalJavaScriptFinished -= OnEvalJavaScriptFinished;
+            removeEventWebView();
         }
-        public override void ShowDialog(DialogHelp data)
-        {
-            base.ShowDialog(data);
-            SetWebView();
-            btnFAQ.value = true;
-        }
-       
+        
+
         private void SetWebView()
         {
 
@@ -59,28 +63,26 @@ namespace Puppet.Service
             float ratioWidth = ((float)mRoot.manualWidth / UniWebViewHelper.screenWidth) * uiFactor;
             int width = Mathf.FloorToInt(UniWebViewHelper.screenWidth * ratioWidth / uiFactor);
             int height = Mathf.FloorToInt(UniWebViewHelper.screenHeight * ratioHeight / uiFactor);
-            Logger.Log("========> mRoot " + mRoot.manualWidth + "/" + mRoot.manualHeight + "=====");
-            Logger.Log("========> widthReal " + width + "/" + height + "=====");
-            Logger.Log("========> foreground  " + foreground.width + "/" + foreground.height + "=====");
-            Logger.Log("========> transparent  " + bkgTransparent.width + "/" + bkgTransparent.height + "=====");
-            //UISliceBackgroundPopup backgroundPopup = gameObject.GetComponentInChildren<UISliceBackgroundPopup>();
+
             int webMarginWidth = Mathf.FloorToInt(width - (foreground.width));
             int webMarginHeight = Mathf.FloorToInt(height - (foreground.height));
 
             int leftRight = Mathf.FloorToInt(webMarginWidth / (2 * ratioWidth));
 
             int topbottom = Mathf.RoundToInt((webMarginHeight / (2 * ratioHeight)));
-            //webView.insets = new UniWebViewEdgeInsets(Mathf.RoundToInt(topbottom + 130*ratioHeight), leftRight, Mathf.RoundToInt(topbottom - 130 * ratioHeight), leftRight);
+            contentwebView.GetComponent<UniWebView>().insets = new UniWebViewEdgeInsets(Mathf.RoundToInt(topbottom + 130 * ratioHeight), leftRight, Mathf.RoundToInt(topbottom - 130 * ratioHeight), leftRight);
 
         }
         private void OnBtnFeedBackChanged()
         {
             if (btnFeedBack.value)
             {
-                if (!contentFeedBack.active)
+                if (!contentFeedBack.activeSelf)
                 {
                     contentFeedBack.SetActive(true);
-                    //webView.gameObject.SetActive(false);
+                    removeEventWebView();
+                    GameObject.Destroy(contentwebView.GetComponent<UniWebView>());
+                    
                 }
             }
         }
@@ -88,75 +90,89 @@ namespace Puppet.Service
         {
             if (btnFAQ.value)
             {
-                //webView.url = "http://vnexpress.net/";
-                //webView.Load();
-                //if (!webView.gameObject.active)
-                //{
-                //    contentFeedBack.SetActive(false);
-                //    webView.gameObject.SetActive(true);
-                //}
+                if (contentwebView.GetComponent<UniWebView>() == null)
+                {
+                    contentFeedBack.SetActive(false);
+                    contentwebView.AddComponent<UniWebView>();
+                    initEventWebView();
+                    
+                }
+                contentwebView.GetComponent<UniWebView>().url = "http://vnexpress.net/";
+                contentwebView.GetComponent<UniWebView>().Load();
             }
         }
         private void OnBtnRuleChanged()
         {
             if (btnRule.value)
             {
-                //webView.url = "http://www.24h.com.vn/";
-                //webView.Load();
-                //if (!webView.gameObject.active)
-                //{
-                //    contentFeedBack.SetActive(false);
-                //    webView.gameObject.SetActive(true);
-                //}
+                if (contentwebView.GetComponent<UniWebView>() == null)
+                {
+                    contentFeedBack.SetActive(false);
+                    contentwebView.AddComponent<UniWebView>();
+                    initEventWebView();
+
+                }
+                contentwebView.GetComponent<UniWebView>().url = "http://www.24h.com.vn/";
+                contentwebView.GetComponent<UniWebView>().Load();
             }
         }
         private void OnBtnEXPChanged()
         {
-            //if (btnExp.value)
-            //{
-            //    webView.url = "http://www.baomoi.com/";
-            //    webView.Load();
-            //    if (!webView.gameObject.active)
-            //    {
-            //        contentFeedBack.SetActive(false);
-            //        webView.gameObject.SetActive(true);
-            //    }
-            //}
+            if (btnExp.value)
+            {
+                if (contentwebView.GetComponent<UniWebView>() == null)
+                {
+                    contentFeedBack.SetActive(false);
+                    contentwebView.AddComponent<UniWebView>();
+                    initEventWebView();
+
+                }
+                contentwebView.GetComponent<UniWebView>().url = "http://www.baomoi.com/";
+                contentwebView.GetComponent<UniWebView>().Load();
+            }
         }
 
-        //private void OnEvalJavaScriptFinished(UniWebView webView, string result)
-        //{
-        //    throw new System.NotImplementedException();
-        //}
+        private void OnEvalJavaScriptFinished(UniWebView webView, string result)
+        {
+            throw new System.NotImplementedException();
+        }
 
-        //bool OnWebViewShouldClose(UniWebView webView)
-        //{
-        //    if (this.webView == webView)
-        //    {
-        //        this.webView = null;
-        //        GameObject.Destroy(gameObject);
-        //        return true;
-        //    }
-        //    return false;
-        //}
+        bool OnWebViewShouldClose(UniWebView webView)
+        {
+            if (this.contentwebView.GetComponent<UniWebView>() == webView)
+            {
+                GameObject.Destroy(gameObject);
+                return true;
+            }
+            return false;
+        }
 
-        //private void OnLoadComplete(UniWebView webView, bool success, string errorMessage)
-        //{
-        //    if (success)
-        //    {
-        //        webView.Show();
-        //    }
-        //    else
-        //    {
-        //        Debug.Log("Something wrong in webview loading: " + errorMessage);
-        //        //_errorMessage = errorMessage;
-        //    }
-        //}
+        private void OnLoadComplete(UniWebView webView, bool success, string errorMessage)
+        {
+            if (success)
+            {
+                webView.Show();
+            }
+            else
+            {
+                Debug.Log("Something wrong in webview loading: " + errorMessage);
+                //_errorMessage = errorMessage;
+            }
+        }
 
-        //private void OnReceivedMessage(UniWebView webView, UniWebViewMessage message)
-        //{
-        //    throw new System.NotImplementedException();
-        //}
+        private void OnReceivedMessage(UniWebView webView, UniWebViewMessage message)
+        {
+            throw new System.NotImplementedException();
+        }
+#endif
+        public override void ShowDialog(DialogHelp data)
+        {
+            base.ShowDialog(data);
+#if UNITY_ANDROID || UNITY_IOS
+            SetWebView();
+            btnFAQ.value = true;
+#endif
+        }
     }
     public class DialogHelp : AbstractDialogData
     {
