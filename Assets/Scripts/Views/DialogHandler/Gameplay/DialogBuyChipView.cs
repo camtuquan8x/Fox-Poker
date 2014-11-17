@@ -54,8 +54,11 @@ public class DialogBuyChipView : BaseDialog<DialogBuyChip,DialogBuyChipView>
         if (pressValue == true)
         {
             int index = (int)Mathf.Lerp(1, slider.numberOfSteps, slider.value);
-            Puppet.API.Client.APIPokerGame.AutoSitDown(int.Parse(minChip.text) * index);
+            if(data.onChooise != null)
+                data.onChooise(int.Parse(minChip.text) * index, autoBuy.value);
         }
+        else if (data.onChooise != null)
+            data.onChooise(0, false);
     }
     private void onBtnMaxClick(GameObject go)
     {
@@ -69,15 +72,18 @@ public class DialogBuyChipView : BaseDialog<DialogBuyChip,DialogBuyChipView>
 }
 public class DialogBuyChip : AbstractDialogData
 {
-    public DialogBuyChip(double smallBind,double currentChip) {
+    public DialogBuyChip(double smallBind, System.Action<int, bool> onChooise)
+    {
         this.smallBind = smallBind;
-        this.currentChip = currentChip;
+        this.currentChip = smallBind;
+        this.onChooise = onChooise;
     }
+    public System.Action<int, bool> onChooise;
+    public int slot;
     public double smallBind;
     public double currentChip;
     public override void ShowDialog()
     {
         DialogBuyChipView.Instance.ShowDialog(this);
     }
-
 }

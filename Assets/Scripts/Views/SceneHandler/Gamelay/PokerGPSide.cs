@@ -1,6 +1,7 @@
 ﻿using Puppet;
 using Puppet.Poker;
 using Puppet.Poker.Datagram;
+using Puppet.Service;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -59,8 +60,17 @@ public class PokerGPSide : MonoBehaviour
     {
         if (sendSitdown == false)
         {
-            PokerObserver.Instance.SitDown(slot);
-            sendSitdown = true;
+            //PokerObserver.Instance.SitDown(slot, gameDetails.customConfiguration.SmallBlind * 20);
+            DialogBuyChip dialog = new DialogBuyChip(PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind, (betting, autoBuy) =>
+            {
+                if (betting >= PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind)
+                {
+                    PokerObserver.Instance.SitDown(slot, betting);
+                    Puppet.API.Client.APIPokerGame.SetAutoBuy(autoBuy);
+                    sendSitdown = true;
+                }
+            });
+            DialogService.Instance.ShowDialog(dialog);
         }
         NGUITools.SetActive(btnSit, false);
     }

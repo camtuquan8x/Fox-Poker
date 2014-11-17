@@ -137,9 +137,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         }
         else if(currentType == EButtonType.OutGame)
         {
-            UserInfo userInfo = Puppet.API.Client.APIUser.GetUserInformation ();
-            DialogService.Instance.ShowDialog(new DialogBuyChip(PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind, userInfo.assets.content[0].value));
-            //Puppet.API.Client.APIPokerGame.AutoSitDown(PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind * 20);
+            Puppet.API.Client.APIPokerGame.AutoSitDown(PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind * 20);
         }
     }
 

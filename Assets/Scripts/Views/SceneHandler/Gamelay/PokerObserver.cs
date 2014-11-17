@@ -149,9 +149,9 @@ public class PokerObserver
         _instance = null;
     }
 
-    public void SitDown(int slotServer)
+    public void SitDown(int slotServer, double betting)
     {
-        APIPokerGame.SitDown(slotServer, gameDetails.customConfiguration.SmallBlind * 20);
+        APIPokerGame.SitDown(slotServer, betting);
     }
     #endregion
 
