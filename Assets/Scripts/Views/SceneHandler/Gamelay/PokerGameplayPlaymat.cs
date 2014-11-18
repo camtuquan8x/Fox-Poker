@@ -12,17 +12,17 @@ public class PokerGameplayPlaymat : MonoBehaviour
 {
     #region UNITY EDITOR
     public GameObject prefabBetObject;
-
     public Transform []positionDealCards;
-    public PokerCurrentBet currentPot;
+    public PokerCurrentBet[] currentPot;
     public GameObject objectDealer;
+    public UILabel lbMyRanking;
     #endregion
     PokerGPSide[] arrayPokerSide;
     Dictionary<string, GameObject> dictPlayerObject = new Dictionary<string, GameObject>();
 
     void Awake()
     {
-        currentPot.SetActive(false);
+        //currentPot.SetActive(false);
         objectDealer.SetActive(false);
 
         arrayPokerSide = GameObject.FindObjectsOfType<PokerGPSide>();
@@ -53,16 +53,16 @@ public class PokerGameplayPlaymat : MonoBehaviour
     {
         if (obj.pot != null && obj.pot.Length > 0)
         {
-            currentPot.SetActive(true);
+          //  currentPot.SetActive(true);
             double value = 0;
             Array.ForEach<ResponseUpdatePot.DataPot>(obj.pot, p => value += p.value);
-            currentPot.SetBet(value);
+            //currentPot.SetBet(value);
         }
     }
 
     void Instance_onNewRound(ResponseWaitingDealCard data)
     {
-        currentPot.SetActive(false);
+        //currentPot.SetActive(false);
 
         DestroyCardObject();
     }

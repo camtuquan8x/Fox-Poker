@@ -15,6 +15,7 @@ public class PokerGameplayView : MonoBehaviour
     public GameObject btnView, btnLeaveTurn, btnAddBet, btnFollowBet, btnConvertMoney, btnGameMini, btnRule, btnSendMessage;
 	public GameObject btnViewCheckBox, btnFollowBetCheckBox, btnFollowAllBetCheckbox;
     public UIInput txtMessage;
+	public UILabel lbTime;
     public PokerGameplayPlaymat playmat;
     #endregion
 
@@ -22,7 +23,13 @@ public class PokerGameplayView : MonoBehaviour
     {
         HeaderMenuView.Instance.ShowInGameplay();	
     }
-    
+    void FixedUpdate() {
+        if (lbTime != null)
+        {
+            string theTime = System.DateTime.Now.ToString("hh:mm tt");
+            lbTime.text = theTime;
+        }
+    }
     IEnumerator Start()
     {
         //For Ensure all was init!!!!!
