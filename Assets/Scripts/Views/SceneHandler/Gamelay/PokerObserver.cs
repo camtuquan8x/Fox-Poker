@@ -67,26 +67,31 @@ public class PokerObserver
         if (data is ResponseUpdateGame)
         {
             ResponseUpdateGame dataGame = (ResponseUpdateGame)data;
+
+            foreach(PokerPlayerController p in dataGame.players) if (IsMainPlayer(p.userName)) { mainPlayer = p; break; }
+
             if (command == "updateGame" && dataUpdateGameChange != null)
             {
                 dataUpdateGameChange(dataGame);
             }
-            else if (command == "updateGameToWaitingPlayer" && onFirstJoinGame != null)
+            else if (command == "updateGameToWaitingPlayer")
             {
                 gameDetails = dataGame.gameDetails;
                 ResetCurrentBetting();
-                onFirstJoinGame(dataGame);
+                if (onFirstJoinGame != null)
+                    onFirstJoinGame(dataGame);
             }
         }
-        else if (data is ResponsePlayerListChanged && onPlayerListChanged != null)
+        else if (data is ResponsePlayerListChanged)
         {
             ResponsePlayerListChanged dataPlayerChange = (ResponsePlayerListChanged)data;
             UpdatePlayerInRoom(dataPlayerChange);
-            onPlayerListChanged(dataPlayerChange);
+            if (onPlayerListChanged != null)
+                onPlayerListChanged(dataPlayerChange);
         }
         else if (data is ResponseUpdateHand && onEventUpdateHand != null)
             onEventUpdateHand((ResponseUpdateHand)data);
-        else if (data is ResponseUpdateTurnChange && onTurnChange != null)
+        else if (data is ResponseUpdateTurnChange)
         {
             ResponseUpdateTurnChange dataTurn = (ResponseUpdateTurnChange)data;
 
@@ -112,13 +117,22 @@ public class PokerObserver
             onFinishGame((ResponseFinishGame)data);
         else if (data is ResponseWaitingDealCard && onNewRound != null)
             onNewRound((ResponseWaitingDealCard)data);
-        else if (data is ResponseUpdatePot && onUpdatePot != null)
+        else if (data is ResponseUpdatePot)
         {
             ResetCurrentBetting();
-            onUpdatePot((ResponseUpdatePot)data);
+            if(onUpdatePot != null)
+                onUpdatePot((ResponseUpdatePot)data);
         }
-        else if (data is ResponseUpdateUserInfo && onUpdateUserInfo != null)
-            onUpdateUserInfo((ResponseUpdateUserInfo)data);
+        else if (data is ResponseUpdateUserInfo)
+        {
+            ResponseUpdateUserInfo dataUserInfo = (ResponseUpdateUserInfo)data;
+
+            if (IsMainPlayer(dataUserInfo.userInfo.userName))
+                mainPlayer = dataUserInfo.userInfo;
+
+            if (onUpdateUserInfo != null)
+                onUpdateUserInfo(dataUserInfo);
+        }
         else if (data is ResponseError && onEncounterError != null)
             onEncounterError((ResponseError)data);
     }
@@ -183,6 +197,16 @@ public class PokerObserver
     void ResetCurrentBetting ()
     {
         _maxCurrentBetting = 0;
+    }
+
+    public double CurrentBettingDiff
+    {
+        get
+        {
+            double leftMoney = currentPlayer.GetMoney();
+            double diff = PokerObserver.Instance.MaxCurrentBetting - PokerObserver.Instance.mainPlayer.currentBet;
+            return leftMoney > diff ? diff : leftMoney;
+        }
     }
     #endregion
 }

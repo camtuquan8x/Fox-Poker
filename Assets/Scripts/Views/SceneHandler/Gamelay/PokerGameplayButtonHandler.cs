@@ -105,7 +105,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
                 Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.CHECK, 0);
             else
             {
-                double diff = PokerObserver.Instance.MaxCurrentBetting - PokerObserver.Instance.currentPlayer.currentBet;
+                double diff = PokerObserver.Instance.CurrentBettingDiff;
                 if(diff > 0)
                     Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.CALL, diff);
                 else if(diff == 0)
@@ -127,7 +127,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     {
         if (currentType == EButtonType.InTurn)
         {
-            bettingDialog = new DialogBetting(PokerObserver.Instance.MaxCurrentBetting, Convert.ToInt32(PokerObserver.Instance.mainPlayer.asset.GetAsset(EAssets.Chip).value), (money) =>
+            bettingDialog = new DialogBetting(PokerObserver.Instance.MaxCurrentBetting, PokerObserver.Instance.mainPlayer.GetMoney(), (money) =>
             {
                 Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.RAISE, money);
             }, Array.Find<ButtonItem>(itemButtons, button => button.slot == EButtonSlot.Third).button.transform);
@@ -151,6 +151,10 @@ public class PokerGameplayButtonHandler : MonoBehaviour
             NGUITools.SetActive(item.button, data != null);
             if (data != null)
             {
+                bool enableButton = EnableButton(type, item.slot);
+                item.button.collider.enabled = enableButton;
+                item.button.GetComponent<UISprite>().color = new Color(1f, 1f, 1f, enableButton ? 1f : 0.45f);
+
                 string moreText = AddMoreTextButton(type, item.slot);
                 string overrideName = OverrideName(type, item.slot);
                 item.label.text = (overrideName ?? data.text) + (string.IsNullOrEmpty(moreText) ? string.Empty : string.Format("\n({0})", moreText));
@@ -163,6 +167,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         }
     }
 
+    #region CUSTOM BUTTON
     string AddMoreTextButton(EButtonType type, EButtonSlot slot)
     {
         if (PokerObserver.Instance.gameDetails != null)
@@ -172,7 +177,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 
             if ((type == EButtonType.InTurn || type == EButtonType.OutTurn) && slot == EButtonSlot.First)
             {
-                double diff = PokerObserver.Instance.MaxCurrentBetting - PokerObserver.Instance.currentPlayer.currentBet;
+                double diff = PokerObserver.Instance.CurrentBettingDiff;
                 if(diff > 0)
                     return diff.ToString("#,##");
             }
@@ -181,10 +186,23 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     }
     string OverrideName(EButtonType type, EButtonSlot slot)
     {
-        if (slot == EButtonSlot.First && type == EButtonType.InTurn && PokerObserver.Instance.MaxCurrentBetting == 0)
-            return "Xem Bài";
+        if (slot == EButtonSlot.First && type == EButtonType.InTurn)
+        {
+            if(PokerObserver.Instance.MaxCurrentBetting == 0 || PokerObserver.Instance.CurrentBettingDiff == 0)
+                return "Xem Bài";
+        }
         return null;
     }
+
+    bool EnableButton(EButtonType type, EButtonSlot slot)
+    {
+        if (slot == EButtonSlot.Third && type == EButtonType.InTurn)
+            return PokerObserver.Instance.currentPlayer.GetMoney() >= PokerObserver.Instance.MaxCurrentBetting;
+        else if (type == EButtonType.OutTurn && PokerObserver.Instance.mainPlayer.GetMoney() == 0)
+            return false;
+        return true;
+    }
+    #endregion
 
     void Instance_onPlayerListChanged(ResponsePlayerListChanged data)
     {
