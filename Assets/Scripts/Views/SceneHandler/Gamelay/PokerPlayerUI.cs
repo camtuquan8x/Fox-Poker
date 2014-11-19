@@ -47,6 +47,7 @@ public class PokerPlayerUI : MonoBehaviour
     {
         if (player != null && player.userName == data.userName)
         {
+            data = player;
             double money = player.GetMoney();
             labelCurrentGold.text = money > 0 ? money.ToString("#,###") : "All In";
             

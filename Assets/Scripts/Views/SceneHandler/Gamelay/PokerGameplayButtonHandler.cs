@@ -127,7 +127,15 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     {
         if (currentType == EButtonType.InTurn)
         {
-            bettingDialog = new DialogBetting(PokerObserver.Instance.MaxCurrentBetting, PokerObserver.Instance.mainPlayer.GetMoney(), (money) =>
+            double maxOtherMoney = GameObject.FindObjectsOfType<PokerPlayerUI>()
+                .Where<PokerPlayerUI>(p => p.data.userName != PokerObserver.Instance.mainPlayer.userName)
+                .Max<PokerPlayerUI>(p => p.data.GetMoney() + p.data.currentBet);
+            double currentMoney = PokerObserver.Instance.mainPlayer.GetMoney();
+            double maxRaise = currentMoney;
+            if (PokerObserver.Instance.mainPlayer.GetMoney() + PokerObserver.Instance.mainPlayer.currentBet > maxOtherMoney)
+                maxRaise = maxOtherMoney - PokerObserver.Instance.mainPlayer.currentBet;
+
+            bettingDialog = new DialogBetting(PokerObserver.Instance.MaxCurrentBetting, maxRaise, (money) =>
             {
                 Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.RAISE, money);
             }, Array.Find<ButtonItem>(itemButtons, button => button.slot == EButtonSlot.Third).button.transform);
