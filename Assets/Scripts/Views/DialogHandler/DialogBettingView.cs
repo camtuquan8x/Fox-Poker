@@ -12,10 +12,12 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
     public UILabel labelMoney;
     #endregion
 
+    double smallBlind;
     EventDelegate del;
     void Awake()
     {
         del = new EventDelegate(this, "OnSliderChange");
+        smallBlind = PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind;
     }
 
     protected override void OnEnable()
@@ -34,7 +36,8 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
     {
         get
         {
-            return Mathf.RoundToInt((float)(data.MaxBetting - data.MinBetting) * sliderBar.value) + data.MinBetting;
+            int index = (int)Mathf.Lerp(1, sliderBar.numberOfSteps, sliderBar.value);
+            return (smallBlind * index) + data.MinBetting;
         }
     }
 
@@ -47,6 +50,7 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
     {
         base.ShowDialog(data);
 
+        sliderBar.numberOfSteps = (int)(data.MaxBetting / smallBlind);
         gameObject.transform.parent = data.parent;
         gameObject.transform.localPosition = new Vector3(0f, 280f, 0f);
         gameObject.transform.localScale = Vector3.one;
