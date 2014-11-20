@@ -19,7 +19,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 
 	#region Unity Editor
 	public UITable tableButton,tableLeft;
-	public GameObject btnBack, btnCommon, btnRecharge, btnMessage,btnLeague , btnSettings, btnLobbyChangeTypeShow, btnSearch,btnUp;
+	public GameObject btnBack, btnCommon, btnRecharge, btnMessage,btnLeague , btnSettings, btnLobbyChangeTypeShow, btnSearch,btnUp,btnLeagueFAQ;
 	public GameObject formInfo;
 	public GameObject logoInLobby;
 	public UITexture avatar;
@@ -45,6 +45,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		tableButton.Reposition ();
 		slideLevel.transform.parent.parent.gameObject.SetActive (true);
 		avatar.transform.parent.gameObject.SetActive (true);
+        btnLeagueFAQ.SetActive(false);
 		tableLeft.Reposition ();
 	}
 
@@ -57,9 +58,26 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		btnLeague.SetActive (true);
 		btnLobbyChangeTypeShow.SetActive (false);
 		btnSearch.SetActive (false);
+        btnLeagueFAQ.SetActive(false);
 		tableButton.Reposition ();
 		tableLeft.Reposition ();
 	}
+    public void ShowInLeague()
+    {
+        btnLeagueFAQ.SetActive(true);
+        btnLobbyChangeTypeShow.SetActive(false);
+        btnSearch.SetActive(false);
+        btnBack.SetActive(true);
+        logoInLobby.SetActive(false);
+
+        btnCommon.SetActive(false);
+        btnRecharge.SetActive(false);
+        btnMessage.SetActive(false);
+        btnSettings.SetActive(false);
+        btnLeague.SetActive(false);
+        tableLeft.Reposition();
+        tableButton.Reposition();
+    }
 	public void ShowInLobby(){
 		btnLobbyChangeTypeShow.SetActive (true);
 		btnSearch.SetActive (true);
@@ -71,6 +89,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		btnMessage.SetActive (false);
 		btnSettings.SetActive (false);
 		btnLeague.SetActive (false);
+        btnLeagueFAQ.SetActive(false);
 		tableLeft.Reposition ();
 		tableButton.Reposition ();
 	}
@@ -86,6 +105,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		btnMessage.SetActive (false);
 		btnSettings.SetActive (false);
 		btnLeague.SetActive (false);
+        btnLeagueFAQ.SetActive(false);
 		tableLeft.Reposition ();
 		tableButton.Reposition ();
 	}
