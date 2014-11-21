@@ -22,7 +22,6 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     void Awake()
     {
-        //currentPot.SetActive(false);
         objectDealer.SetActive(false);
 
         arrayPokerSide = GameObject.FindObjectsOfType<PokerGPSide>();
@@ -35,17 +34,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         PokerObserver.Instance.onNewRound += Instance_onNewRound;
         PokerObserver.Instance.onUpdatePot += Instance_onUpdatePot;
         PokerObserver.Instance.onFinishGame += Instance_onFinishGame;
-
-        List<Puppet.Poker.Datagram.ResponseUpdatePot.DataPot> pots = new List<Puppet.Poker.Datagram.ResponseUpdatePot.DataPot>();
-        for (int i = 0; i < 1; i++)
-        {
-            ResponseUpdatePot.DataPot pot = new ResponseUpdatePot.DataPot();
-            pot.id = i;
-            pot.value = i * 100;
-            pots.Add(pot);   
-        }
-
-        potContainer.AddBot(pots);
+        PokerObserver.Instance.onUpdateRoomMaster += Instance_onUpdateRoomMaster;
     }
 
     void OnDestroy()
@@ -58,23 +47,17 @@ public class PokerGameplayPlaymat : MonoBehaviour
         PokerObserver.Instance.onNewRound -= Instance_onNewRound;
         PokerObserver.Instance.onUpdatePot -= Instance_onUpdatePot;
         PokerObserver.Instance.onFinishGame -= Instance_onFinishGame;
+        PokerObserver.Instance.onUpdateRoomMaster -= Instance_onUpdateRoomMaster;
     }
 
     void Instance_onUpdatePot(ResponseUpdatePot obj)
     {
         if (obj.pot != null && obj.pot.Length > 0)
-        {
-          //  currentPot.SetActive(true);
-            double value = 0;
-            Array.ForEach<ResponseUpdatePot.DataPot>(obj.pot, p => value += p.value);
-            //currentPot.SetBet(value);
-        }
+            potContainer.UpdatePot(new List<ResponseUpdatePot.DataPot>(obj.pot));
     }
 
     void Instance_onNewRound(ResponseWaitingDealCard data)
     {
-        //currentPot.SetActive(false);
-
         DestroyCardObject();
     }
 
@@ -84,6 +67,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
         for (int i = cardsDeal.Count - 1; i >= 0; i--)
             GameObject.Destroy(cardsDeal[i]);
         cardsDeal.Clear();
+
+        potContainer.DestroyAllPot();
     }
 
     private void Instance_dataTurnGame(ResponseUpdateTurnChange data)
@@ -176,6 +161,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
             }
         }
         yield return new WaitForSeconds(waitTimeViewCard / 2);
+
+        potContainer.DestroyAllPot();
     }
 
     void Instance_onFirstJoinGame(ResponseUpdateGame data)
@@ -197,6 +184,12 @@ public class PokerGameplayPlaymat : MonoBehaviour
         Instance_onFirstJoinGame(data);
     }
 
+    void Instance_onUpdateRoomMaster(ResponseUpdateRoomMaster data)
+    {
+        if (data.player.isMaster)
+            SetDealerObjectToPlayer(data.player);
+    }
+
     void Instance_onPlayerListChanged(ResponsePlayerListChanged dataPlayer)
     {
         PokerPlayerChangeAction state = dataPlayer.GetActionState();
@@ -204,14 +197,17 @@ public class PokerGameplayPlaymat : MonoBehaviour
         {
             SetPositionAvatarPlayer(dataPlayer.player);
         }
-        else if(state == PokerPlayerChangeAction.playerRemoved)
+        else if (state == PokerPlayerChangeAction.playerRemoved && dictPlayerObject.ContainsKey(dataPlayer.player.userName))
         {
             GameObject.Destroy(dictPlayerObject[dataPlayer.player.userName]);
             dictPlayerObject.Remove(dataPlayer.player.userName);
         }
 
-        if(dataPlayer.player.isMaster)
-            SetDealerObjectToPlayer(dataPlayer.player);
+        System.Array.ForEach<PokerPlayerUI>(GameObject.FindObjectsOfType<PokerPlayerUI>(), pUI =>
+        {
+            if (pUI.data.userName != dataPlayer.player.userName)
+                SetPositionAvatarPlayer(pUI.data);
+        });
     }
 
     public void SetDealerObjectToPlayer(PokerPlayerController player)

@@ -11,10 +11,12 @@ public class PokerPotManager : MonoBehaviour
     #endregion
     List<PokerPotItem> pots = new List<PokerPotItem>();
 
-    public void AddBot(List<Puppet.Poker.Datagram.ResponseUpdatePot.DataPot> datas) {
-        StartCoroutine(_AddBot(datas));
+    public void UpdatePot(List<Puppet.Poker.Datagram.ResponseUpdatePot.DataPot> datas) 
+    {
+        StartCoroutine(_UpdatePot(datas));
     }
-    IEnumerator _AddBot(List<Puppet.Poker.Datagram.ResponseUpdatePot.DataPot> datas) {
+    IEnumerator _UpdatePot(List<Puppet.Poker.Datagram.ResponseUpdatePot.DataPot> datas)
+    {
         foreach (Puppet.Poker.Datagram.ResponseUpdatePot.DataPot item in datas)
         {
             PokerPotItem currentPot = pots.Find(p => item.id == p.Pot.id);
@@ -46,11 +48,11 @@ public class PokerPotManager : MonoBehaviour
         yield return new WaitForEndOfFrame();
         tablePot.Reposition();
     }
+
     public void DestroyAllPot() 
     {
         foreach (PokerPotItem item in pots)
-        {
-            GameObject.Destroy(item);
-        }
+            GameObject.Destroy(item.gameObject);
+        pots.Clear();
     }
 }

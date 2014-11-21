@@ -71,8 +71,8 @@ public class PokerPlayerUI : MonoBehaviour
     {
         StopTimer();
 
-        //if(currentBet != null)
-		//  	currentBet.SetActive(false);
+        if (currentBet != null)
+            currentBet.gameObject.SetActive(false);
 
         ResponseFinishCardPlayer cardPlayer = Array.Find<ResponseFinishCardPlayer>(data.players, p => p.userName == this.data.userName);
         if(cardPlayer != null && cardPlayer.cards != null)
@@ -113,11 +113,11 @@ public class PokerPlayerUI : MonoBehaviour
             }
         }
 
-        //if (currentBet != null)
-        //{
-        //   currentBet.SetActive(value > 0);
-        //    currentBet.SetBet(value);
-        //}
+        if (currentBet != null)
+        {
+            currentBet.gameObject.SetActive(value > 0);
+            currentBet.SetBet(value);
+        }
     }
 
     public void SetResult(bool isWinner)
