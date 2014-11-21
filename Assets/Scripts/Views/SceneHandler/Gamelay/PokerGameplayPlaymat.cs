@@ -13,7 +13,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
     #region UNITY EDITOR
     public GameObject prefabBetObject;
     public Transform []positionDealCards;
-    public PokerCurrentBet[] currentPot;
+    public PokerPotManager potContainer;
     public GameObject objectDealer;
     public UILabel lbMyRanking;
     #endregion
@@ -35,6 +35,17 @@ public class PokerGameplayPlaymat : MonoBehaviour
         PokerObserver.Instance.onNewRound += Instance_onNewRound;
         PokerObserver.Instance.onUpdatePot += Instance_onUpdatePot;
         PokerObserver.Instance.onFinishGame += Instance_onFinishGame;
+
+        List<Puppet.Poker.Datagram.ResponseUpdatePot.DataPot> pots = new List<Puppet.Poker.Datagram.ResponseUpdatePot.DataPot>();
+        for (int i = 0; i < 1; i++)
+        {
+            ResponseUpdatePot.DataPot pot = new ResponseUpdatePot.DataPot();
+            pot.id = i;
+            pot.value = i * 100;
+            pots.Add(pot);   
+        }
+
+        potContainer.AddBot(pots);
     }
 
     void OnDestroy()
@@ -139,7 +150,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         foreach(ResponseResultSummary summary in responseData.pots)
         {
             ResponseMoneyExchange playerWin = Array.Find<ResponseMoneyExchange>(summary.players, p => p.winner);
-            if(currentPot != null && playerWin != null)
+            if(potContainer != null && playerWin != null)
             {
                 dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(true);
 
