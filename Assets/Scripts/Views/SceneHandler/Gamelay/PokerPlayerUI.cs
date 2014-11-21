@@ -21,7 +21,7 @@ public class PokerPlayerUI : MonoBehaviour
     PokerGameplayPlaymat playmat;
     [HideInInspector]
     public PokerGPSide side;
-    PokerCurrentBet currentBet;
+    PokerPotItem currentBet;
 
     void Awake()
     {
@@ -71,8 +71,8 @@ public class PokerPlayerUI : MonoBehaviour
     {
         StopTimer();
 
-        if(currentBet != null)
-            currentBet.SetActive(false);
+        if (currentBet != null)
+            currentBet.gameObject.SetActive(false);
 
         ResponseFinishCardPlayer cardPlayer = Array.Find<ResponseFinishCardPlayer>(data.players, p => p.userName == this.data.userName);
         if(cardPlayer != null && cardPlayer.cards != null)
@@ -105,7 +105,7 @@ public class PokerPlayerUI : MonoBehaviour
         if (side != null)
         {
             if(currentBet == null)
-                currentBet = NGUITools.AddChild(side.positionMoney, playmat.prefabBetObject).GetComponent<PokerCurrentBet>();
+                currentBet = NGUITools.AddChild(side.positionMoney, playmat.prefabBetObject).GetComponent<PokerPotItem>();
             else
             {
                 currentBet.transform.parent = side.positionMoney.transform;
@@ -115,7 +115,7 @@ public class PokerPlayerUI : MonoBehaviour
 
         if (currentBet != null)
         {
-            currentBet.SetActive(value > 0);
+            currentBet.gameObject.SetActive(value > 0);
             currentBet.SetBet(value);
         }
     }

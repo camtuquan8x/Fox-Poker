@@ -57,10 +57,19 @@ public class PokerCardObject : MonoBehaviour
             spriteSuit.spriteName = SUIT_IMAGE[suit];
 
         if (rank > 0 && rank < 11)
+        {
             spriteIcon.spriteName = spriteSuit.spriteName;
+            //spriteIcon.MakePixelPerfect();
+            spriteIcon.width = 42;
+            spriteIcon.height = 48;
+        }
         else if (rank >= 11)
+        {
             spriteIcon.spriteName = ICON_IMAGE[rank - 11];
-        spriteIcon.MakePixelPerfect();
+            //spriteIcon.MakePixelPerfect();
+            spriteIcon.width = 51;
+            spriteIcon.height = 59;
+        }
 
         if(card.cardId >= 0)
         {

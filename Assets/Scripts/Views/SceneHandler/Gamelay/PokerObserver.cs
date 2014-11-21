@@ -36,9 +36,7 @@ public class PokerObserver
     public event Action<ResponseUpdatePot> onUpdatePot;
     public event Action<ResponseUpdateUserInfo> onUpdateUserInfo;
     public event Action<ResponseError> onEncounterError;
-
-    public List<string> listPlayers = new List<string>();
-    public List<string> listWaitingPlayers = new List<string>();
+    public event Action<ResponseUpdateRoomMaster> onUpdateRoomMaster;
 
     public PokerGameplay pokerGame;
     public UserInfo mUserInfo;
@@ -68,7 +66,7 @@ public class PokerObserver
         {
             ResponseUpdateGame dataGame = (ResponseUpdateGame)data;
 
-            foreach(PokerPlayerController p in dataGame.players) if (IsMainPlayer(p.userName)) { mainPlayer = p; break; }
+            foreach (PokerPlayerController p in dataGame.players) if (IsMainPlayer(p.userName)) { mainPlayer = p; break; }
 
             if (command == "updateGame" && dataUpdateGameChange != null)
             {
@@ -85,7 +83,6 @@ public class PokerObserver
         else if (data is ResponsePlayerListChanged)
         {
             ResponsePlayerListChanged dataPlayerChange = (ResponsePlayerListChanged)data;
-            UpdatePlayerInRoom(dataPlayerChange);
             if (onPlayerListChanged != null)
                 onPlayerListChanged(dataPlayerChange);
         }
@@ -102,25 +99,27 @@ public class PokerObserver
                 if (currentPlayer != null && IsMainPlayer(currentPlayer.userName))
                     mainPlayer = dataTurn.toPlayer;
 
-                if(currentPlayer != null)
+                if (currentPlayer != null)
                     MaxCurrentBetting = currentPlayer.currentBet;
-                if(lastPlayer != null)
+                if (lastPlayer != null)
                     MaxCurrentBetting = lastPlayer.currentBet;
                 if (dataTurn.firstTurn && dataTurn.bigBlind != null)
                     MaxCurrentBetting = dataTurn.bigBlind.currentBet;
             }
 
-            if(onTurnChange != null)
+            if (onTurnChange != null)
                 onTurnChange(dataTurn);
         }
         else if (data is ResponseFinishGame && onFinishGame != null)
             onFinishGame((ResponseFinishGame)data);
         else if (data is ResponseWaitingDealCard && onNewRound != null)
             onNewRound((ResponseWaitingDealCard)data);
+        else if (data is ResponseUpdateRoomMaster && onUpdateRoomMaster != null)
+            onUpdateRoomMaster((ResponseUpdateRoomMaster)data);
         else if (data is ResponseUpdatePot)
         {
             ResetCurrentBetting();
-            if(onUpdatePot != null)
+            if (onUpdatePot != null)
                 onUpdatePot((ResponseUpdatePot)data);
         }
         else if (data is ResponseUpdateUserInfo)
@@ -135,25 +134,6 @@ public class PokerObserver
         }
         else if (data is ResponseError && onEncounterError != null)
             onEncounterError((ResponseError)data);
-    }
-
-    void UpdatePlayerInRoom(ResponsePlayerListChanged dataPlayerChange)
-    {
-        switch (dataPlayerChange.GetActionState())
-        {
-            case PokerPlayerChangeAction.playerAdded:
-                listPlayers.Add(dataPlayerChange.player.userName);
-                break;
-            case PokerPlayerChangeAction.playerRemoved:
-                listPlayers.Remove(dataPlayerChange.player.userName);
-                break;
-            case PokerPlayerChangeAction.waitingPlayerAdded:
-                listWaitingPlayers.Add(dataPlayerChange.player.userName);
-                break;
-            case PokerPlayerChangeAction.waitingPlayerRemoved:
-                listWaitingPlayers.Remove(dataPlayerChange.player.userName);
-                break;
-        }
     }
 
     #region HANDLE BUTTON
@@ -177,7 +157,7 @@ public class PokerObserver
 
     public bool IsMainPlayerInGame()
     {
-        return listPlayers.Contains(mUserInfo.info.userName);
+        return pokerGame.ListPlayer.Find(p => p.userName == mUserInfo.info.userName) != null;
     }
 
     public bool IsMainTurn { get { try { return currentPlayer.userName == mainPlayer.userName; } catch { return false; } } }
