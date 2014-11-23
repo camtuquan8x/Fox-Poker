@@ -205,7 +205,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     bool EnableButton(EButtonType type, EButtonSlot slot)
     {
         if (slot == EButtonSlot.Third && type == EButtonType.InTurn)
-            return PokerObserver.Instance.currentPlayer.GetMoney() >= PokerObserver.Instance.MaxCurrentBetting;
+            return PokerObserver.Instance.mainPlayer.GetMoney() + PokerObserver.Instance.mainPlayer.currentBet >= PokerObserver.Instance.MaxCurrentBetting;
         else if (type == EButtonType.OutTurn && PokerObserver.Instance.mainPlayer.GetMoney() == 0)
             return false;
         return true;

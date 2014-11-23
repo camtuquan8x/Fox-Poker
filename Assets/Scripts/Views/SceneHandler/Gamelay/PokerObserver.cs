@@ -177,6 +177,13 @@ public class PokerObserver
     void ResetCurrentBetting ()
     {
         _maxCurrentBetting = 0;
+
+        if(mainPlayer != null)
+            mainPlayer.currentBet = 0;
+        if (lastPlayer != null)
+            lastPlayer.currentBet = 0;
+        if (currentPlayer != null)
+            currentPlayer.currentBet = 0;
     }
 
     public double CurrentBettingDiff

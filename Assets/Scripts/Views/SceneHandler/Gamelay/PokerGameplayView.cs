@@ -78,7 +78,6 @@ public class PokerGameplayView : MonoBehaviour
     {
         if(data.showPopup)
         {
-            
             DialogService.Instance.ShowDialog(new DialogMessage("Error: " + data.errorCode, data.errorMessage, null));
         }
     }

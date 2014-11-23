@@ -242,6 +242,4 @@ public class PokerGameplayPlaymat : MonoBehaviour
         obj.transform.localPosition = Vector3.zero;
         obj.transform.localScale = Vector3.one;
     }
-
-
 }

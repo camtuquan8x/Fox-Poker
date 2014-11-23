@@ -19,7 +19,7 @@ public class PokerGPSide : MonoBehaviour
 
     void Awake()
     {
-        sendSitdown = false;
+        wasBuyChip = false;
     }
 
     void OnEnable()
@@ -48,6 +48,7 @@ public class PokerGPSide : MonoBehaviour
                 case PokerPlayerChangeAction.playerRemoved:
                 case PokerPlayerChangeAction.waitingPlayerAdded:
                     showSit = true;
+                    wasBuyChip = false;
                     break;
             }
             NGUITools.SetActive(btnSit, showSit);
@@ -55,10 +56,10 @@ public class PokerGPSide : MonoBehaviour
     }
 
     static event Action<int> onPlayerPickSide;
-    static bool sendSitdown = false;
+    static bool wasBuyChip = false;
     void PlayerPickSide(int slot)
     {
-        if (sendSitdown == false)
+        if (wasBuyChip == false)
         {
             //PokerObserver.Instance.SitDown(slot, gameDetails.customConfiguration.SmallBlind * 20);
             DialogBuyChip dialog = new DialogBuyChip(PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind, (betting, autoBuy) =>
@@ -67,7 +68,7 @@ public class PokerGPSide : MonoBehaviour
                 {
                     PokerObserver.Instance.SitDown(slot, betting);
                     Puppet.API.Client.APIPokerGame.SetAutoBuy(autoBuy);
-                    sendSitdown = true;
+                    wasBuyChip = true;
                 }
             });
             DialogService.Instance.ShowDialog(dialog);
