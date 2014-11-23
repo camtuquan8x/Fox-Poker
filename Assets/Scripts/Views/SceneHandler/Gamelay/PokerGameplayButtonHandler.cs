@@ -129,7 +129,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         {
             double maxOtherMoney = GameObject.FindObjectsOfType<PokerPlayerUI>()
                 .Where<PokerPlayerUI>(p => p.data.userName != PokerObserver.Instance.mainPlayer.userName)
-                .Max<PokerPlayerUI>(p => p.data.GetMoney() + p.data.currentBet);
+                .Max<PokerPlayerUI>(p => p.data.GetMoney());
             double currentMoney = PokerObserver.Instance.mainPlayer.GetMoney();
             double maxRaise = currentMoney;
             if (PokerObserver.Instance.mainPlayer.GetMoney() + PokerObserver.Instance.mainPlayer.currentBet > maxOtherMoney)
