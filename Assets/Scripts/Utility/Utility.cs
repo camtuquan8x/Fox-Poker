@@ -9,6 +9,7 @@
 // ------------------------------------------------------------------------------
 using System;
 using UnityEngine;
+using Puppet;
 
 public class Utility
 {
@@ -44,12 +45,14 @@ public class Utility
 					moneyArray [0] = money.ToString ();
 					moneyArray [1] = "";
 				} else {
-					moneyArray [0] = Mathf.RoundToInt (money / 1000).ToString();
+					string myString8 = String.Format("{0, 0:f1}", money / 1000f);
+					moneyArray [0] = myString8;
 					moneyArray [1] = "K";
 				}
 				return moneyArray;
 			} else {
-				moneyArray [0] = Mathf.RoundToInt (money / 1000000).ToString();
+				string myString8 = String.Format("{0, 0:f1}", money / 1000000f);
+				moneyArray [0] = myString8;
 				moneyArray [1] = "M";
 				return moneyArray;
 			}

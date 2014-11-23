@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Puppet.Service;
+using Puppet.API.Client;
 using Puppet;
 
 [PrefabAttribute(Name = "Prefabs/Dialog/Gameplay/DialogGamePlayBuyChip", Depth = 7, IsAttachedToCamera = true, IsUIPanel = true)]
@@ -29,8 +30,14 @@ public class DialogBuyChipView : BaseDialog<DialogBuyChip,DialogBuyChipView>
     private void onSliderChange()
     {
         int index = (int)Mathf.Lerp(1, slider.numberOfSteps, slider.value);
-        string[] moneyAndShortcut = Utility.Convert.ConvertMoneyAndShortCut(int.Parse(minChip.text) * index);
-        money.text = "$ " + moneyAndShortcut[0] + moneyAndShortcut[1];
+		if (int.Parse (minChip.text) * index > APIUser.GetUserInformation ().assets.content [0].value) {
+			string[] moneyAndShortcut = Utility.Convert.ConvertMoneyAndShortCut (APIUser.GetUserInformation ().assets.content [0].value);
+			money.text = "$ " + moneyAndShortcut [0] + moneyAndShortcut [1];
+
+		} else {
+			string[] moneyAndShortcut = Utility.Convert.ConvertMoneyAndShortCut (int.Parse (minChip.text) * index);
+			money.text = "$ " + moneyAndShortcut [0] + moneyAndShortcut [1];
+		}
        
     }
     protected override void OnDisable()
@@ -45,7 +52,8 @@ public class DialogBuyChipView : BaseDialog<DialogBuyChip,DialogBuyChipView>
         minChip.text = (data.smallBind * 20).ToString();
         maxChip.text = (data.smallBind * 400).ToString();
         slider.numberOfSteps = (int)((data.smallBind * 400) / (data.smallBind * 20));
-        string[] moneyAndShortcut = Utility.Convert.ConvertMoneyAndShortCut(data.currentChip);
+		slider.value = 0.5f;
+		string[] moneyAndShortcut = Utility.Convert.ConvertMoneyAndShortCut(APIUser.GetUserInformation ().assets.content [0].value);
         labelTitle.text = "Số Gold hiện tại của bạn: $" + moneyAndShortcut[0] + moneyAndShortcut[1];
     }
     protected override void OnPressButton(bool? pressValue, DialogBuyChip data)
@@ -54,8 +62,14 @@ public class DialogBuyChipView : BaseDialog<DialogBuyChip,DialogBuyChipView>
         if (pressValue == true)
         {
             int index = (int)Mathf.Lerp(1, slider.numberOfSteps, slider.value);
+			int value = 0;
+			if (int.Parse (minChip.text) * index > APIUser.GetUserInformation ().assets.content [0].value) {
+				value = int.Parse(""+APIUser.GetUserInformation ().assets.content [0].value);
+			}else{
+				value = int.Parse(minChip.text) * index;
+			}
             if(data.onChooise != null)
-                data.onChooise(int.Parse(minChip.text) * index, autoBuy.value);
+                data.onChooise(value, autoBuy.value);
         }
         else if (data.onChooise != null)
             data.onChooise(0, false);
@@ -75,7 +89,6 @@ public class DialogBuyChip : AbstractDialogData
     public DialogBuyChip(double smallBind, System.Action<int, bool> onChooise)
     {
         this.smallBind = smallBind;
-        this.currentChip = smallBind;
         this.onChooise = onChooise;
     }
     public System.Action<int, bool> onChooise;
