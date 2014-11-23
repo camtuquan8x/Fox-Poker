@@ -109,13 +109,21 @@ public class PokerGameplayPlaymat : MonoBehaviour
         foreach(PokerPlayerController p in players)
         {
             int handSize = p.handSize;
-            GameObject[] cardObjects = new GameObject[handSize];
+            GameObject[] cardObjects = dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().cardOnHands.Length > 0 
+                ? dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().cardOnHands 
+                : new GameObject[handSize];
             for (int i = 0; i < handSize;i++)
-                cardObjects[i] = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Gameplay/CardUI"));
+                if(cardObjects[i] == null)
+                    cardObjects[i] = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Gameplay/CardUI"));
 
             if (PokerObserver.Instance.mUserInfo.info.userName == p.userName)
-                for(int i=0;i<handSize;i++)
-                    cardObjects[i].GetComponent<PokerCardObject>().SetDataCard(new PokerCard(hands[i]), i);
+            {
+                if (hands.Length == handSize)
+                    for (int i = 0; i < handSize; i++)
+                        cardObjects[i].GetComponent<PokerCardObject>().SetDataCard(new PokerCard(hands[i]), i);
+                else
+                    Logger.LogError("Hand Size & Card On Hand: is not fit");
+            }
             else
                 for (int i = 0; i < handSize; i++)
                     cardObjects[i].GetComponent<PokerCardObject>().SetDataCard(new PokerCard(), i);
@@ -133,6 +141,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     IEnumerator _onFinishGame(ResponseFinishGame responseData)
     {
+        CreateCardDeal(responseData.dealComminityCards);
+
         float time = responseData.time/1000f;
         float waitTimeViewCard = time > 1 ? 1f : 0f;
         float timeEffectPot = responseData.pots.Length > 0 ? time - (waitTimeViewCard / responseData.pots.Length) : time - waitTimeViewCard;
@@ -167,14 +177,18 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     void Instance_onFirstJoinGame(ResponseUpdateGame data)
     {
+        int []hands = null;
         foreach (PokerPlayerController player in data.players)
         {
+            if (PokerObserver.Instance.IsMainPlayer(player.userName))
+                hands = player.hand;
+
             if (player.isMaster)
                 SetDealerObjectToPlayer(player);
             SetPositionAvatarPlayer(player);
         }
 
-        CreateHand(data.players, null);
+        CreateHand(data.players, hands);
         CreateCardDeal(data.dealComminityCards);
     }
 

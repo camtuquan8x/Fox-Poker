@@ -16,7 +16,8 @@ public class PokerPlayerUI : MonoBehaviour
     public UISprite spriteResultIcon;
     #endregion
 
-    GameObject[] cardOnHands;
+    [HideInInspector]
+    public GameObject[] cardOnHands;
     public PokerPlayerController data;
     PokerGameplayPlaymat playmat;
     [HideInInspector]
