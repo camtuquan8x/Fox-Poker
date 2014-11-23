@@ -37,7 +37,9 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
         get
         {
             int index = (int)Mathf.Lerp(1, sliderBar.numberOfSteps, sliderBar.value);
-            return (smallBlind * index) + data.MinBetting;
+			double money= (smallBlind * index) ;
+			double moneyMax = money + smallBlind ;
+			return  moneyMax >= data.MaxBetting ? data.MaxBetting : money;
         }
     }
 
@@ -60,7 +62,8 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
     protected override void OnPressButton(bool? pressValue, DialogBetting data)
 	{
         if (pressValue == true && data.onBetting != null)
-            data.onBetting(GetCurrentMoney);
+            	data.onBetting(GetCurrentMoney);
+
 	}
 }
 
