@@ -84,10 +84,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         for(int i=0;i<cards.Length;i++)
         {
             if (cardsDeal.Find(o => o.GetComponent<PokerCardObject>().card.cardId == cards[i]) != null)
-            {
-                Logger.LogWarning("Card '{0}' already exists", cards[i]);
                 continue;
-            }
 
             GameObject card = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Gameplay/CardUI"));
             card.GetComponent<PokerCardObject>().SetDataCard(new PokerCard(cards[i]));
