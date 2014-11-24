@@ -8,6 +8,7 @@ using Puppet.Poker.Models;
 using Puppet.Poker.Datagram;
 using Puppet;
 using Puppet.Service;
+using Puppet.Utils;
 
 public class PokerGameplayPlaymat : MonoBehaviour
 {
@@ -70,6 +71,15 @@ public class PokerGameplayPlaymat : MonoBehaviour
         cardsDeal.Clear();
 
         potContainer.DestroyAllPot();
+    }
+    void DestroyCardObject(GameObject [] cards)
+    {
+        for (int i = cards.Length - 1; i >= 0;i-- )
+        {
+            GameObject card = cards[i];
+            cardsDeal.Remove(card);
+            GameObject.Destroy(card);
+        }
     }
 
     private void Instance_dataTurnGame(ResponseUpdateTurnChange data)
@@ -144,11 +154,12 @@ public class PokerGameplayPlaymat : MonoBehaviour
         float time = responseData.time/1000f;
         float waitTimeViewCard = time > 1 ? 1f : 0f;
         float timeEffectPot = responseData.pots.Length > 0 ? time - (waitTimeViewCard / responseData.pots.Length) : time - waitTimeViewCard;
+
 		PokerPlayerUI[] playerUI =  GameObject.FindObjectsOfType<PokerPlayerUI> ();
 		for (int i = 0; i < playerUI.Length ;i++) {
 			for(int j= 0 ;j<responseData.players.Length;j++){
 				if(playerUI[i].data.userName == responseData.players[j].userName){
-					playerUI[i].labelCurrentGold.text = responseData.players[j].ranking;
+					playerUI[i].SetTitle(JsonUtil.DecodeFromUtf8(responseData.players[j].ranking));
 				}
 			}
 		}
@@ -158,9 +169,9 @@ public class PokerGameplayPlaymat : MonoBehaviour
             ResponseMoneyExchange playerWin = Array.Find<ResponseMoneyExchange>(summary.players, p => p.winner);
             if(potContainer != null && playerWin != null)
             {
-
 				string rankWin = Array.Find<ResponseFinishCardPlayer>(responseData.players,rdp => rdp.userName == playerWin.userName).ranking;
-				DialogService.Instance.ShowDialog(new RankEndGameModel(rankWin));
+                RankEndGameModel playerWinRank = new RankEndGameModel(JsonUtil.DecodeFromUtf8(rankWin));
+                DialogService.Instance.ShowDialog(playerWinRank);
 
                 dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(true);
 
@@ -177,9 +188,13 @@ public class PokerGameplayPlaymat : MonoBehaviour
                 //GameObject.Destroy(obj);
                 listCardObject.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(false));
                 dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(false);
+
+                playerWinRank.DestroyUI();
             }
         }
         yield return new WaitForSeconds(waitTimeViewCard / 2);
+
+        Array.ForEach<PokerPlayerUI>(playerUI, p => { if (p != null) p.SetTitle(null); });
 
         potContainer.DestroyAllPot();
     }
@@ -220,6 +235,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         }
         else if (state == PokerPlayerChangeAction.playerRemoved && dictPlayerObject.ContainsKey(dataPlayer.player.userName))
         {
+            DestroyCardObject(dictPlayerObject[dataPlayer.player.userName].GetComponent<PokerPlayerUI>().cardOnHands);
             GameObject.Destroy(dictPlayerObject[dataPlayer.player.userName]);
             dictPlayerObject.Remove(dataPlayer.player.userName);
         }

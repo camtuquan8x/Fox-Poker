@@ -61,7 +61,7 @@ namespace Puppet.Service
 
         protected virtual void OnPressButton(bool? pressValue, T data) { }
 
-        void OnClickButton(GameObject obj)
+        protected void OnClickButton(GameObject obj)
         {
             bool? pressValue = null;
             if (obj == buttonTrue)

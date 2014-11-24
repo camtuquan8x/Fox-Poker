@@ -65,6 +65,11 @@ public class PokerPlayerUI : MonoBehaviour
         }
     }
 
+    public void SetTitle(string title)
+    {
+        labelUsername.text = string.IsNullOrEmpty(title) ? data.userName : title;
+    }
+
     void Instance_onUpdatePot(ResponseUpdatePot data)
     {
         UpdateUI(this.data);
