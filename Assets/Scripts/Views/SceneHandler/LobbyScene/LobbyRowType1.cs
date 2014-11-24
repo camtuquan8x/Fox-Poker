@@ -30,13 +30,18 @@ public class LobbyRowType1 : MonoBehaviour
     public void setData(DataLobby lobby)
     {
         this.data = lobby;
-        title.text = lobby.displayName;
+		double smallBind = lobby.gameDetails.betting / 2;
+		title.text = "Phòng : " + lobby.roomId + " - $" + smallBind+"/"+lobby.gameDetails.betting;
+		if(data.users != null && data.users.Length > 0)
+			foreach (DataPlayerController item in data.users) {
+			slots[item.slotIndex].GetComponent<LobbySlot>().setData(item);
+
+			}
     }
     void Start()
     {
         gameObject.GetComponent<UIEventListener>().onClick += onTableClick;
     }
-
 
     void OnDestroy()
     {

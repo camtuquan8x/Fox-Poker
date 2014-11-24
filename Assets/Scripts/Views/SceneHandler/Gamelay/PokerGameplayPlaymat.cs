@@ -7,6 +7,7 @@ using System.Linq;
 using Puppet.Poker.Models;
 using Puppet.Poker.Datagram;
 using Puppet;
+using Puppet.Service;
 
 public class PokerGameplayPlaymat : MonoBehaviour
 {
@@ -143,13 +144,24 @@ public class PokerGameplayPlaymat : MonoBehaviour
         float time = responseData.time/1000f;
         float waitTimeViewCard = time > 1 ? 1f : 0f;
         float timeEffectPot = responseData.pots.Length > 0 ? time - (waitTimeViewCard / responseData.pots.Length) : time - waitTimeViewCard;
+		PokerPlayerUI[] playerUI =  GameObject.FindObjectsOfType<PokerPlayerUI> ();
+		for (int i = 0; i < playerUI.Length ;i++) {
+			for(int j= 0 ;j<responseData.players.Length;j++){
+				if(playerUI[i].data.userName == responseData.players[j].userName){
+					playerUI[i].labelCurrentGold.text = responseData.players[j].ranking;
+				}
+			}
+		}
         yield return new WaitForSeconds(waitTimeViewCard /2f);
-
         foreach(ResponseResultSummary summary in responseData.pots)
         {
             ResponseMoneyExchange playerWin = Array.Find<ResponseMoneyExchange>(summary.players, p => p.winner);
             if(potContainer != null && playerWin != null)
             {
+
+				string rankWin = Array.Find<ResponseFinishCardPlayer>(responseData.players,rdp => rdp.userName == playerWin.userName).ranking;
+				DialogService.Instance.ShowDialog(new RankEndGameModel(rankWin));
+
                 dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(true);
 
                 List<int> list = new List<int>(playerWin.cards);

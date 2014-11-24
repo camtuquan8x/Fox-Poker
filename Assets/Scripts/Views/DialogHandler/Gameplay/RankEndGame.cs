@@ -6,10 +6,11 @@ using Puppet;
 
 public class RankEndGame : BaseDialog<RankEndGameModel, RankEndGame>
 {
+	public UILabel lbTitle;
     public override void ShowDialog(RankEndGameModel data)
     {
         base.ShowDialog(data);
-        labelTitle.text = data.title;
+		lbTitle.text = data.title;
     }
 }
 public class RankEndGameModel : AbstractDialogData
@@ -29,6 +30,7 @@ public class RankEndGameModel : AbstractDialogData
 
     public override void ShowDialog()
     {
-        throw new System.NotImplementedException();
+		
+		RankEndGame.Instance.ShowDialog(this);
     }
 }
