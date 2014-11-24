@@ -184,6 +184,7 @@ public class PokerObserver
             lastPlayer.currentBet = 0;
         if (currentPlayer != null)
             currentPlayer.currentBet = 0;
+        Array.ForEach<PokerPlayerUI>(GameObject.FindObjectsOfType<PokerPlayerUI>(), p => p.data.currentBet = 0);
     }
 
     public double CurrentBettingDiff

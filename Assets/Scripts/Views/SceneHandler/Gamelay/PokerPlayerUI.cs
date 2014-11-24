@@ -33,6 +33,7 @@ public class PokerPlayerUI : MonoBehaviour
     void OnEnable()
     {
         PokerObserver.Instance.onTurnChange += Instance_dataTurnGame;
+        PokerObserver.Instance.onUpdatePot += Instance_onUpdatePot;
         PokerObserver.Instance.onUpdateUserInfo += Instance_onUpdateUserInfo;
         PokerObserver.Instance.onFinishGame += Instance_onFinishGame;
     }
@@ -40,6 +41,7 @@ public class PokerPlayerUI : MonoBehaviour
     void OnDisable()
     {
         PokerObserver.Instance.onTurnChange -= Instance_dataTurnGame;
+        PokerObserver.Instance.onUpdatePot -= Instance_onUpdatePot;
         PokerObserver.Instance.onUpdateUserInfo -= Instance_onUpdateUserInfo;
         PokerObserver.Instance.onFinishGame -= Instance_onFinishGame;
     }
@@ -61,6 +63,11 @@ public class PokerPlayerUI : MonoBehaviour
 
             LoadCurrentBet(player.currentBet);
         }
+    }
+
+    void Instance_onUpdatePot(ResponseUpdatePot data)
+    {
+        UpdateUI(this.data);
     }
 
     void Instance_onUpdateUserInfo(ResponseUpdateUserInfo data)

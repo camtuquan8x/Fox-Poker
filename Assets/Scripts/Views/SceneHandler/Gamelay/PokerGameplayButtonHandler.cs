@@ -64,6 +64,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     void OnEnable()
     {
         PokerObserver.Instance.onTurnChange += Instance_dataTurnGame;
+        PokerObserver.Instance.onUpdatePot += Instance_onUpdatePot;
         PokerObserver.Instance.onNewRound += Instance_onNewRound;
         PokerObserver.Instance.onFinishGame += Instance_onFinishGame;
         PokerObserver.Instance.onPlayerListChanged += Instance_onPlayerListChanged;
@@ -82,6 +83,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     void OnDisable()
     {
         PokerObserver.Instance.onTurnChange -= Instance_dataTurnGame;
+        PokerObserver.Instance.onUpdatePot -= Instance_onUpdatePot;
         PokerObserver.Instance.onNewRound -= Instance_onNewRound;
         PokerObserver.Instance.onFinishGame -= Instance_onFinishGame;
         PokerObserver.Instance.onPlayerListChanged -= Instance_onPlayerListChanged;
@@ -136,7 +138,6 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 				maxRaise = maxOtherMoney;
 			bettingDialog = new DialogBetting(PokerObserver.Instance.MaxCurrentBetting, maxRaise,(money) =>
             {
-				Logger.Log("=======> " + money);
                 Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.RAISE, money);
             }, Array.Find<ButtonItem>(itemButtons, button => button.slot == EButtonSlot.Third).button.transform);
 
@@ -226,6 +227,11 @@ public class PokerGameplayButtonHandler : MonoBehaviour
                     break;
             }
         }
+    }
+
+    void Instance_onUpdatePot(ResponseUpdatePot data)
+    {
+        SetEnableButtonType(currentType);
     }
 
     void Instance_dataTurnGame(ResponseUpdateTurnChange data)

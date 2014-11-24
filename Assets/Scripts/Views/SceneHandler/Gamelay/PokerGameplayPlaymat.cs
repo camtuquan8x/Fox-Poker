@@ -192,8 +192,6 @@ public class PokerGameplayPlaymat : MonoBehaviour
             if (PokerObserver.Instance.IsMainPlayer(player.userName))
                 hands = player.hand;
 
-            if (player.isMaster)
-                SetDealerObjectToPlayer(player);
             SetPositionAvatarPlayer(player);
         }
 
@@ -226,20 +224,16 @@ public class PokerGameplayPlaymat : MonoBehaviour
             dictPlayerObject.Remove(dataPlayer.player.userName);
         }
 
-        System.Array.ForEach<PokerPlayerUI>(GameObject.FindObjectsOfType<PokerPlayerUI>(), pUI =>
-        {
-            if (pUI.data.userName != dataPlayer.player.userName)
-                SetPositionAvatarPlayer(pUI.data);
-        });
+        UpdatePositionPlayers(dataPlayer.player.userName);
     }
 
-    public void SetDealerObjectToPlayer(PokerPlayerController player)
+    void UpdatePositionPlayers(string ignorePlayer)
     {
-        objectDealer.SetActive(true);
-        PokerGPSide playerSide = Array.Find<PokerGPSide>(arrayPokerSide, s => s.CurrentSide == player.GetSide());
-        objectDealer.transform.parent = playerSide.positionDealer.transform;
-        objectDealer.transform.localPosition = Vector3.zero;
-        objectDealer.transform.localScale = Vector3.one;
+        System.Array.ForEach<PokerPlayerUI>(GameObject.FindObjectsOfType<PokerPlayerUI>(), pUI =>
+        {
+            if (!string.IsNullOrEmpty(ignorePlayer) && pUI.data.userName != ignorePlayer)
+                SetPositionAvatarPlayer(pUI.data);
+        });
     }
 
     public PokerGPSide GetPokerSide(PokerSide side)
@@ -264,5 +258,17 @@ public class PokerGameplayPlaymat : MonoBehaviour
         obj.transform.parent = playerSide.transform;
         obj.transform.localPosition = Vector3.zero;
         obj.transform.localScale = Vector3.one;
+
+        if (player.isMaster)
+            SetDealerObjectToPlayer(player);
+    }
+
+    public void SetDealerObjectToPlayer(PokerPlayerController player)
+    {
+        objectDealer.SetActive(true);
+        PokerGPSide playerSide = Array.Find<PokerGPSide>(arrayPokerSide, s => s.CurrentSide == player.GetSide());
+        objectDealer.transform.parent = playerSide.positionDealer.transform;
+        objectDealer.transform.localPosition = Vector3.zero;
+        objectDealer.transform.localScale = Vector3.one;
     }
 }
