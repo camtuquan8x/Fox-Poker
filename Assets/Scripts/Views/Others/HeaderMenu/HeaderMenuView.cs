@@ -120,7 +120,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		UIEventListener.Get (btnSearch).onClick += OnSearchClickCallBack;
 		UIEventListener.Get (btnLeague).onClick += OnLeagueClickCallBack;
 		UIEventListener.Get (avatar.gameObject).onClick += OnClickProfileCallBack;
-
+        UIEventListener.Get (btnUp).onClick += OnClickStandUp;
 	}
 	void OnDisable(){
 		UIEventListener.Get (btnBack).onClick -= OnBackClickCallBack;
@@ -132,6 +132,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		UIEventListener.Get (btnSearch).onClick -= OnSearchClickCallBack;
 		UIEventListener.Get (btnLeague).onClick -= OnLeagueClickCallBack;
 		UIEventListener.Get (avatar.gameObject).onClick += OnClickProfileCallBack;
+        UIEventListener.Get (btnUp).onClick -= OnClickStandUp;
         presenter.ViewEnd();
 
 	}
@@ -223,6 +224,11 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 	{
 		presenter.ShowDialogProfile ();
 	}
+
+    private void OnClickStandUp(GameObject go)
+    {
+        Puppet.API.Client.APIPokerGame.StandUp();
+    }
 
     public Action<string, bool[]> onSearchSubmitCallBack { get; set; }
 
