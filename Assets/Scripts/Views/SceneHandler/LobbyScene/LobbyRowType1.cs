@@ -12,9 +12,9 @@ public class LobbyRowType1 : MonoBehaviour
     #endregion
     public DataLobby data;
     
-	private Action action ;
+	private Action<DataLobby> action ;
 
-    public static LobbyRowType1 Create(DataLobby data, UITable parent,Action callBack)
+    public static LobbyRowType1 Create(DataLobby data, UITable parent,Action<DataLobby> callBack)
     {
         GameObject go = GameObject.Instantiate(Resources.Load("Prefabs/Lobby/LobbyRowType1")) as GameObject;
         go.transform.parent = parent.transform;
@@ -45,7 +45,7 @@ public class LobbyRowType1 : MonoBehaviour
     private void onTableClick(GameObject go)
     {
 		if (action != null)
-			action ();
+			action (data);
     }
 
     void Update()

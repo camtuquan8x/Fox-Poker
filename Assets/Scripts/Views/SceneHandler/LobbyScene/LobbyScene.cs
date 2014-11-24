@@ -108,9 +108,7 @@ public class LobbyScene : MonoBehaviour,ILobbyView
         yield return new WaitForEndOfFrame();
         foreach (DataLobby item in lobbies)
         {
-			types1.Add(LobbyRowType1.Create(item, tableType1,delegate(){
-				JoinGame(item);
-			}));
+			types1.Add(LobbyRowType1.Create(item, tableType1,JoinGame));
         }
         tableType1.repositionNow = true;
 		yield return new WaitForSeconds (0.05f);
@@ -120,6 +118,7 @@ public class LobbyScene : MonoBehaviour,ILobbyView
 		OnDragFinish();
 
     }
+
     IEnumerator initShowRowType2(List<DataLobby> lobbies)
     {
 		ClearAllRow ();
@@ -170,16 +169,18 @@ public class LobbyScene : MonoBehaviour,ILobbyView
     {
 		while (lobbies.Count > 0) {
 			DataLobby lobby = lobbies[0];
-			lobbies.RemoveAt(0);
 			if(isShowType1){
 				LobbyRowType1 lobbyRow =  types1.Find(lobbiesView=> lobbiesView.data.roomId == lobby.roomId);
-				GameObject.Destroy(lobbyRow.gameObject);
-                types1.Remove(lobbyRow);
+				if(lobbyRow !=null && lobbyRow.gameObject !=null){
+					GameObject.Destroy(lobbyRow.gameObject);
+	                types1.Remove(lobbyRow);
+				}
 			}else{
 				LobbyRowType2 lobbyRow =  types2.Find(lobbiesView=> lobbiesView.data.roomId == lobby.roomId);
 				GameObject.Destroy(lobbyRow.gameObject);
                 types2.Remove(lobbyRow);
 			}
+			lobbies.RemoveAt(0);
 		}
     }
 
