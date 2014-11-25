@@ -38,8 +38,9 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
         {
             int index = (int)Mathf.Lerp(1, sliderBar.numberOfSteps, sliderBar.value);
 			double money= (smallBlind * index) ;
-			double moneyMax = money + smallBlind ;
-			return  moneyMax >= data.MaxBetting ? data.MaxBetting : money;
+//			double moneyMax = money + smallBlind ;
+//			return  moneyMax >= data.MaxBetting ? data.MaxBetting : money;
+			return money;
         }
     }
 
