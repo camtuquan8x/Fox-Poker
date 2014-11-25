@@ -159,7 +159,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
 		for (int i = 0; i < playerUI.Length ;i++) {
 			for(int j= 0 ;j<responseData.players.Length;j++){
 				if(playerUI[i].data.userName == responseData.players[j].userName){
-					playerUI[i].SetTitle(JsonUtil.DecodeFromUtf8(responseData.players[j].ranking));
+                    playerUI[i].SetTitle(UTF8Encoder.DecodeEncodedNonAsciiCharacters(responseData.players[j].ranking));
 				}
 			}
 		}
@@ -170,7 +170,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
             if(potContainer != null && playerWin != null)
             {
 				string rankWin = Array.Find<ResponseFinishCardPlayer>(responseData.players,rdp => rdp.userName == playerWin.userName).ranking;
-                RankEndGameModel playerWinRank = new RankEndGameModel(JsonUtil.DecodeFromUtf8(rankWin));
+                RankEndGameModel playerWinRank = new RankEndGameModel(UTF8Encoder.DecodeEncodedNonAsciiCharacters(rankWin));
                 DialogService.Instance.ShowDialog(playerWinRank);
 
                 dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(true);
