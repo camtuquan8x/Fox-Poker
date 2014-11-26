@@ -132,16 +132,13 @@ public class PokerGameplayButtonHandler : MonoBehaviour
             double maxOtherMoney = GameObject.FindObjectsOfType<PokerPlayerUI>()
                 .Where<PokerPlayerUI>(p => p.data.userName != PokerObserver.Instance.mainPlayer.userName)
                 .Max<PokerPlayerUI>(p => p.data.GetMoney() + p.data.currentBet);
-//			double maxCanBind = GameObject.FindObjectsOfType<PokerPlayerUI>().Max<PokerPlayerUI>(p => p.data.currentBet + p.data.GetMoney());
 			double maxBinded =  GameObject.FindObjectsOfType<PokerPlayerUI>().Max<PokerPlayerUI>(p => p.data.currentBet);
 			double myMoney = PokerObserver.Instance.mainPlayer.GetMoney() +  PokerObserver.Instance.mainPlayer.currentBet;
 			double maxRaise = myMoney;
 			if(myMoney > maxOtherMoney)
 				maxRaise = maxOtherMoney;
-				//double maxRaise = maxCanBind - maxBinded;
-//            if (PokerObserver.Instance.mainPlayer.GetMoney() > maxOtherMoney)
-//				maxRaise = maxOtherMoney;
-			maxRaise =  maxRaise - maxBinded;
+			if(PokerObserver.Instance.mainPlayer.currentBet !=0)
+				maxRaise =  maxRaise - maxBinded;
 
 			bettingDialog = new DialogBetting(PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind, maxRaise,(money) =>
             {
