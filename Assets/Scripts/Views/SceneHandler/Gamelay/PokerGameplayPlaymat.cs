@@ -158,7 +158,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
 		PokerPlayerUI[] playerUI =  GameObject.FindObjectsOfType<PokerPlayerUI> ();
 		for (int i = 0; i < playerUI.Length ;i++) {
 			for(int j= 0 ;j<responseData.players.Length;j++){
-				if(playerUI[i].data.userName == responseData.players[j].userName){
+				if(playerUI[i].UserName == responseData.players[j].userName){
                     playerUI[i].SetTitle(UTF8Encoder.DecodeEncodedNonAsciiCharacters(responseData.players[j].ranking));
 				}
 			}
@@ -207,7 +207,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
             if (PokerObserver.Instance.IsMainPlayer(player.userName))
                 hands = player.hand;
 
-            SetPositionAvatarPlayer(player);
+            SetPositionAvatarPlayer(player.userName);
         }
 
         CreateHand(data.players, hands);
@@ -231,10 +231,14 @@ public class PokerGameplayPlaymat : MonoBehaviour
         PokerPlayerChangeAction state = dataPlayer.GetActionState();
         if(state == PokerPlayerChangeAction.playerAdded)
         {
-            SetPositionAvatarPlayer(dataPlayer.player);
+            SetPositionAvatarPlayer(dataPlayer.player.userName);
         }
-        else if (state == PokerPlayerChangeAction.playerRemoved && dictPlayerObject.ContainsKey(dataPlayer.player.userName))
+        else if ((state == PokerPlayerChangeAction.playerRemoved || state == PokerPlayerChangeAction.playerQuitGame)
+            && dictPlayerObject.ContainsKey(dataPlayer.player.userName))
         {
+            if(dataPlayer.player.isMaster)
+                objectDealer.SetActive(false);
+
             DestroyCardObject(dictPlayerObject[dataPlayer.player.userName].GetComponent<PokerPlayerUI>().cardOnHands);
             GameObject.Destroy(dictPlayerObject[dataPlayer.player.userName]);
             dictPlayerObject.Remove(dataPlayer.player.userName);
@@ -245,23 +249,20 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     void UpdatePositionPlayers(string ignorePlayer)
     {
-        System.Array.ForEach<PokerPlayerUI>(GameObject.FindObjectsOfType<PokerPlayerUI>(), pUI =>
+        PokerObserver.Game.ListPlayer.ForEach(p =>
         {
-            if (!string.IsNullOrEmpty(ignorePlayer) && pUI.data.userName != ignorePlayer)
-                SetPositionAvatarPlayer(pUI.data);
+            if (!string.IsNullOrEmpty(ignorePlayer) && p.userName != ignorePlayer)
+                SetPositionAvatarPlayer(p.userName);
         });
     }
 
-    public PokerGPSide GetPokerSide(PokerSide side)
+    void SetPositionAvatarPlayer(string userName)
     {
-        return Array.Find<PokerGPSide>(arrayPokerSide, s => s.CurrentSide == side);
-    }
+        PokerPlayerController player = PokerObserver.Game.GetPlayer(userName);
 
-    void SetPositionAvatarPlayer(PokerPlayerController player)
-    {
         GameObject obj;
-        if (dictPlayerObject.ContainsKey(player.userName))
-            obj = dictPlayerObject[player.userName];
+        if (dictPlayerObject.ContainsKey(userName))
+            obj = dictPlayerObject[userName];
         else
         {
             obj = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Gameplay/PlayerUI"));
@@ -287,4 +288,10 @@ public class PokerGameplayPlaymat : MonoBehaviour
         objectDealer.transform.localPosition = Vector3.zero;
         objectDealer.transform.localScale = Vector3.one;
     }
+
+    public PokerGPSide GetPokerSide(PokerSide side)
+    {
+        return Array.Find<PokerGPSide>(arrayPokerSide, s => s.CurrentSide == side);
+    }
+
 }

@@ -18,11 +18,16 @@ public class PokerPlayerUI : MonoBehaviour
 
     [HideInInspector]
     public GameObject[] cardOnHands;
-    public PokerPlayerController data;
+    PokerPlayerController data;
     PokerGameplayPlaymat playmat;
     [HideInInspector]
     public PokerGPSide side;
     PokerPotItem currentBet;
+
+    public string UserName
+    {
+        get { return data.userName; }
+    }
 
     void Awake()
     {
@@ -50,7 +55,6 @@ public class PokerPlayerUI : MonoBehaviour
     {
         if (player != null && player.userName == data.userName)
         {
-            data = player;
             double money = player.GetMoney();
             labelCurrentGold.text = money > 0 ? money.ToString("#,###") : "All In";
             
@@ -72,12 +76,10 @@ public class PokerPlayerUI : MonoBehaviour
 
     void Instance_onUpdatePot(ResponseUpdatePot data)
     {
-        UpdateUI(this.data);
     }
 
     void Instance_onUpdateUserInfo(ResponseUpdateUserInfo data)
     {
-        UpdateUI(data.userInfo);
     }
 
     void Instance_onFinishGame(ResponseFinishGame data)
@@ -103,9 +105,6 @@ public class PokerPlayerUI : MonoBehaviour
 
     private void Instance_dataTurnGame(ResponseUpdateTurnChange responseData)
     {
-        UpdateUI(responseData.toPlayer);
-        UpdateUI(responseData.fromPlayer);
-
         NGUITools.SetActive(timerSlider.gameObject, responseData.toPlayer != null && responseData.toPlayer.userName == this.data.userName);
         if (responseData.toPlayer != null && responseData.toPlayer.userName == this.data.userName)
             StartTimer(responseData.time > 1000 ? responseData.time / 1000f : responseData.time);
@@ -138,9 +137,18 @@ public class PokerPlayerUI : MonoBehaviour
         NGUITools.SetActive(spriteResultIcon.gameObject, isWinner);
     }
 
+    void OnDestroy()
+    {
+        data.onDataChanged -= playerModel_onDataChanged;
+    }
+
     public void SetData(PokerPlayerController player)
     {
+        bool addEvent = data == null;
         this.data = player;
+        if(addEvent)
+            data.onDataChanged += playerModel_onDataChanged;
+
         UpdateUI(player);
 
         Vector3 giftPosition = btnGift.transform.localPosition;
@@ -150,6 +158,11 @@ public class PokerPlayerUI : MonoBehaviour
             giftPosition.x = x;
         }
         btnGift.transform.localPosition = giftPosition;
+    }
+
+    void playerModel_onDataChanged()
+    {
+        UpdateUI(data);
     }
 
     public void UpdateSetCardObject(GameObject [] cardOnHands)

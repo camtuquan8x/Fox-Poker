@@ -103,7 +103,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     {
         if(currentType == EButtonType.InTurn)
         {
-            if(PokerObserver.Instance.MaxCurrentBetting == 0)
+            if(PokerObserver.Game.MaxCurrentBetting == 0)
                 Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.CHECK, 0);
             else
             {
@@ -129,17 +129,17 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     {
         if (currentType == EButtonType.InTurn)
         {
-            double maxOtherMoney = GameObject.FindObjectsOfType<PokerPlayerUI>()
-                .Where<PokerPlayerUI>(p => p.data.userName != PokerObserver.Instance.mainPlayer.userName)
-                .Max<PokerPlayerUI>(p => p.data.GetMoney());
-			double maxBind = GameObject.FindObjectsOfType<PokerPlayerUI>()
-				.Where<PokerPlayerUI>(p => p.data.userName != PokerObserver.Instance.mainPlayer.userName)
-					.Max<PokerPlayerUI>(p => p.data.currentBet);
-            double currentMoney = PokerObserver.Instance.mainPlayer.GetMoney();
+            double maxOtherMoney = PokerObserver.Game.ListPlayer
+                .Where<PokerPlayerController>(p => p.userName != PokerObserver.Game.MainPlayer.userName)
+                .Max<PokerPlayerController>(p => p.GetMoney());
+            double maxBind = PokerObserver.Game.ListPlayer
+                .Where<PokerPlayerController>(p => p.userName != PokerObserver.Game.MainPlayer.userName)
+                .Max<PokerPlayerController>(p => p.currentBet);
+            double currentMoney = PokerObserver.Game.MainPlayer.GetMoney();
             double maxRaise = currentMoney;
-            if (PokerObserver.Instance.mainPlayer.GetMoney() > maxOtherMoney)
+            if (PokerObserver.Game.MainPlayer.GetMoney() > maxOtherMoney)
 				maxRaise = maxOtherMoney;
-			if(PokerObserver.Instance.mainPlayer.currentBet != 0 || PokerObserver.Instance.mainPlayer.currentBet > PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind)
+            if (PokerObserver.Game.MainPlayer.currentBet != 0 || PokerObserver.Game.MainPlayer.currentBet > PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind)
 				maxRaise = maxRaise - maxBind;
 			bettingDialog = new DialogBetting(PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind, maxRaise,(money) =>
             {
@@ -202,7 +202,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     {
         if (slot == EButtonSlot.First && type == EButtonType.InTurn)
         {
-            if(PokerObserver.Instance.MaxCurrentBetting == 0 || PokerObserver.Instance.CurrentBettingDiff == 0)
+            if(PokerObserver.Game.MaxCurrentBetting == 0 || PokerObserver.Instance.CurrentBettingDiff == 0)
                 return "Xem Bài";
         }
         return null;
@@ -211,8 +211,8 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     bool EnableButton(EButtonType type, EButtonSlot slot)
     {
         if (slot == EButtonSlot.Third && type == EButtonType.InTurn)
-            return PokerObserver.Instance.mainPlayer.GetMoney() + PokerObserver.Instance.mainPlayer.currentBet >= PokerObserver.Instance.MaxCurrentBetting;
-        else if (type == EButtonType.OutTurn && PokerObserver.Instance.mainPlayer.GetMoney() == 0)
+            return PokerObserver.Game.MainPlayer.GetMoney() + PokerObserver.Game.MainPlayer.currentBet >= PokerObserver.Game.MaxCurrentBetting;
+        else if (type == EButtonType.OutTurn && PokerObserver.Game.MainPlayer.GetMoney() == 0)
             return false;
         return true;
     }

@@ -43,10 +43,8 @@ public class TestModeGUI : MonoBehaviour
     {
         for (int i = 0; i < 52; i++)
             lstCard.Add(new PokerCard(i));
-        foreach (PokerPlayerUI item in GameObject.FindObjectsOfType<PokerPlayerUI>())
-        {
-            playerPick[item.data.slotIndex] = "";
-        }
+
+        PokerObserver.Game.ListPlayer.ForEach(p => playerPick[p.slotIndex] = string.Empty);
     }
     const float SPACE_TOP = 50f;
     const float SPACE_LEFT = 50f;
@@ -77,7 +75,7 @@ public class TestModeGUI : MonoBehaviour
                     }
                     GUILayout.BeginVertical();
 
-                    foreach (PokerPlayerUI p in GameObject.FindObjectsOfType<PokerPlayerUI>())
+                    foreach (PokerPlayerController p in PokerObserver.Game.ListPlayer)
                     {
                         GUILayout.BeginVertical();
                         {
@@ -85,11 +83,11 @@ public class TestModeGUI : MonoBehaviour
                             {
                                 float contentWidth = BOX_WIDTH - 100f;
                                 GUILayout.Space(30f);
-                                GUILayout.Label(p.data.userName, GUILayout.Width(100f));
-                                GUILayout.TextField(playerPick[p.data.slotIndex] == null ? "" : playerPick[p.data.slotIndex], GUILayout.Width(contentWidth - 150f));
+                                GUILayout.Label(p.userName, GUILayout.Width(100f));
+                                GUILayout.TextField(playerPick[p.slotIndex] == null ? "" : playerPick[p.slotIndex], GUILayout.Width(contentWidth - 150f));
 
                                 if (GUILayout.Button("CLEAR", GUILayout.Width(70f)))
-                                    playerPick[p.data.slotIndex] = "";
+                                    playerPick[p.slotIndex] = "";
                             }
                             GUILayout.EndHorizontal();
                         }
@@ -119,18 +117,18 @@ public class TestModeGUI : MonoBehaviour
                         if (GUILayout.Button("CLEAR"))
                             strPick = "";
 
-                        foreach (PokerPlayerUI p in GameObject.FindObjectsOfType<PokerPlayerUI>())
+                        foreach (PokerPlayerController p in PokerObserver.Game.ListPlayer)
                         {
-                            if (GUILayout.Button("SET TO " + p.data.userName))
+                            if (GUILayout.Button("SET TO " + p.userName))
                             {
                                 if (strPick.Trim().Split(" ".ToCharArray(), StringSplitOptions.None).Length <= 2)
                                 {
-                                    playerPick[p.data.slotIndex] = strPick;
-                                    strPick = "";
+                                    playerPick[p.slotIndex] = strPick;
+                                    strPick = string.Empty;
                                 }
                                 else
                                 {
-                                    strPick = "";
+                                    strPick = string.Empty;
                                 }
                             }
                         }
@@ -157,17 +155,17 @@ public class TestModeGUI : MonoBehaviour
                         {
 
                             Dictionary<string, int[]> handsPlayer = new Dictionary<string, int[]>();
-                            List<PokerPlayerUI> playersUI = new List<PokerPlayerUI>( GameObject.FindObjectsOfType<PokerPlayerUI>());
-                            playersUI.ForEach(p =>
+                            List<PokerPlayerController> players = PokerObserver.Game.ListPlayer;
+                            players.ForEach(p =>
                             {
-                                string[] arrStrs = string.IsNullOrEmpty(playerPick[p.data.slotIndex]) ? new string[0] : playerPick[p.data.slotIndex].Trim().Split(" ".ToCharArray());
+                                string[] arrStrs = string.IsNullOrEmpty(playerPick[p.slotIndex]) ? new string[0] : playerPick[p.slotIndex].Trim().Split(" ".ToCharArray());
                                 List<int> ids = new List<int>();
 
                                 for (int i = 0; i < arrStrs.Length; i++)
                                 {
                                     ids.Add(int.Parse(arrStrs[i].Trim().Split("-".ToCharArray())[1]));
                                 }
-                                handsPlayer.Add(p.data.userName, ids.ToArray());
+                                handsPlayer.Add(p.userName, ids.ToArray());
                             });
                             string[] comunityCardName = string.IsNullOrEmpty(comunityCard) ? new string[0] : comunityCard.Trim().Split(" ".ToCharArray());
                             List<int> comunityCardIds = new List<int>();

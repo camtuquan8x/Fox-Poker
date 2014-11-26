@@ -12,19 +12,9 @@ using Puppet.Poker.Models;
 public class PokerObserver
 {
     /// <summary>
-    /// Info main player
-    /// </summary>
-    public PokerPlayerController mainPlayer;
-    /// <summary>
-    /// Info player in current turn
-    /// </summary>
-    public PokerPlayerController lastPlayer, currentPlayer;
-    /// <summary>
     /// Info Setting Poker Game
     /// </summary>
     public PokerGameDetails gameDetails;
-
-
 
     public event Action<ResponseUpdateGame> onFirstJoinGame;
     public event Action<ResponseUpdateGame> dataUpdateGameChange;
@@ -38,7 +28,6 @@ public class PokerObserver
     public event Action<ResponseError> onEncounterError;
     public event Action<ResponseUpdateRoomMaster> onUpdateRoomMaster;
 
-    public PokerGameplay pokerGame;
     public UserInfo mUserInfo;
 
     static PokerObserver _instance;
@@ -52,11 +41,15 @@ public class PokerObserver
         }
     }
 
+    public static PokerGameplay Game
+    {
+        get { return Puppet.API.Client.APIPokerGame.GetPokerGameplay(); }
+    }
+
     public void StartGame()
     {
         mUserInfo = Puppet.API.Client.APIUser.GetUserInformation();
         Puppet.Poker.EventDispatcher.onGameEvent += EventDispatcher_onGameEvent;
-        pokerGame = Puppet.API.Client.APIPokerGame.GetPokerGameplay();
         Puppet.API.Client.APIPokerGame.StartListenerEvent();
     }
 
@@ -66,8 +59,6 @@ public class PokerObserver
         {
             ResponseUpdateGame dataGame = (ResponseUpdateGame)data;
 
-            foreach (PokerPlayerController p in dataGame.players) if (IsMainPlayer(p.userName)) { mainPlayer = p; break; }
-
             if (command == "updateGame" && dataUpdateGameChange != null)
             {
                 dataUpdateGameChange(dataGame);
@@ -75,7 +66,6 @@ public class PokerObserver
             else if (command == "updateGameToWaitingPlayer")
             {
                 gameDetails = dataGame.gameDetails;
-                ResetCurrentBetting();
                 if (onFirstJoinGame != null)
                     onFirstJoinGame(dataGame);
             }
@@ -92,21 +82,6 @@ public class PokerObserver
         {
             ResponseUpdateTurnChange dataTurn = (ResponseUpdateTurnChange)data;
 
-            if (dataTurn != null)
-            {
-                currentPlayer = dataTurn.toPlayer;
-                lastPlayer = dataTurn.fromPlayer;
-                if (currentPlayer != null && IsMainPlayer(currentPlayer.userName))
-                    mainPlayer = dataTurn.toPlayer;
-
-                if (currentPlayer != null)
-                    MaxCurrentBetting = currentPlayer.currentBet;
-                if (lastPlayer != null)
-                    MaxCurrentBetting = lastPlayer.currentBet;
-                if (dataTurn.firstTurn && dataTurn.bigBlind != null)
-                    MaxCurrentBetting = dataTurn.bigBlind.currentBet;
-            }
-
             if (onTurnChange != null)
                 onTurnChange(dataTurn);
         }
@@ -118,16 +93,12 @@ public class PokerObserver
             onUpdateRoomMaster((ResponseUpdateRoomMaster)data);
         else if (data is ResponseUpdatePot)
         {
-            ResetCurrentBetting();
             if (onUpdatePot != null)
                 onUpdatePot((ResponseUpdatePot)data);
         }
         else if (data is ResponseUpdateUserInfo)
         {
             ResponseUpdateUserInfo dataUserInfo = (ResponseUpdateUserInfo)data;
-
-            if (IsMainPlayer(dataUserInfo.userInfo.userName))
-                mainPlayer = dataUserInfo.userInfo;
 
             if (onUpdateUserInfo != null)
                 onUpdateUserInfo(dataUserInfo);
@@ -157,42 +128,19 @@ public class PokerObserver
 
     public bool IsMainPlayerInGame()
     {
-        return pokerGame.ListPlayer.Find(p => p.userName == mUserInfo.info.userName) != null;
+        return Game.ListPlayer.Find(p => p.userName == mUserInfo.info.userName) != null;
     }
 
-    public bool IsMainTurn { get { try { return currentPlayer.userName == mainPlayer.userName; } catch { return false; } } }
+    public bool IsMainTurn { get { try { return Game.CurrentPlayer.userName == Game.MainPlayer.userName; } catch { return false; } } }
     #endregion
 
     #region BETTING VALUE
-    double _maxCurrentBetting;
-    public double MaxCurrentBetting
-    {
-        get { return _maxCurrentBetting; }
-        set
-        {
-            if (_maxCurrentBetting < value)
-                _maxCurrentBetting = value;
-        }
-    }
-    void ResetCurrentBetting ()
-    {
-        _maxCurrentBetting = 0;
-
-        if(mainPlayer != null)
-            mainPlayer.currentBet = 0;
-        if (lastPlayer != null)
-            lastPlayer.currentBet = 0;
-        if (currentPlayer != null)
-            currentPlayer.currentBet = 0;
-        Array.ForEach<PokerPlayerUI>(GameObject.FindObjectsOfType<PokerPlayerUI>(), p => p.data.currentBet = 0);
-    }
-
     public double CurrentBettingDiff
     {
         get
         {
-            double leftMoney = currentPlayer.GetMoney();
-            double diff = PokerObserver.Instance.MaxCurrentBetting - PokerObserver.Instance.mainPlayer.currentBet;
+            double leftMoney = Game.CurrentPlayer.GetMoney();
+            double diff = Game.MaxCurrentBetting - Game.MainPlayer.currentBet;
             return leftMoney > diff ? diff : leftMoney;
         }
     }

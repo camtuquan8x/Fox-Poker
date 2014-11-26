@@ -23,6 +23,7 @@ public class LoginScene : MonoBehaviour, ILoginView
 
         PuSetting.UniqueDeviceId = SystemInfo.deviceUniqueIdentifier;
     }
+
     void Start()
     {
         presenter = new LoginPresenter(this);
