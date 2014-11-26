@@ -129,18 +129,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     {
         if (currentType == EButtonType.InTurn)
         {
-            double maxOtherMoney = PokerObserver.Game.ListPlayer
-                .Where<PokerPlayerController>(p => p.userName != PokerObserver.Game.MainPlayer.userName)
-                .Max<PokerPlayerController>(p => p.GetMoney());
-            double maxBind = PokerObserver.Game.ListPlayer
-                .Where<PokerPlayerController>(p => p.userName != PokerObserver.Game.MainPlayer.userName)
-                .Max<PokerPlayerController>(p => p.currentBet);
-            double currentMoney = PokerObserver.Game.MainPlayer.GetMoney();
-            double maxRaise = currentMoney;
-            if (PokerObserver.Game.MainPlayer.GetMoney() > maxOtherMoney)
-				maxRaise = maxOtherMoney;
-            if (PokerObserver.Game.MainPlayer.currentBet != 0 || PokerObserver.Game.MainPlayer.currentBet > PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind)
-				maxRaise = maxRaise - maxBind;
+			double maxRaise = GetMaxRaise();
 			bettingDialog = new DialogBetting(PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind, maxRaise,(money) =>
             {
                 Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.RAISE, money);
@@ -154,7 +143,21 @@ public class PokerGameplayButtonHandler : MonoBehaviour
             Puppet.API.Client.APIPokerGame.AutoSitDown(PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind * 20);
         }
     }
+	double GetMaxRaise(){
 
+        double maxOtherMoney = PokerObserver.Game.ListPlayer
+			.Where<PokerPlayerController>(p => p.userName != PokerObserver.Game.MainPlayer.userName)
+                .Max<PokerPlayerController>(p => p.GetMoney() + p.currentBet);
+        double maxBinded = PokerObserver.Game.ListPlayer
+            .Max<PokerPlayerController>(p => p.currentBet);
+		double myMoney = PokerObserver.Game.MainPlayer.GetMoney() +  PokerObserver.Game.MainPlayer.currentBet;
+		double maxRaise = myMoney;
+		if(myMoney > maxOtherMoney)
+			maxRaise = maxOtherMoney;
+		if(PokerObserver.Game.MainPlayer.currentBet !=0)
+			maxRaise =  maxRaise - maxBinded;
+		return maxRaise;
+	}
     void SetEnableButtonType(EButtonType type)
     {
         this.currentType = type;
@@ -165,6 +168,8 @@ public class PokerGameplayButtonHandler : MonoBehaviour
             NGUITools.SetActive(item.button, data != null);
             if (data != null)
             {
+
+
                 bool enableButton = EnableButton(type, item.slot);
                 item.button.collider.enabled = enableButton;
                 item.button.GetComponent<UISprite>().color = new Color(1f, 1f, 1f, enableButton ? 1f : 0.45f);
@@ -210,10 +215,19 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 
     bool EnableButton(EButtonType type, EButtonSlot slot)
     {
-        if (slot == EButtonSlot.Third && type == EButtonType.InTurn)
-            return PokerObserver.Game.MainPlayer.GetMoney() + PokerObserver.Game.MainPlayer.currentBet >= PokerObserver.Game.MaxCurrentBetting;
+        if (slot == EButtonSlot.Third && type == EButtonType.InTurn) {
+			try 
+            {
+				if(GetMaxRaise () == 0 )
+					return false;				
+				else
+                    return PokerObserver.Game.MainPlayer.GetMoney() + PokerObserver.Game.MainPlayer.currentBet >= PokerObserver.Game.MaxCurrentBetting;
+			} catch (Exception ex) {
+                return PokerObserver.Game.MainPlayer.GetMoney() + PokerObserver.Game.MainPlayer.currentBet >= PokerObserver.Game.MaxCurrentBetting;
+			}
+        }
         else if (type == EButtonType.OutTurn && PokerObserver.Game.MainPlayer.GetMoney() == 0)
-            return false;
+			return false;
         return true;
     }
     #endregion
