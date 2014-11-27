@@ -60,10 +60,10 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     void Instance_onNewRound(ResponseWaitingDealCard data)
     {
-        DestroyCardObject();
+        ResetNewRound();
     }
 
-    void DestroyCardObject()
+    void ResetNewRound()
     {
         countGenericCard = 0;
         for (int i = cardsDeal.Count - 1; i >= 0; i--)
@@ -196,7 +196,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
         Array.ForEach<PokerPlayerUI>(playerUI, p => { if (p != null) p.SetTitle(null); });
 
-        potContainer.DestroyAllPot();
+        ResetNewRound();
     }
 
     void Instance_onFirstJoinGame(ResponseUpdateGame data)
@@ -216,7 +216,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     void Instance_dataUpdateGame(ResponseUpdateGame data)
     {
-        DestroyCardObject();
+        ResetNewRound();
         Instance_onFirstJoinGame(data);
     }
 
