@@ -130,7 +130,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         if (currentType == EButtonType.InTurn)
         {
 			double maxRaise = GetMaxRaise();
-			bettingDialog = new DialogBetting(PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind, maxRaise,(money) =>
+			bettingDialog = new DialogBetting(GetMaxBinded(), maxRaise,(money) =>
             {
                 Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.RAISE, money);
             }, Array.Find<ButtonItem>(itemButtons, button => button.slot == EButtonSlot.Third).button.transform);
@@ -148,7 +148,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 		double maxOtherMoney = GameObject.FindObjectsOfType<PokerPlayerUI>()
 			.Where<PokerPlayerUI>(p => p.data.userName != PokerObserver.Instance.mainPlayer.userName)
 				.Max<PokerPlayerUI>(p => p.data.GetMoney() + p.data.currentBet);
-		double maxBinded =  GameObject.FindObjectsOfType<PokerPlayerUI>().Max<PokerPlayerUI>(p => p.data.currentBet);
+		double maxBinded = GetMaxBinded();
 		double myMoney = PokerObserver.Instance.mainPlayer.GetMoney() +  PokerObserver.Instance.mainPlayer.currentBet;
 		double maxRaise = myMoney;
 		if(myMoney > maxOtherMoney)
@@ -156,6 +156,10 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 		if(PokerObserver.Instance.mainPlayer.currentBet !=0)
 			maxRaise =  maxRaise - maxBinded;
 		return maxRaise;
+	}
+	double GetMaxBinded(){
+		double maxBinded =  GameObject.FindObjectsOfType<PokerPlayerUI>().Max<PokerPlayerUI>(p => p.data.currentBet);
+		return maxBinded;
 	}
     void SetEnableButtonType(EButtonType type)
     {
@@ -217,7 +221,6 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 
         if (slot == EButtonSlot.Third && type == EButtonType.InTurn) {
 			try {
-				Logger.Log("========> chay vao day khong" );
 				if(GetMaxRaise () == 0 )
 					return false;				
 				else 

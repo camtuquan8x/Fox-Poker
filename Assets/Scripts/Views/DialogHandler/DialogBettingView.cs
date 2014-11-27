@@ -37,20 +37,26 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
         get
         {
             int index = (int)Mathf.Lerp(1, sliderBar.numberOfSteps, sliderBar.value);
-			double money= (smallBlind * index);
+			double money = (smallBlind * index) + smallBlind;
+			if(index == 1)
+				money = smallBlind  + data.MaxMoneyBinded;
 			return money;
         }
     }
 
     void OnSliderChange()
     {
-        labelMoney.text =(GetCurrentMoney >= data.MaxBetting) ? "All In" : GetCurrentMoney.ToString("#,###");
+		if(GetCurrentMoney >= data.MaxBetting){
+			labelMoney.text = "All In";
+			sliderBar.value = 1;
+		}else{
+			labelMoney.text = GetCurrentMoney.ToString("#,###");
+		}
     }
 
     public override void ShowDialog(DialogBetting data)
     {
         base.ShowDialog(data);
-
         sliderBar.numberOfSteps = (int)(data.MaxBetting / smallBlind);
         gameObject.transform.parent = data.parent;
         gameObject.transform.localPosition = new Vector3(0f, 280f, 0f);
@@ -61,21 +67,21 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
     protected override void OnPressButton(bool? pressValue, DialogBetting data)
 	{
         if (pressValue == true && data.onBetting != null)
-            	data.onBetting(GetCurrentMoney);
+            	data.onBetting(GetCurrentMoney >= data.MaxBetting ? data.MaxBetting : GetCurrentMoney);
 
 	}
 }
 
 public class DialogBetting : AbstractDialogData
 {
-    public double MinBetting, MaxBetting;
+	public double MaxMoneyBinded, MaxBetting;
     public Action<double> onBetting;
     public Transform parent;
 
-    public DialogBetting(double min, double max, Action<double> onBetting, Transform parent)
+    public DialogBetting(double maxMoneyBinded, double max, Action<double> onBetting, Transform parent)
     {
-        this.MinBetting = min;
-        this.MaxBetting = max;
+		this.MaxMoneyBinded = maxMoneyBinded;
+		this.MaxBetting = max;
         this.onBetting = onBetting;
         this.parent = parent;
     }
