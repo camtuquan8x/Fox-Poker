@@ -25,6 +25,7 @@ public class PokerGPSide : MonoBehaviour
     void OnEnable()
     {
         onPlayerPickSide += PlayerPickSide;
+        onPlayerSitdown += PlayerSitdown;
         UIEventListener.Get(btnSit).onClick += OnClickSit;
 
         PokerObserver.Instance.onPlayerListChanged += Instance_onPlayerListChanged;
@@ -33,6 +34,7 @@ public class PokerGPSide : MonoBehaviour
     void OnDisable()
     {
         onPlayerPickSide -= PlayerPickSide;
+        onPlayerSitdown -= PlayerSitdown;
         UIEventListener.Get(btnSit).onClick -= OnClickSit;
 
         PokerObserver.Instance.onPlayerListChanged -= Instance_onPlayerListChanged;
@@ -56,6 +58,7 @@ public class PokerGPSide : MonoBehaviour
     }
 
     static event Action<int> onPlayerPickSide;
+    static event Action<bool> onPlayerSitdown;
     static bool wasBuyChip = false;
     void PlayerPickSide(int slot)
     {
@@ -70,10 +73,17 @@ public class PokerGPSide : MonoBehaviour
                     Puppet.API.Client.APIPokerGame.SetAutoBuy(autoBuy);
                     wasBuyChip = true;
                 }
+
+                if (onPlayerSitdown != null)
+                    onPlayerSitdown(!wasBuyChip);
             });
             DialogService.Instance.ShowDialog(dialog);
         }
-        NGUITools.SetActive(btnSit, false);
+    }
+
+    void PlayerSitdown(bool success)
+    {
+        NGUITools.SetActive(btnSit, success);
     }
 
     void OnClickSit(GameObject go)
