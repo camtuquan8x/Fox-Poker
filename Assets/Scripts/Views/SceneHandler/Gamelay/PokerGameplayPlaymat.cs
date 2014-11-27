@@ -21,6 +21,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
     #endregion
     PokerGPSide[] arrayPokerSide;
     Dictionary<string, GameObject> dictPlayerObject = new Dictionary<string, GameObject>();
+    bool isWaitingNewRound = false;
 
     void Awake()
     {
@@ -54,7 +55,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     void Instance_onUpdatePot(ResponseUpdatePot obj)
     {
-        if (obj.pot != null && obj.pot.Length > 0)
+        if (!isWaitingNewRound && obj.pot != null && obj.pot.Length > 0)
             potContainer.UpdatePot(new List<ResponseUpdatePot.DataPot>(obj.pot));
     }
 
@@ -149,20 +150,36 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     IEnumerator _onFinishGame(ResponseFinishGame responseData)
     {
+        isWaitingNewRound = true;
         CreateCardDeal(responseData.dealComminityCards);
 
         float time = responseData.time/1000f;
         float waitTimeViewCard = time > 1 ? 1f : 0f;
         float timeEffectPot = responseData.pots.Length > 0 ? time - (waitTimeViewCard / responseData.pots.Length) : time - waitTimeViewCard;
 
-		PokerPlayerUI[] playerUI =  GameObject.FindObjectsOfType<PokerPlayerUI> ();
+        #region SET RESULT TITLE
+        PokerPlayerUI[] playerUI =  GameObject.FindObjectsOfType<PokerPlayerUI> ();
 		for (int i = 0; i < playerUI.Length ;i++) {
 			for(int j= 0 ;j<responseData.players.Length;j++){
 				if(playerUI[i].UserName == responseData.players[j].userName){
                     playerUI[i].SetTitle(UTF8Encoder.DecodeEncodedNonAsciiCharacters(responseData.players[j].ranking));
 				}
 			}
-		}
+        }
+        #endregion
+
+        #region UPDATE POTS WHEN FINISH GAME
+        List<ResponseUpdatePot.DataPot> potFinishGame = new List<ResponseUpdatePot.DataPot>();
+        foreach(ResponseResultSummary summary in responseData.pots)
+        {
+            ResponseUpdatePot.DataPot pot = new ResponseUpdatePot.DataPot();
+            pot.id = summary.potId;
+            ResponseMoneyExchange playerWin = Array.Find<ResponseMoneyExchange>(summary.players, p => p.winner);
+            pot.value = playerWin.moneyExchange;
+        }
+        potContainer.UpdatePot(potFinishGame);
+        #endregion
+
         yield return new WaitForSeconds(waitTimeViewCard /2f);
         foreach(ResponseResultSummary summary in responseData.pots)
         {
@@ -177,15 +194,11 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
                 List<int> list = new List<int>(playerWin.cards);
                 List<GameObject> listCardObject = cardsDeal.FindAll(o => list.Contains(o.GetComponent<PokerCardObject>().card.cardId));
-                //GameObject obj = NGUITools.AddChild(currentPot.transform.parent.gameObject, currentPot.gameObject);
-                //obj.transform.parent = dictPlayerObject[playerWin.userName].transform.parent;
-                //iTween.MoveTo(obj, iTween.Hash("islocal", true, "time", timeEffectPot, "position", Vector3.zero));
                 for (int i = 0; i < 20; i++ )
                 {
                     listCardObject.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(i % 2 == 0));
                     yield return new WaitForSeconds(timeEffectPot / 20f);
                 }
-                //GameObject.Destroy(obj);
                 listCardObject.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(false));
                 dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(false);
 
@@ -194,9 +207,11 @@ public class PokerGameplayPlaymat : MonoBehaviour
         }
         yield return new WaitForSeconds(waitTimeViewCard / 2);
 
+        // Reset Result title
         Array.ForEach<PokerPlayerUI>(playerUI, p => { if (p != null) p.SetTitle(null); });
 
         ResetNewRound();
+        isWaitingNewRound = false;
     }
 
     void Instance_onFirstJoinGame(ResponseUpdateGame data)
