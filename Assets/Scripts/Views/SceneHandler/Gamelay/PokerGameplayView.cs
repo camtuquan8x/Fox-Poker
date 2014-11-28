@@ -42,10 +42,11 @@ public class PokerGameplayView : MonoBehaviour
 		showInfoGame ();
     }
 	private void showInfoGame(){
-//		DataLobby lobby = APIGeneric.SelectedLobby();
-//		Logger.Log
-//		double smallBind = lobby.gameDetails.betting / 2;
-//		lbTitle.text = "Phòng : " + lobby.roomId + " - $" + smallBind+"/"+lobby.gameDetails.betting;
+		DataLobby lobby = APIGeneric.SelectedLobby();
+		if (lobby != null) {
+			double smallBind = lobby.gameDetails.betting / 2;
+			lbTitle.text = "Phòng : " + lobby.roomId + " - $" + smallBind+"/"+lobby.gameDetails.betting;
+		}
 	}
     void OnEnable() 
     {

@@ -32,11 +32,11 @@ public class DialogBuyChipView : BaseDialog<DialogBuyChip,DialogBuyChipView>
         int index = (int)Mathf.Lerp(1, slider.numberOfSteps, slider.value);
 		if (int.Parse (minChip.text) * index > APIUser.GetUserInformation ().assets.content [0].value) {
 			string[] moneyAndShortcut = Utility.Convert.ConvertMoneyAndShortCut (APIUser.GetUserInformation ().assets.content [0].value);
-			money.text = "$ " + moneyAndShortcut [0] + moneyAndShortcut [1];
+			money.text = "$" + moneyAndShortcut [0].Trim() + moneyAndShortcut [1].Trim();
 
 		} else {
 			string[] moneyAndShortcut = Utility.Convert.ConvertMoneyAndShortCut (int.Parse (minChip.text) * index);
-			money.text = "$ " + moneyAndShortcut [0] + moneyAndShortcut [1];
+			money.text = "$" + moneyAndShortcut [0].Trim() + moneyAndShortcut [1].Trim();
 		}
        
     }

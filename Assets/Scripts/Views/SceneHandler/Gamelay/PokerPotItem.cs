@@ -33,6 +33,6 @@ public class PokerPotItem : MonoBehaviour
     {
         string[] money = Utility.Convert.ConvertMoneyAndShortCut(value);
 
-        labelCurrentbet.text = string.Format("{0:#,##}{1}", money[0], money[1]);
+        labelCurrentbet.text = string.Format("{0:f2}{1}", money[0], money[1]);
     }
 }

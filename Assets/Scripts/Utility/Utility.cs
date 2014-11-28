@@ -45,13 +45,13 @@ public class Utility
 					moneyArray [0] = money.ToString ();
 					moneyArray [1] = "";
 				} else {
-					string myString8 = String.Format("{0, 0:f1}", money / 1000f);
+					string myString8 = String.Format("{0, 0:f2}", money / 1000f);
 					moneyArray [0] = myString8;
 					moneyArray [1] = "K";
 				}
 				return moneyArray;
 			} else {
-				string myString8 = String.Format("{0, 0:f1}", money / 1000000f);
+				string myString8 = String.Format("{0, 0:f2}", money / 1000000f);
 				moneyArray [0] = myString8;
 				moneyArray [1] = "M";
 				return moneyArray;
