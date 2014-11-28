@@ -130,7 +130,9 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         if (currentType == EButtonType.InTurn)
         {
 			double maxRaise = GetMaxRaise();
-			bettingDialog = new DialogBetting(PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind, maxRaise,(money) =>
+			double maxBinded = PokerObserver.Game.ListPlayer
+				.Max<PokerPlayerController>(p => p.currentBet);
+			bettingDialog = new DialogBetting(maxBinded, maxRaise,(money) =>
             {
                 Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.RAISE, money);
             }, Array.Find<ButtonItem>(itemButtons, button => button.slot == EButtonSlot.Third).button.transform);
@@ -168,12 +170,9 @@ public class PokerGameplayButtonHandler : MonoBehaviour
             NGUITools.SetActive(item.button, data != null);
             if (data != null)
             {
-
-
                 bool enableButton = EnableButton(type, item.slot);
                 item.button.collider.enabled = enableButton;
                 item.button.GetComponent<UISprite>().color = new Color(1f, 1f, 1f, enableButton ? 1f : 0.45f);
-
                 string moreText = AddMoreTextButton(type, item.slot);
                 string overrideName = OverrideName(type, item.slot);
                 item.label.text = (overrideName ?? data.text) + (string.IsNullOrEmpty(moreText) ? string.Empty : string.Format("\n({0})", moreText));

@@ -38,13 +38,20 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
         {
             int index = (int)Mathf.Lerp(1, sliderBar.numberOfSteps, sliderBar.value);
 			double money= (smallBlind * index);
+			if(index == 1)
+				money = data.MaxBinded + smallBlind;
 			return money;
         }
     }
 
     void OnSliderChange()
     {
-        labelMoney.text =(GetCurrentMoney >= data.MaxBetting) ? "All In" : GetCurrentMoney.ToString("#,###");
+		if (GetCurrentMoney >= data.MaxBetting) {
+			labelMoney.text = "All In";
+			sliderBar.value = 1;
+		} else {
+			labelMoney.text = GetCurrentMoney.ToString("#,###");
+		}
     }
 
     public override void ShowDialog(DialogBetting data)
@@ -68,13 +75,13 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
 
 public class DialogBetting : AbstractDialogData
 {
-    public double MinBetting, MaxBetting;
+	public double MaxBinded, MaxBetting;
     public Action<double> onBetting;
     public Transform parent;
 
-    public DialogBetting(double min, double max, Action<double> onBetting, Transform parent)
+    public DialogBetting(double maxBinded, double max, Action<double> onBetting, Transform parent)
     {
-        this.MinBetting = min;
+		this.MaxBinded = maxBinded;
         this.MaxBetting = max;
         this.onBetting = onBetting;
         this.parent = parent;
