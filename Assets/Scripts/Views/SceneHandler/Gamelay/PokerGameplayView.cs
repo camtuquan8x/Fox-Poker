@@ -9,14 +9,18 @@ using System.Text;
 using UnityEngine;
 using Puppet;
 using Puppet.API.Client;
+using Puppet.Core.Model;
+
+
 public class PokerGameplayView : MonoBehaviour
 {
     #region UnityEditor
     public GameObject btnView, btnLeaveTurn, btnAddBet, btnFollowBet, btnConvertMoney, btnGameMini, btnRule, btnSendMessage;
 	public GameObject btnViewCheckBox, btnFollowBetCheckBox, btnFollowAllBetCheckbox;
     public UIInput txtMessage;
-	public UILabel lbTime;
+	public UILabel lbTime,lbTitle;
     public PokerGameplayPlaymat playmat;
+
     #endregion
 
     void Awake()
@@ -35,8 +39,14 @@ public class PokerGameplayView : MonoBehaviour
         //For Ensure all was init!!!!!
         yield return new WaitForSeconds(0.5f);
         PokerObserver.Instance.StartGame();
+		showInfoGame ();
     }
-
+	private void showInfoGame(){
+//		DataLobby lobby = APIGeneric.SelectedLobby();
+//		Logger.Log
+//		double smallBind = lobby.gameDetails.betting / 2;
+//		lbTitle.text = "Phòng : " + lobby.roomId + " - $" + smallBind+"/"+lobby.gameDetails.betting;
+	}
     void OnEnable() 
     {
         PokerObserver.Instance.onEncounterError += Instance_onEncounterError;

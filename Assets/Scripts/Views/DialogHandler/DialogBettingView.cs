@@ -38,8 +38,9 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
         {
             int index = (int)Mathf.Lerp(1, sliderBar.numberOfSteps, sliderBar.value);
 			double money= (smallBlind * index);
-			if(index == 1)
-				money = data.MaxBinded + smallBlind;
+			double minBind = data.MaxBinded + smallBlind;
+			if(money < minBind)
+				money = minBind;
 			return money;
         }
     }
