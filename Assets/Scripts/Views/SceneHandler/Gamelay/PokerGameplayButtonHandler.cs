@@ -160,8 +160,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 		if(myMoney > maxOtherMoney)
 			maxRaise = maxOtherMoney;
 		if (PokerObserver.Game.MainPlayer.currentBet != 0) {
-			maxRaise = maxRaise - maxBinded;
-
+			maxRaise = maxRaise - PokerObserver.Game.MainPlayer.currentBet;
 		}
 		return maxRaise;
 	}

@@ -70,7 +70,7 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
     protected override void OnPressButton(bool? pressValue, DialogBetting data)
 	{
         if (pressValue == true && data.onBetting != null)
-            	data.onBetting(GetCurrentMoney);
+			data.onBetting(GetCurrentMoney >= data.MaxBetting ? data.MaxBetting : GetCurrentMoney);
 
 	}
 }
