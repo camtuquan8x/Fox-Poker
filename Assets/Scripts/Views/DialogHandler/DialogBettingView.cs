@@ -36,30 +36,45 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
     {
         get
         {
-            int index = (int)Mathf.Lerp(1, sliderBar.numberOfSteps, sliderBar.value);
-			double money= (smallBlind * index);
-			double minBind = data.MaxBinded + smallBlind;
-			if(money < minBind)
-				money = minBind;
+			double money = (smallBlind * GetSliderIndex) + data.MaxBinded;
 			return money;
         }
     }
-
+	int GetSliderIndex{
+		get{
+			int index = (int)Mathf.Lerp(1, sliderBar.numberOfSteps, sliderBar.value);
+			return index;
+		}
+	}
+	double GetMinBind{
+		get{
+			return data.MaxBinded + smallBlind;
+		}
+	}
     void OnSliderChange()
     {
-		if (GetCurrentMoney >= data.MaxBetting) {
-			labelMoney.text = "All In";
-			sliderBar.value = 1;
-		} else {
-			labelMoney.text = GetCurrentMoney.ToString("#,###");
-		}
+//		if () {
+//			labelMoney.text = ;
+//			sliderBar.value = 1;
+//		} else {
+//			double minBind = data.MaxBinded + smallBlind;
+//
+//			if(GetCurrentMoney < minBind)
+//			{
+//				int numberOfSteps = (int)((minBind) / smallBlind);
+//				float value = numberOfSteps/sliderBar.numberOfSteps;
+//				sliderBar.value = value;
+//			}
+//			double money = GetCurrentMoney < minBind ? minBind : GetCurrentMoney ; 
+		labelMoney.text = GetCurrentMoney >= data.MaxBetting ? "All In" : GetCurrentMoney.ToString("#,###");
+//		}
     }
 
     public override void ShowDialog(DialogBetting data)
     {
         base.ShowDialog(data);
 
-        sliderBar.numberOfSteps = (int)(data.MaxBetting / smallBlind);
+		sliderBar.numberOfSteps = (int)(data.MaxBetting / smallBlind);
         gameObject.transform.parent = data.parent;
         gameObject.transform.localPosition = new Vector3(0f, 280f, 0f);
         gameObject.transform.localScale = Vector3.one;
