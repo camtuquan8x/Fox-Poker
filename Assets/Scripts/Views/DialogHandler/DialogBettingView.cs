@@ -53,21 +53,7 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
 	}
     void OnSliderChange()
     {
-//		if () {
-//			labelMoney.text = ;
-//			sliderBar.value = 1;
-//		} else {
-//			double minBind = data.MaxBinded + smallBlind;
-//
-//			if(GetCurrentMoney < minBind)
-//			{
-//				int numberOfSteps = (int)((minBind) / smallBlind);
-//				float value = numberOfSteps/sliderBar.numberOfSteps;
-//				sliderBar.value = value;
-//			}
-//			double money = GetCurrentMoney < minBind ? minBind : GetCurrentMoney ; 
 		labelMoney.text = GetCurrentMoney >= data.MaxBetting ? "All In" : GetCurrentMoney.ToString("#,###");
-//		}
     }
 
     public override void ShowDialog(DialogBetting data)

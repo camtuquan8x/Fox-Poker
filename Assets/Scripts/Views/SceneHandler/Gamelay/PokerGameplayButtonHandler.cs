@@ -129,10 +129,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     {
         if (currentType == EButtonType.InTurn)
         {
-			double maxRaise = GetMaxRaise();
-			double maxBinded = PokerObserver.Game.ListPlayer
-				.Max<PokerPlayerController>(p => p.currentBet);
-			bettingDialog = new DialogBetting(maxBinded, maxRaise,(money) =>
+			bettingDialog = new DialogBetting(GetMaxBinded(), GetMaxRaise(),(money) =>
             {
                 Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.RAISE, money);
             }, Array.Find<ButtonItem>(itemButtons, button => button.slot == EButtonSlot.Third).button.transform);
@@ -145,19 +142,27 @@ public class PokerGameplayButtonHandler : MonoBehaviour
             Puppet.API.Client.APIPokerGame.AutoSitDown(PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind * 20);
         }
     }
+	double GetMaxBinded(){
+		double maxBinded = PokerObserver.Game.ListPlayer
+			.Max<PokerPlayerController>(p => p.currentBet);
+		if (PokerObserver.Game.MainPlayer.currentBet != 0)
+			maxBinded = maxBinded - PokerObserver.Game.MainPlayer.currentBet;
+		return maxBinded;
+	}
 	double GetMaxRaise(){
 
         double maxOtherMoney = PokerObserver.Game.ListPlayer
 			.Where<PokerPlayerController>(p => p.userName != PokerObserver.Game.MainPlayer.userName)
                 .Max<PokerPlayerController>(p => p.GetMoney() + p.currentBet);
-        double maxBinded = PokerObserver.Game.ListPlayer
-            .Max<PokerPlayerController>(p => p.currentBet);
+        double maxBinded = PokerObserver.Game.ListPlayer.Max<PokerPlayerController>(p => p.currentBet);
 		double myMoney = PokerObserver.Game.MainPlayer.GetMoney() +  PokerObserver.Game.MainPlayer.currentBet;
 		double maxRaise = myMoney;
 		if(myMoney > maxOtherMoney)
 			maxRaise = maxOtherMoney;
-		if(PokerObserver.Game.MainPlayer.currentBet !=0)
-			maxRaise =  maxRaise - maxBinded;
+		if (PokerObserver.Game.MainPlayer.currentBet != 0) {
+			maxRaise = maxRaise - maxBinded;
+
+		}
 		return maxRaise;
 	}
     void SetEnableButtonType(EButtonType type)
