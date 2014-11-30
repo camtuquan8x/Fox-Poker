@@ -29,6 +29,7 @@ public class PokerObserver
     public event Action<ResponseUpdateRoomMaster> onUpdateRoomMaster;
 
     public UserInfo mUserInfo;
+    public bool isWaitingFinishGame = false;
 
     static PokerObserver _instance;
     public static PokerObserver Instance
@@ -139,6 +140,8 @@ public class PokerObserver
     {
         get
         {
+            if (Game.CurrentPlayer == null)
+                return 0;
             double leftMoney = Game.CurrentPlayer.GetMoney();
             double diff = Game.MaxCurrentBetting - Game.MainPlayer.currentBet;
             return leftMoney > diff ? diff : leftMoney;

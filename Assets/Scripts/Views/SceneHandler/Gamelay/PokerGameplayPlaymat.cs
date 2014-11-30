@@ -21,7 +21,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
     #endregion
     PokerGPSide[] arrayPokerSide;
     Dictionary<string, GameObject> dictPlayerObject = new Dictionary<string, GameObject>();
-    bool isWaitingNewRound = false;
+    bool isWaitingFinishGame = false;
 
     void Awake()
     {
@@ -55,7 +55,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     void Instance_onUpdatePot(ResponseUpdatePot obj)
     {
-        if (!isWaitingNewRound && obj.pot != null && obj.pot.Length > 0)
+        if (!PokerObserver.Instance.isWaitingFinishGame && obj.pot != null && obj.pot.Length > 0)
             potContainer.UpdatePot(new List<ResponseUpdatePot.DataPot>(obj.pot));
     }
 
@@ -150,7 +150,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     IEnumerator _onFinishGame(ResponseFinishGame responseData)
     {
-        isWaitingNewRound = true;
+        PokerObserver.Instance.isWaitingFinishGame = true;
         CreateCardDeal(responseData.dealComminityCards);
 
         float time = responseData.time/1000f;
@@ -211,7 +211,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         Array.ForEach<PokerPlayerUI>(playerUI, p => { if (p != null) p.SetTitle(null); });
 
         ResetNewRound();
-        isWaitingNewRound = false;
+        PokerObserver.Instance.isWaitingFinishGame = false;
     }
 
     void Instance_onFirstJoinGame(ResponseUpdateGame data)

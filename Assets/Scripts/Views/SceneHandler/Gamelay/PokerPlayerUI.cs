@@ -57,11 +57,31 @@ public class PokerPlayerUI : MonoBehaviour
         {
             double money = player.GetMoney();
             labelCurrentGold.text = money > 0 ? money.ToString("#,###") : "All In";
-            
-            if(player.GetPlayerState() == Puppet.Poker.PokerPlayerState.bigBlind)
+
+            if (PokerObserver.Instance.isWaitingFinishGame || (PokerObserver.Game.CurrentPlayer != null && PokerObserver.Game.CurrentPlayer.userName == player.userName))
+                labelUsername.text = data.userName;
+            else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.none)
+                labelUsername.text = "Chờ ván mới";
+            else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.fold)
+                labelUsername.text = "Bỏ bài";
+            else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.bigBlind)
                 labelUsername.text = "Big Blind";
-            else if(player.GetPlayerState() == Puppet.Poker.PokerPlayerState.smallBlind)
+            else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.smallBlind)
                 labelUsername.text = "Small Blind";
+            else if (PokerObserver.Game.LastPlayer != null && PokerObserver.Game.LastPlayer.userName == player.userName)
+            {
+                if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.call)
+                    labelUsername.text = "Theo cược";
+                else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.allIn || 
+                    (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.raise && player.currentBet == 0))
+                    labelUsername.text = "All-in";
+                else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.raise)
+                    labelUsername.text = "Thêm cược";
+                else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.check)
+                    labelUsername.text = "Xem bài";
+            }
+            else if (player.currentBet == 0)
+                labelUsername.text = "Chờ đặt cược";
             else
                 labelUsername.text = data.userName;
 

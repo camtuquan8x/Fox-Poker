@@ -211,7 +211,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         if (slot == EButtonSlot.First && type == EButtonType.InTurn)
         {
             if(PokerObserver.Game.MaxCurrentBetting == 0 || PokerObserver.Instance.CurrentBettingDiff == 0)
-                return "Xem Bài";
+                return "XEM BÀI";
         }
         return null;
     }
@@ -260,7 +260,10 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     {
         if (PokerObserver.Instance.IsMainPlayerInGame())
         {
-            if (data.toPlayer != null)
+            if(PokerObserver.Instance.isWaitingFinishGame || (
+                PokerObserver.Game.MainPlayer != null && PokerObserver.Game.MainPlayer.GetPlayerState() == PokerPlayerState.none))
+                SetEnableButtonType(EButtonType.InGame);
+            else if (data.toPlayer != null)
             {
                 ButtonItem selectedButton = Array.Find<ButtonItem>(itemButtons, button => button.toggle.value);
 
