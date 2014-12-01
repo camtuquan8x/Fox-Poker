@@ -261,7 +261,10 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         if (PokerObserver.Instance.IsMainPlayerInGame())
         {
             if(PokerObserver.Instance.isWaitingFinishGame || (
-                PokerObserver.Game.MainPlayer != null && PokerObserver.Game.MainPlayer.GetPlayerState() == PokerPlayerState.none))
+                PokerObserver.Game.MainPlayer != null 
+                && PokerObserver.Game.MainPlayer.GetPlayerState() == PokerPlayerState.none
+                && PokerObserver.Game.CurrentPlayer.userName != PokerObserver.Game.MainPlayer.userName
+                ))
                 SetEnableButtonType(EButtonType.InGame);
             else if (data.toPlayer != null)
             {
