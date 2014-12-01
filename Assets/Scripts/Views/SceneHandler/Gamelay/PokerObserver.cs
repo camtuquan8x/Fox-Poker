@@ -127,7 +127,7 @@ public class PokerObserver
         return mUserInfo.info.userName == userName;
     }
 
-    public bool IsMainPlayerInGame()
+    public bool IsMainPlayerSatDown()
     {
         return Game.ListPlayer.Find(p => p.userName == mUserInfo.info.userName) != null;
     }

@@ -221,7 +221,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         if (slot == EButtonSlot.Third && type == EButtonType.InTurn) {
 			try 
             {
-				if(GetMaxRaise () == 0 )
+                if (GetMaxRaise() == 0 || PokerObserver.Game.MainPlayer.GetMoney() <= 0)
 					return false;				
 				else
                     return PokerObserver.Game.MainPlayer.GetMoney() + PokerObserver.Game.MainPlayer.currentBet >= PokerObserver.Game.MaxCurrentBetting;
@@ -258,13 +258,9 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 
     void Instance_dataTurnGame(ResponseUpdateTurnChange data)
     {
-        if (PokerObserver.Instance.IsMainPlayerInGame())
+        if (PokerObserver.Instance.IsMainPlayerSatDown())
         {
-            if(PokerObserver.Instance.isWaitingFinishGame || (
-                PokerObserver.Game.MainPlayer != null 
-                && PokerObserver.Game.MainPlayer.GetPlayerState() == PokerPlayerState.none
-                && PokerObserver.Game.CurrentPlayer.userName != PokerObserver.Game.MainPlayer.userName
-                ))
+            if(PokerObserver.Instance.isWaitingFinishGame || !PokerObserver.Game.IsMainPlayerInGame)
                 SetEnableButtonType(EButtonType.InGame);
             else if (data.toPlayer != null)
             {
@@ -291,13 +287,13 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 
     void Instance_onNewRound(ResponseWaitingDealCard data)
     {
-        if (PokerObserver.Instance.IsMainPlayerInGame())
+        if (PokerObserver.Instance.IsMainPlayerSatDown())
             SetEnableButtonType(EButtonType.InGame);
     }
 
     void Instance_onFinishGame(ResponseFinishGame obj)
     {
-        if (PokerObserver.Instance.IsMainPlayerInGame())
+        if (PokerObserver.Instance.IsMainPlayerSatDown())
             SetEnableButtonType(EButtonType.InGame);
     }
 }
