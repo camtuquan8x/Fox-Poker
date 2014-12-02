@@ -4,6 +4,7 @@ using Puppet.Poker.Models;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Puppet.Poker;
 
 public class PokerPlayerUI : MonoBehaviour
 {
@@ -116,13 +117,19 @@ public class PokerPlayerUI : MonoBehaviour
         ResponseFinishCardPlayer cardPlayer = Array.Find<ResponseFinishCardPlayer>(data.players, p => p.userName == this.data.userName);
         if(cardPlayer != null && cardPlayer.cards != null)
         {
-            for(int i=0;i<cardPlayer.cards.Length;i++)
+            bool isFoldAll = PokerObserver.Game.ListPlayer.FindAll(p => p.GetPlayerState() == PokerPlayerState.fold).Count == 0;
+            if (isFoldAll || PokerObserver.Game.ListPlayer.FindAll(p => p.userName != PokerObserver.Game.MainPlayer.userName).Count == 0)
+            { }
+            else
             {
-                cardOnHands[i].GetComponent<PokerCardObject>().SetDataCard(new PokerCard(cardPlayer.cards[i]));
-                cardOnHands[i].transform.parent = side.positionCardGameEnd[i].transform;
-                cardOnHands[i].transform.localRotation = Quaternion.identity;
-                cardOnHands[i].transform.localPosition = Vector3.zero;
-                cardOnHands[i].transform.localScale = Vector3.one;
+                for (int i = 0; i < cardPlayer.cards.Length; i++)
+                {
+                    cardOnHands[i].GetComponent<PokerCardObject>().SetDataCard(new PokerCard(cardPlayer.cards[i]));
+                    cardOnHands[i].transform.parent = side.positionCardGameEnd[i].transform;
+                    cardOnHands[i].transform.localRotation = Quaternion.identity;
+                    cardOnHands[i].transform.localPosition = Vector3.zero;
+                    cardOnHands[i].transform.localScale = Vector3.one;
+                }
             }
         }
     }

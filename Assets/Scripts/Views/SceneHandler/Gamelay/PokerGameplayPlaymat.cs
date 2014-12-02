@@ -151,7 +151,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
     IEnumerator _onFinishGame(ResponseFinishGame responseData)
     {
         PokerObserver.Instance.isWaitingFinishGame = true;
-        CreateCardDeal(responseData.dealComminityCards);
+     
 
         float time = responseData.time/1000f;
         float waitTimeViewCard = time > 1 ? 1f : 0f;
@@ -181,31 +181,46 @@ public class PokerGameplayPlaymat : MonoBehaviour
         #endregion
 
         yield return new WaitForSeconds(waitTimeViewCard /2f);
-        foreach(ResponseResultSummary summary in responseData.pots)
+
+        #region UPDATE CARD 
+        bool isFoldAll = PokerObserver.Game.ListPlayer.FindAll(p => p.GetPlayerState() == PokerPlayerState.fold).Count == 0;
+        if (isFoldAll || PokerObserver.Game.ListPlayer.FindAll(p => p.userName != PokerObserver.Game.MainPlayer.userName).Count == 0)
         {
-            ResponseMoneyExchange playerWin = Array.Find<ResponseMoneyExchange>(summary.players, p => p.winner);
-            if(potContainer != null && playerWin != null)
+
+        }
+        else
+        {
+            CreateCardDeal(responseData.dealComminityCards);
+            foreach (ResponseResultSummary summary in responseData.pots)
             {
-				string rankWin = Array.Find<ResponseFinishCardPlayer>(responseData.players,rdp => rdp.userName == playerWin.userName).ranking;
-                RankEndGameModel playerWinRank = new RankEndGameModel(UTF8Encoder.DecodeEncodedNonAsciiCharacters(rankWin));
-                DialogService.Instance.ShowDialog(playerWinRank);
+                ResponseMoneyExchange playerWin = Array.Find<ResponseMoneyExchange>(summary.players, p => p.winner);
 
-                dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(true);
-
-                List<int> list = new List<int>(playerWin.cards);
-                List<GameObject> listCardObject = cardsDeal.FindAll(o => list.Contains(o.GetComponent<PokerCardObject>().card.cardId));
-                for (int i = 0; i < 20; i++ )
+                if (potContainer != null && playerWin != null)
                 {
-                    listCardObject.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(i % 2 == 0));
-                    yield return new WaitForSeconds(timeEffectPot / 20f);
-                }
-                listCardObject.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(false));
-                dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(false);
+                   
+                        string rankWin = Array.Find<ResponseFinishCardPlayer>(responseData.players, rdp => rdp.userName == playerWin.userName).ranking;
+                        RankEndGameModel playerWinRank = new RankEndGameModel(UTF8Encoder.DecodeEncodedNonAsciiCharacters(rankWin));
+                        DialogService.Instance.ShowDialog(playerWinRank);
+                        dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(true);
 
-                playerWinRank.DestroyUI();
+                        List<int> list = new List<int>(playerWin.cards);
+                        List<GameObject> listCardObject = cardsDeal.FindAll(o => list.Contains(o.GetComponent<PokerCardObject>().card.cardId));
+                        for (int i = 0; i < 20; i++)
+                        {
+                            listCardObject.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(i % 2 == 0));
+                            yield return new WaitForSeconds(timeEffectPot / 20f);
+                        }
+                        listCardObject.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(false));
+                        dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(false);
+
+                        playerWinRank.DestroyUI();
+                    
+                }
             }
         }
-        yield return new WaitForSeconds(waitTimeViewCard / 2);
+            yield return new WaitForSeconds(waitTimeViewCard / 2);
+        
+        #endregion
 
         // Reset Result title
         Array.ForEach<PokerPlayerUI>(playerUI, p => { if (p != null) p.SetTitle(null); });
