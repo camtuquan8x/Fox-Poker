@@ -231,23 +231,25 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     void Instance_onFirstJoinGame(ResponseUpdateGame data)
     {
-        int []hands = null;
-        foreach (PokerPlayerController player in data.players)
+        if (data.players != null && data.players.Length > 0 && Array.FindAll<PokerPlayerController>(data.players, p => p.GetPlayerState() != PokerPlayerState.none).Length > 0)
         {
-            if (PokerObserver.Instance.IsMainPlayer(player.userName))
-                hands = player.hand;
+            int[] hands = null;
+            foreach (PokerPlayerController player in data.players)
+            {
+                if (PokerObserver.Instance.IsMainPlayer(player.userName))
+                    hands = player.hand;
 
-            SetPositionAvatarPlayer(player.userName);
+                SetPositionAvatarPlayer(player.userName);
+            }
+            CreateHand(data.players, hands);
+            CreateCardDeal(data.dealComminityCards);
         }
-
-        CreateHand(data.players, hands);
-        CreateCardDeal(data.dealComminityCards);
     }
 
     void Instance_dataUpdateGame(ResponseUpdateGame data)
     {
         ResetNewRound();
-        Instance_onFirstJoinGame(data);
+        //Instance_onFirstJoinGame(data);
     }
 
     void Instance_onUpdateRoomMaster(ResponseUpdateRoomMaster data)

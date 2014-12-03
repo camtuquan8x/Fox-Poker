@@ -59,17 +59,12 @@ public class PokerObserver
         if (data is ResponseUpdateGame)
         {
             ResponseUpdateGame dataGame = (ResponseUpdateGame)data;
-
-            if (command == "updateGame" && dataUpdateGameChange != null)
-            {
-                dataUpdateGameChange(dataGame);
-            }
-            else if (command == "updateGameToWaitingPlayer")
-            {
+            if (gameDetails == null && dataGame.gameDetails != null)
                 gameDetails = dataGame.gameDetails;
-                if (onFirstJoinGame != null)
-                    onFirstJoinGame(dataGame);
-            }
+            if (dataUpdateGameChange != null)
+                dataUpdateGameChange(dataGame);
+            if (command == "updateGameToWaitingPlayer" && onFirstJoinGame != null)
+                onFirstJoinGame(dataGame);
         }
         else if (data is ResponsePlayerListChanged)
         {
