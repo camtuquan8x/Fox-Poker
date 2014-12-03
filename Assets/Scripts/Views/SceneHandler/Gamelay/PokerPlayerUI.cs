@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Puppet.Poker;
+using System.Collections;
 
 public class PokerPlayerUI : MonoBehaviour
 {
@@ -23,8 +24,8 @@ public class PokerPlayerUI : MonoBehaviour
     PokerGameplayPlaymat playmat;
     [HideInInspector]
     public PokerGPSide side;
-    PokerPotItem currentBet;
-
+    public PokerPotItem currentBet;
+    protected double lastMyBetting = 0;
     public string UserName
     {
         get { return data.userName; }
@@ -62,33 +63,28 @@ public class PokerPlayerUI : MonoBehaviour
             string customTitle = string.Empty;
             if (PokerObserver.Instance.isWaitingFinishGame || (PokerObserver.Game.CurrentPlayer != null && PokerObserver.Game.CurrentPlayer.userName == player.userName))
                 labelUsername.text = data.userName;
-            else if (PokerObserver.Game.ListPlayerWaitNextGame.Contains(player.userName))
+            else if (PokerObserver.Game.ListPlayerWaitNextGame.Contains(player.userName) && player.GetPlayerState() == Puppet.Poker.PokerPlayerState.none)
                 customTitle = "Chờ ván mới";
-            else if (PokerObserver.Game.IsPlayerInGame(player.userName))
+            else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.fold)
+                customTitle = "Bỏ bài";
+            else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.bigBlind)
+                customTitle = "Big Blind";
+            else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.smallBlind)
+                customTitle = "Small Blind";
+            else if (PokerObserver.Game.LastPlayer != null && PokerObserver.Game.LastPlayer.userName == player.userName)
             {
-                if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.fold)
-                    customTitle = "Bỏ bài";
-                else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.bigBlind)
-                    customTitle = "Big Blind";
-                else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.smallBlind)
-                    customTitle = "Small Blind";
-                else if (PokerObserver.Game.LastPlayer != null && PokerObserver.Game.LastPlayer.userName == player.userName)
-                {
-                    if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.call)
-                        customTitle = "Theo cược";
-                    else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.allIn ||
-                        (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.raise && player.currentBet == 0))
-                        customTitle = "All-in";
-                    else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.raise)
-                        customTitle = "Thêm cược";
-                    else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.check)
-                        customTitle = "Xem bài";
-                }
-                else if (PokerObserver.Game.IsPlayerInGame(player.userName) && player.currentBet == 0)
-                    customTitle = "Chờ đặt cược";
-                else
-                    labelUsername.text = data.userName;
+                if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.call)
+                    customTitle = "Theo cược";
+                else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.allIn ||
+                    (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.raise && player.currentBet == 0))
+                    customTitle = "All-in";
+                else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.raise)
+                    customTitle = "Thêm cược";
+                else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.check)
+                    customTitle = "Xem bài";
             }
+            else if (PokerObserver.Game.IsPlayerInGame(player.userName) && player.currentBet == 0)
+                customTitle = "Chờ đặt cược";
             else
                 labelUsername.text = data.userName;
 
@@ -123,7 +119,7 @@ public class PokerPlayerUI : MonoBehaviour
             currentBet.gameObject.SetActive(false);
 
         ResponseFinishCardPlayer cardPlayer = Array.Find<ResponseFinishCardPlayer>(data.players, p => p.userName == this.data.userName);
-        if(cardPlayer != null && cardPlayer.cards != null)
+        if (cardPlayer != null && cardPlayer.cards != null)
         {
             bool isFoldAll = PokerObserver.Game.ListPlayer.FindAll(p => p.GetPlayerState() == PokerPlayerState.fold).Count == 0;
             if (isFoldAll || PokerObserver.Game.ListPlayer.FindAll(p => p.userName != PokerObserver.Game.MainPlayer.userName).Count == 0)
@@ -151,12 +147,15 @@ public class PokerPlayerUI : MonoBehaviour
             StopTimer();
     }
 
+
     void LoadCurrentBet(double value)
     {
         if (side != null)
         {
-            if(currentBet == null)
+            if (currentBet == null)
+            {
                 currentBet = NGUITools.AddChild(side.positionMoney, playmat.prefabBetObject).GetComponent<PokerPotItem>();
+            }
             else
             {
                 currentBet.transform.parent = side.positionMoney.transform;
@@ -166,11 +165,46 @@ public class PokerPlayerUI : MonoBehaviour
 
         if (currentBet != null)
         {
-            currentBet.gameObject.SetActive(value > 0);
-            currentBet.SetBet(value);
+            addBetAnim(value);
         }
     }
+    public void addMoneyToMainPot() {
+        currentBet.labelCurrentbet.transform.parent.gameObject.SetActive(false);
+        iTween.MoveTo(currentBet.gameObject, iTween.Hash("position", playmat.potContainer.tablePot.transform.position, "time", 1.0f, "oncomplete", "onMoneyToMainPotComplete", "oncompletetarget", gameObject));
 
+    }
+    void onMoneyToMainPotComplete()
+    {
+        currentBet.transform.localPosition = Vector3.zero;
+        currentBet.labelCurrentbet.transform.parent.gameObject.SetActive(true);
+        SetCurrentBet(0);
+    }
+    IEnumerator SetCurrentBet(double value)
+    {
+        yield return new WaitForSeconds(value > 0 ? 1.0f:0f);
+        currentBet.gameObject.SetActive(value > 0);
+        currentBet.SetBet(value);
+
+    }
+    PokerPotItem betAnim;
+    public void addBetAnim(double value)
+    {
+        if (currentBet.CurrentBet < value)
+        {
+            if (betAnim != null && betAnim.gameObject != null)
+                tweenComplete();
+            betAnim = NGUITools.AddChild(gameObject, playmat.prefabBetObject).GetComponent<PokerPotItem>();
+            betAnim.labelCurrentbet.transform.parent.gameObject.SetActive(false);
+            iTween.MoveTo(betAnim.gameObject, iTween.Hash("position", side.positionMoney.transform.localPosition, "islocal", true, "time", 1.0f, "oncomplete", "tweenComplete", "oncompletetarget", gameObject));
+         
+        }
+        StartCoroutine(SetCurrentBet(value));
+
+    }
+    void tweenComplete()
+    {
+        GameObject.Destroy(betAnim.gameObject);
+    }
     public void SetResult(bool isWinner)
     {
         NGUITools.SetActive(spriteResultIcon.gameObject, isWinner);
@@ -188,7 +222,7 @@ public class PokerPlayerUI : MonoBehaviour
     {
         bool addEvent = data == null;
         this.data = player;
-        if(addEvent)
+        if (addEvent)
             data.onDataChanged += playerModel_onDataChanged;
 
         UpdateUI(player);
@@ -207,7 +241,7 @@ public class PokerPlayerUI : MonoBehaviour
         UpdateUI(data);
     }
 
-    public void UpdateSetCardObject(GameObject [] cardOnHands)
+    public void UpdateSetCardObject(GameObject[] cardOnHands)
     {
         this.cardOnHands = cardOnHands;
 
@@ -216,7 +250,7 @@ public class PokerPlayerUI : MonoBehaviour
             cardOnHands[i].transform.parent = PokerObserver.Instance.IsMainPlayer(data.userName) ? side.positionCardMainPlayer[i].transform : side.positionCardFaceCards[i].transform;
             cardOnHands[i].transform.localRotation = Quaternion.identity;
             cardOnHands[i].transform.localPosition = Vector3.zero;
-            cardOnHands[i].transform.localScale = PokerObserver.Instance.IsMainPlayer(data.userName) ? Vector3.one : Vector3.one /3;
+            cardOnHands[i].transform.localScale = PokerObserver.Instance.IsMainPlayer(data.userName) ? Vector3.one : Vector3.one / 3;
         }
     }
 
@@ -226,7 +260,7 @@ public class PokerPlayerUI : MonoBehaviour
     float realtime = 0f;
     void StartTimer(float time, float remainingTime = 0f)
     {
-        if(time > 0)
+        if (time > 0)
         {
             totalCountDown = timeCountDown = time;
             if (remainingTime > 0)

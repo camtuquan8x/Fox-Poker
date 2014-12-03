@@ -52,13 +52,33 @@ public class PokerGameplayPlaymat : MonoBehaviour
         PokerObserver.Instance.onFinishGame -= Instance_onFinishGame;
         PokerObserver.Instance.onUpdateRoomMaster -= Instance_onUpdateRoomMaster;
     }
-
+    ResponseUpdatePot currentUpdatePot = null;
     void Instance_onUpdatePot(ResponseUpdatePot obj)
     {
-        if (!PokerObserver.Instance.isWaitingFinishGame && obj.pot != null && obj.pot.Length > 0)
-            potContainer.UpdatePot(new List<ResponseUpdatePot.DataPot>(obj.pot));
-    }
 
+        if (!PokerObserver.Instance.isWaitingFinishGame && obj.pot != null && obj.pot.Length > 0)
+        {
+            currentUpdatePot = obj;
+            //PokerPlayerUI[] players = GameObject.FindObjectsOfType<PokerPlayerUI>();
+            //foreach (PokerPlayerUI item in players)
+            //{
+            //    if (item != null && item.gameObject != null && item.currentBet.CurrentBet !=0) {
+            //        item.addMoneyToMainPot();
+            //    }   
+            //}
+            potContainer.UpdatePot(new List<ResponseUpdatePot.DataPot>(obj.pot));
+        }
+    }
+    bool PotIsUpdate(ResponseUpdatePot obj) {
+        if (currentUpdatePot == null)
+        {
+            return true;
+        }
+        else {
+            var same = obj.pot.Except(currentUpdatePot.pot).Count() == 0 && currentUpdatePot.pot.Except(obj.pot).Count() == 0;
+            return same;
+        }
+    }
     void Instance_onNewRound(ResponseWaitingDealCard data)
     {
         ResetNewRound();
