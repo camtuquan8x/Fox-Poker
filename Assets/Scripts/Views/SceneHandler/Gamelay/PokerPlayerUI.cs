@@ -91,6 +91,9 @@ public class PokerPlayerUI : MonoBehaviour
                 labelUsername.text = string.Format("[FFFF50]{0}[-]", customTitle);
 
             LoadCurrentBet(player.currentBet);
+
+            if (PokerObserver.Game.Dealer == player.userName)
+                playmat.SetDealerObjectToPlayer(player);
         }
     }
 

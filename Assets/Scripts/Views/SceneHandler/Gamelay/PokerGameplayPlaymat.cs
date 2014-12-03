@@ -266,7 +266,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         else if ((state == PokerPlayerChangeAction.playerRemoved || state == PokerPlayerChangeAction.playerQuitGame)
             && dictPlayerObject.ContainsKey(dataPlayer.player.userName))
         {
-            if(dataPlayer.player.isMaster)
+            if(PokerObserver.Game.Dealer == dataPlayer.player.userName)
                 objectDealer.SetActive(false);
 
             DestroyCardObject(dictPlayerObject[dataPlayer.player.userName].GetComponent<PokerPlayerUI>().cardOnHands);
@@ -305,9 +305,6 @@ public class PokerGameplayPlaymat : MonoBehaviour
         obj.transform.parent = playerSide.transform;
         obj.transform.localPosition = Vector3.zero;
         obj.transform.localScale = Vector3.one;
-
-        if (player.isMaster)
-            SetDealerObjectToPlayer(player);
     }
 
     public void SetDealerObjectToPlayer(PokerPlayerController player)
