@@ -18,7 +18,10 @@ namespace Puppet.Service
 
         public void ShowDialog(IDialogData dialog)
         {
-            StartCoroutine(_ShowDialog(dialog));
+            if (dialog != null)
+                StartCoroutine(_ShowDialog(dialog));
+            else
+                Logger.LogError("ERROR: Can't show dialog -> IDialogData is NULL");
         }
 
         IEnumerator _ShowDialog(IDialogData dialog)
