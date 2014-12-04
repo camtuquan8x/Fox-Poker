@@ -59,13 +59,14 @@ public class PokerGameplayPlaymat : MonoBehaviour
         if (!PokerObserver.Instance.isWaitingFinishGame && obj.pot != null && obj.pot.Length > 0)
         {
             currentUpdatePot = obj;
-            //PokerPlayerUI[] players = GameObject.FindObjectsOfType<PokerPlayerUI>();
-            //foreach (PokerPlayerUI item in players)
-            //{
-            //    if (item != null && item.gameObject != null && item.currentBet.CurrentBet !=0) {
-            //        item.addMoneyToMainPot();
-            //    }   
-            //}
+            PokerPlayerUI[] players = GameObject.FindObjectsOfType<PokerPlayerUI>();
+            foreach (PokerPlayerUI item in players)
+            {
+                if (item != null && item.gameObject != null && item.currentBet.CurrentBet != 0)
+                {
+                    item.addMoneyToMainPot();
+                }
+            }
             potContainer.UpdatePot(new List<ResponseUpdatePot.DataPot>(obj.pot));
         }
     }
@@ -171,7 +172,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
     IEnumerator _onFinishGame(ResponseFinishGame responseData)
     {
         PokerObserver.Instance.isWaitingFinishGame = true;
-     
+        iTween.tweens.Clear();
 
         float time = responseData.time/1000f;
         float waitTimeViewCard = time > 1 ? 1f : 0f;
@@ -233,7 +234,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
                         listCardObject.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(false));
                         dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(false);
 
-                        playerWinRank.DestroyUI();
+                        if (playerWinRank !=null)
+                            playerWinRank.DestroyUI();
                     
                 }
             }

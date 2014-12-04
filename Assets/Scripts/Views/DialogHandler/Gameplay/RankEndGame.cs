@@ -39,6 +39,7 @@ public class RankEndGameModel : AbstractDialogData
 
     public void DestroyUI()
     {
+
         RankEndGame.Instance.DestroyMe();
     }
 }
