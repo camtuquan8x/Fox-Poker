@@ -63,28 +63,33 @@ public class PokerPlayerUI : MonoBehaviour
             string customTitle = string.Empty;
             if (PokerObserver.Instance.isWaitingFinishGame || (PokerObserver.Game.CurrentPlayer != null && PokerObserver.Game.CurrentPlayer.userName == player.userName))
                 labelUsername.text = data.userName;
-            else if (PokerObserver.Game.ListPlayerWaitNextGame.Contains(player.userName) && player.GetPlayerState() == Puppet.Poker.PokerPlayerState.none)
+            else if (PokerObserver.Game.ListPlayerWaitNextGame.Contains(player.userName))
                 customTitle = "Chờ ván mới";
-            else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.fold)
-                customTitle = "Bỏ bài";
-            else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.bigBlind)
-                customTitle = "Big Blind";
-            else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.smallBlind)
-                customTitle = "Small Blind";
-            else if (PokerObserver.Game.LastPlayer != null && PokerObserver.Game.LastPlayer.userName == player.userName)
+            else if (PokerObserver.Game.IsPlayerInGame(player.userName))
             {
-                if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.call)
-                    customTitle = "Theo cược";
-                else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.allIn ||
-                    (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.raise && player.currentBet == 0))
-                    customTitle = "All-in";
-                else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.raise)
-                    customTitle = "Thêm cược";
-                else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.check)
-                    customTitle = "Xem bài";
+                if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.fold)
+                    customTitle = "Bỏ bài";
+                else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.bigBlind)
+                    customTitle = "Big Blind";
+                else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.smallBlind)
+                    customTitle = "Small Blind";
+                else if (PokerObserver.Game.LastPlayer != null && PokerObserver.Game.LastPlayer.userName == player.userName)
+                {
+                    if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.call)
+                        customTitle = "Theo cược";
+                    else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.allIn ||
+                        (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.raise && player.currentBet == 0))
+                        customTitle = "All-in";
+                    else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.raise)
+                        customTitle = "Thêm cược";
+                    else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.check)
+                        customTitle = "Xem bài";
+                }
+                else if (PokerObserver.Game.IsPlayerInGame(player.userName) && player.currentBet == 0)
+                    customTitle = "Chờ đặt cược";
+                else
+                    labelUsername.text = data.userName;
             }
-            else if (PokerObserver.Game.IsPlayerInGame(player.userName) && player.currentBet == 0)
-                customTitle = "Chờ đặt cược";
             else
                 labelUsername.text = data.userName;
 
